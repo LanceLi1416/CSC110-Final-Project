@@ -1,23 +1,34 @@
 # CSC110 Final Project
 
+## Table of Contents
+
+1.   [Phase 1 - Project proposal](#Phase-1---Project-Proposal)
+     1.   [Logistics for Phase 1](#1.1)
+     2.   [Project topic introduction: The Impact of COVID-19](#1.2)
+     3.   [Project overview](#1.3) 
+     4.   [Project proposal instructions](#1.4)
+     6.   [Some example sources for datasets](#1.5)
+     6.   [Example Python libraries](#1.6)
+     7.   [Submission instructions](#1.7)
+
 ## Phase 1 - Project Proposal
 
 The CSC110 Course Project is an opportunity to use what you have learned in this course and apply it in a creative, open-ended project. The final submission of your project includes a Python program and report. But before that, you must complete Phase 1: a proposal of what you plan on exploring, designing, and implementing. The CSC110 Teaching Team will give you feedback on your proposal to make sure that your idea is both sufficiently complex and can be completed by the final due date.
 
-### Logistics for Phase 1
+### Logistics for Phase 1 <a name="1.1"></a>
 
 -   Due date: Friday, November 5th before 9am Eastern Time.
 -   This assessment can be done in groups of up to **4** students.
 -   You will submit your proposal on MarkUs (see submission instructions at the end of this handout).
 -   Please review the the Course Syllabus section on Academic Integrity.
 
-### Project topic introduction: The Impact of COVID-19
+### Project topic introduction: The Impact of COVID-19 <a name="1.2"></a>
 
 The COVID-19 pandemic is not yet over, but its impact on our lives and the globe is definitely being felt. It has impacted our environment, our healthcare systems, small and large businesses, economic markets, our memes, and virtually every facet of our society. This course is not “about” the pandemic. But the skills you’ve developed in this course, and that you will continue to develop in the rest of your computer science career, can be harnessed to (try to) answer questions about it.
 
 And so for your final project, we ask that you investigate some aspect of the impact COVID-19 has had through a *data and computational lens*. You may investigate the effects of the pandemic on the environment, traffic, education, the potential benefits and limitations of proposed or enacted solutions, mental health, or a completely different angle. We are certain that you will be able to find something to study that is engaging and vital to you.
 
-### Project overview
+### Project overview <a name="1.3"></a>
 
 Your project will focus on *answering a data-centric question related to the impact of COVID-19*. You are free to use your imagination and be creative here, and choose something that you are truly interested in answering. There are only two constraints in choosing a question to investigate: it must be meaningfully related to the impact COVID-19 has had on the world in some way, and it must be connected to some kind of real-world data.
 
@@ -53,7 +64,7 @@ And here are some examples of **bad** ideas for a project:
 
     (*Too simple.*)
 
-### Project proposal instructions
+### Project proposal instructions <a name="1.4"></a>
 
 Your project proposal is designed as a way to get you started working on this project early, and to give your TAs an opportunity to give you some meaningful feedback and suggestions on your ideas to make sure you are on the right track. *We expect everyone to do very well on this proposal*—our goal is to spend most of our grading time giving you feedback. This proposal does not lock you into a particular topic, and your group will be free to change your plans between this proposal and your final project submission.
 
@@ -86,7 +97,7 @@ Your project proposal will be a LaTeX document (using the **template `project_pr
 
     -   You may use any academic reference style you wish, e.g., APA or MLA.
 
-### Some example sources for datasets
+### Some example sources for datasets <a name="1.5"></a>
 
 Finding a dataset for your idea may be difficult, depending on your topic and question. Below are some examples of websites where you can find datasets or search for datasets. But please don’t limit yourselves to data from these sources.
 
@@ -98,7 +109,7 @@ Finding a dataset for your idea may be difficult, depending on your topic and qu
 
 As you do research and come across datasets, it is important to note down where a fact or piece of data came from. This is especially true with data: just because you were able to download it online does not mean you have permission to use it. You need to not only make sure that you have permission to use the data, but also must include an attribution to where you found the data. Similarly, when providing context and/or making claims in your proposal, be sure to provide a reference to where that information came from.
 
-### Example Python libraries
+### Example Python libraries <a name="1.6"></a>
 
 -   [`scrapy`](https://scrapy.org/): a library for extracting data from websites
 -   [`scikit-learn`](https://scikit-learn.org/stable/index.html): a machine learning library that is (relatively) easy to use
@@ -114,7 +125,7 @@ Also, for your reference here are links to the websites for documentation for `p
 
 Similarly, if your library is responsible for visualization and not computation, your project should not simply be to load and visualize the data. The data you load must be transformed or computed upon in some way before visualization.
 
-### Submission instructions
+### Submission instructions <a name="1.7"></a>
 
 Please **proofread** your work carefully before your final submission!
 
