@@ -89,7 +89,7 @@ Your project proposal will be a LaTeX document (using the **template `project_pr
     -   Describe the kinds of computations you plan to perform, such as: data transformation/filtering/aggregation, computational models, and/or algorithms.
     -   Explain how your program will *report* the results of your computation in a visual and/or interactive way. You don’t need to go into a lot of details here, but it should be clear what you plan to do.
 
-    **Technical requirement**: for your project, you **must** use at least one Python library/module that we have not covered in this course, *or* use `plotly` or `pygame` to a much larger extent than what what have given you so far in this course. (See examples and note in the next section).
+    **Technical requirement**: for your project, you **must** use at least one Python library/module that we have not covered in this course, *or* use `plotly` or `pygame` to a much larger extent than what have given you so far in this course. (See examples and note in the next section).
 
     -   In this part of your proposal, you should also describe one new library you intend to use, how you will use it, and why it is appropriate. Refer to specific functions, data types, and/or capabilities of the library that make it relevant for solving the problem you wish to solve.
 
