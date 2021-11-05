@@ -1,0 +1,5 @@
+# The GUI library
+PyQt5
+
+# Plotting the data
+PyQtGraph
