@@ -30,4 +30,4 @@ DEM_EMPLOYMENT = [
     'Retired'
 ]
 
-COUNTRY = [line.replace('\n', '') for line in open("../data/list_of_countries.txt").readlines()]
+COUNTRY = [line.replace('\n', '') for line in open("data/list_of_countries.txt").readlines()]

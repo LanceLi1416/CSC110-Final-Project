@@ -5,13 +5,9 @@ QLabel      lbl
 QComboBox   cbo
 QLineEdit   lne
 """
-import sys
-import constants
-
 from PyQt5 import QtCore, QtWidgets, uic
 
-from pyqtgraph import PlotWidget
-import pyqtgraph as pg
+import src.constants as constants
 
 
 class Ui(QtWidgets.QMainWindow):
@@ -20,7 +16,7 @@ class Ui(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs) -> None:
         super(Ui, self).__init__(*args, **kwargs)
         # Load the UI file
-        uic.loadUi('MainWindow.ui', self)
+        uic.loadUi('src/ui/MainWindow.ui', self)
 
         # ---------------------------------------- Widgets -----------------------------------------
         self.statusBar = self.statusBar()
@@ -58,8 +54,3 @@ class Ui(QtWidgets.QMainWindow):
 
     def plot(self):
         pass
-
-
-app = QtWidgets.QApplication(sys.argv)
-window = Ui()
-app.exec_()
