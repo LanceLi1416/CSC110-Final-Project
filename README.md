@@ -2,7 +2,7 @@
 
 ## Table of Contents
 
-1.   [Phase 1 - Project proposal](#Phase-1---Project-Proposal)
+1.   [Phase 1: Project proposal](#1)
      1.   [Logistics for Phase 1](#1.1)
      2.   [Project topic introduction: The Impact of COVID-19](#1.2)
      3.   [Project overview](#1.3) 
@@ -10,8 +10,16 @@
      6.   [Some example sources for datasets](#1.5)
      6.   [Example Python libraries](#1.6)
      7.   [Submission instructions](#1.7)
+2.   [Phase 2: Final Submission](#2)
+     1.   [Logistics](#2.1)
+     2.   [Project overview](#2.2)
+          1.   [1. Your written report](#2.2.1)
+          2.   [2. Your complete program](#2.2.2)
+               1.   [Code quality: organization, design, documentation, and style](#2.2.2.1)
+               2.   [Program requirements and reproducibility](#2.2.2.2)
+     3.   [Submission instructions](#2.3)
 
-## Phase 1 - Project Proposal
+## Phase 1: Project Proposal <a name="1"></a>
 
 The CSC110 Course Project is an opportunity to use what you have learned in this course and apply it in a creative, open-ended project. The final submission of your project includes a Python program and report. But before that, you must complete Phase 1: a proposal of what you plan on exploring, designing, and implementing. The CSC110 Teaching Team will give you feedback on your proposal to make sure that your idea is both sufficiently complex and can be completed by the final due date.
 
@@ -140,3 +148,197 @@ Please **proofread** your work carefully before your final submission!
 Remember, you can submit your files multiple times before the due date. So you can aim to submit your work early, and if you find an error or a place to improve before the due date, you can still make your changes and resubmit your work.
 
 After you’ve submitted your work, please give yourself a well-deserved pat on the back and go take a rest or do something fun or eat some chocolate!
+
+# Phase 2: Final Submission <a name="2"></a>
+
+The CSC110 Course Project is an opportunity to use what you have learned in this course and apply it in a creative, open-ended project. In [Phase 1 of the project](#1), you submitted a proposal describing how you planned to perform a computational exploration on the impact of COVID-19. Now in the second, and final phase, of the project you will submit a project report and the program that you created. While this is the “final” submission of your project for CSC110, we encourage you to continue with the project even after the course is done and you learn new things!
+
+## Logistics <a name="2.1"></a>
+
+*   Due date: Tuesday, December 14th before 9am Eastern Time.
+*   This assessment can be done in groups of up to 4 students.
+*   You will submit your project on MarkUs (see submission instructions at the end of this handout).
+*   Please review the the Course Syllabus section on Academic Integrity.
+
+## Project overview <a name="2.2"></a>
+
+Before continuing to the rest of this handout, we recommend reviewing the [overall project requirements from Phase 1](#1). We have not repeated them here.
+
+Your project submission is divided into two components, a *written report* and the *Python program* you created for this project. The next two sections of this handout describes the required elements for both of these components.
+
+### 1. Your written report <a name="2.2.1"></a>
+
+Your project written report builds on your project proposal from Phase 1, incorporating any changes to your project direction, a more detailed computational plan, and a discussion of the results of your exploration.
+
+You should submit two files for this part: `project_report.pdf` and `project_report.tex`. We haven’t provided a LaTeX template for this part, and instead encourage you to start with your `project_proposal.tex` file from Phase 1 and adapt it for this phase.
+
+Your report must include the following sections:
+
+1.  Project title (pick something informative and professional, but you can be creative too) and name of *all* group members.
+
+2.  An introduction containing your problem description and research question. You can start with the text from your project proposal, but then incorporate TA feedback or changes that your group has decided on. It’s okay if your research question (or entire project direction) has changed from what you originally proposed! Review the original proposal instructions for this section to include necessary background information and motivation.
+
+    As in the project proposal, your research question should be in **bold**.
+
+    *Note*: this section should also use [inline references](https://advice.writing.utoronto.ca/using-sources/documentation/) when citing facts, data, or work that is not your own. You may use any academic reference style you wish for this project.
+
+3.  The name and description of **all** datasets you used for your project. Include the format and source of each dataset.
+
+    Also state which parts of each dataset (e.g., which columns in a csv file) are actually used by your program. (When using large datasets, it is common to use only a subset of the data found within them.)
+
+    Unlike the proposal, you do *not* need to provide samples of each data set.
+
+4.  A **computational overview** for your project.
+
+    This is similar to the computational plan you submitted in the proposal, except now it’s not a plan, but a description of the program you’re actually submitting.
+
+    -   Describe the major the computations your program performs, such as: data transformation/filtering/aggregation, computational models, and/or algorithms.
+    -   Explain how your program reports the results of your computation in a visual and/or interactive way.
+    -   Explain how your program uses *new libraries* to accomplish its tasks. Refer to specific functions, data types, and/or capabilities of the library that make it relevant for accomplishing these tasks.
+
+    This overview should be more detailed and concrete than the plan you submitted, since you are submitting your actual code as well. Refer to concrete files, data types, and/or functions that you created in your descriptions of this part. However, you do not need to mention every single data type/function you wrote; use your judgment to only refer to the most important data types and functions that you created for each “computational phase” of your program.
+
+5.  Instructions for **obtaining data sets and running your program**. Your TA will expect to be able to run your program starting from just their computer with only Python (version 3.9) installed. You can expect that the TA will do the following:
+
+    1.  Install all Python libraries listed under a `requirements.txt` file that you submit as part of your project.
+
+        -   Your project must be “pure Python”—you may **not** use other programming languages or non-Python software, and your TA will not install these.
+        -   If any Python libraries requires special installation instructions, first check with an instructor, and then include those instructions in your final report.
+
+    2.  Download data sets based on *specific URLs that you provide*.
+
+        -   Because your datasets may be quite large, you will be unable to submit them directly on MarkUs. Instead, you should include *every* URL to the datasets you used so that your TA can download them directly.
+        -   Alternatively, part of your program may use a Python library (e.g., `requests`) to automate the process of downloading datasets. In this case, the instructions to your TA should be to run a particular Python file or call a particular function.
+        -   If you have done any pre-processing of the datasets, you should both (1) provide links to the raw datasets you started with, and (2) include a link for your TA to download the processed versions using https://send.utoronto.ca/. Note that links generated using this service expire after 14 days, so you should only do your final upload a day or two before the submission deadline. If you are doing this, we strongly recommend bundling your data files into ZIP files to reduce the file size.
+
+        Include instructions to your TA on where to save these dataset files relative to your Python files (e.g., in the same folder, in a subfolder called `datasets`, etc.)
+
+    3.  Run a file that you submit called `main.py`. (See next section for expectations for structuring your code.)
+
+        -   Describe what your TA should expect to see as a result of running your program (i.e., what the output looks like, what data is being shown, etc.) Screenshots are helpful here!
+        -   If your program produces an interactive visualization or display, describe the different interactive features and how your TA can use them.
+
+6.  A brief description of any changes to your project plan between your proposal and final submission. This can be based on TA feedback you received on your proposal, discussions with instructors during office hours, or discussions with your group members or other ideas you wanted to explore.
+
+7.  A **discussion section** where you discuss, analyse, and interpret the results of your program. Remember that your goal for this project was to answer the *research question* you posed at the start of this report! Consider questions such as:
+
+    -   Do the results of your computational exploration help answer this question?
+    -   What limitations did you encounter, with the datasets you found, the algorithms/libraries you used, or other obstacles?
+    -   What are some next steps for further exploration?
+
+    You do *not* need a separate “Conclusion” section, so you may also choose to summarize and write a brief concluding paragraph at the end of this section.
+
+8.  A references section that lists the references you used for your project. This should include references from your topic research, references for every dataset you used, and any online documentation or tutorials you consulted for the Python libraries and algorithms you used for this project.
+
+    -   You may use any academic reference style you wish, e.g. APA or MLA.
+    -   See https://advice.writing.utoronto.ca/using-sources/documentation/ for example formats for both inline citations and formatting a list of references.
+
+#### Note about word limits
+
+There are no formal word limits or requirements for this report. The expected length for each section is comparable to but slightly longer than the corresponding sections on your proposal, including more details (e.g., more datasets to describe, and a more concrete computational overview).
+
+Your instructions to your TA for running your program should be clear and concise.
+
+Your discussion section should be around 500-800 words.
+
+### 2. Your complete program <a name="2.2.2"></a>
+
+For this project, you have a large amount of freedom in how you organize, design, and implement your code. Because of the open-ended nature of this project, we aren’t running any automated testing on your submissions! Instead, you are submitting your code so that your TAs can assess the overall quality of your code, and their ability to actually run your program and reproduce the results that you report.
+
+#### Code quality: organization, design, documentation, and style <a name="2.2.2.1"></a>
+
+Your program is the largest and most complex body of Python code you’ve written in this course. You should split up your program into multiple files organized into logical groups (e.g., the code responsible for reading data from data sets; the code responsible for computing on the data; the code responsible for displaying the results of the computations). You should also have one separate file called `main.py`, whose main block consists of the code necessary to run your entire program from start to finish (see next section for details).
+
+Within each file, you are responsible for designing and implementing Python classes and functions to organize your data and operations on that data.
+
+All Python files and code you submit must follow good design, documentation, and style principles that we’ve learned throughout this course.
+
+1.  *Modules*. Each module should have a title and description, following a similar format to the ones we’ve provided for you in starter files for preps and assignments. You and your group members should claim copyright on your own work!
+
+    Modules should consist only of import statements, function and data type definitions, and a main block at the bottom of the file. There should not be any top-level statements/function calls outside of the main block.
+
+2.  *Functions and classes*. Every function and class that you define should follow the course standards for naming, headers, docstrings (including preconditions/representation invariants). This includes helper functions.
+
+    Doctest examples are not required, but strongly encouraged where possible to help your TA understand your code. You may, but are not required, to submit other tests you write for your project.
+
+    A convention we encourage, but not require, you to follow is to list your functions in top-down order of importance: the “main” function(s) at the top of the file, and helper functions beneath them.
+
+3.  *Code-checking tools*. In each file except `main.py`, your main block should run `doctest.testmod()` to check any doctests, and use `python_ta.contracts.check_all_contracts` and `python_ta.check_all` to use PythonTA to check your work. Unlike past assessments, you may modify the `config` argument for `python_ta.check_all` to suit the needs of your module, e.g., by adding additional imports or listing function names that call `open` or `print` under the `'allowed-io'` option.
+
+    We aren’t automatically giving a grade based on passing all doctests or counting the number of PythonTA errors. However, your TAs will be reviewing both doctests and your overall code quality, and these tools are designed to help you check both of these—use them!
+
+    Here is a sample call to `python_ta.check_all` that you can base your own configuration on:
+
+    ```python
+    python_ta.check_all(config={
+        'extra-imports': [],  # the names (strs) of imported modules
+        'allowed-io': [],     # the names (strs) of functions that call print/open/input
+        'max-line-length': 100,
+        'disable': ['R1705', 'C0200']
+    })
+    ```
+
+#### Program requirements and reproducibility <a name="2.2.2.2"></a>
+
+As we discussed in the “written report” section above, your TA will expect to be able to run your program starting from just their computer starting with only Python (version 3.9) installed. To help your TA with this process, your program files must include:
+
+1.  A `requirements.txt` file that lists every external library your program relies on, such as `python_ta`, `pygame`, `numpy`, etc. There are many resources online for creating a `requirements.txt` file; [this answer](https://stackoverflow.com/a/31684470) may be helpful. Or, you can adapt the `requirements.txt` we provided at the start of the semester for CSC110:
+
+    ```python
+    # CSC110 Fall 2020: Python libraries we'll be using this semester.
+    
+    # Testing and code checking
+    hypothesis
+    pytest
+    python-ta
+    
+    # Graphics and data visualization
+    plotly
+    pygame==2.0.0.dev10
+    ```
+
+2.   A Python module called `main.py` whose main block contains the code necessary for running your entire program. When run, this module should:
+
+     1.  Load the necessary files from the datasets.
+     2.  Perform your computations on the data.
+     3.  Produce an output (which may or may not be interactive).
+
+     Your `main.py` file can be quite short, and just import the necessary functions and data types from your other Python modules. To keep things simple, all of your Python modules should be kept in the same folder as `main.py`, and submitted together on MarkUs at the “top level” (no subfolders).
+
+     Running `main.py` may produce an interactive way of interacting with your computational results. In this case, you should include instructions on how to use the interactive components in your written report.
+
+     You may, if you wish, provide a *few* different ways of calling your program’s primary functions that are commented out in your `main.py` and that your TA should try individually. In this case, include clear comments inside your `main.py` file *or* in your written report to describe the different ways your TA can comment/uncomment various function calls to run your program, and the differences they should be looking for in your program’s output/results.
+
+## Submission instructions <a name="2.3"></a>
+
+Please **proofread** and **test** your work carefully before your final submission. This final project is the culmination of a lot of work and learning you’ve done over the entire semester, so take pride in it and check everything over before you submit!
+
+1.  Login to [MarkUs](https://markus.teach.cs.toronto.edu/csc110-2020-09).
+
+2.  Go to Project2, and the “Submissions” tab.
+
+3.  Submit the following files: `project_report.tex`, `project_report.pdf`, `requirements.txt`, `main.py`, and any other Python modules (or other supporting files) that your project requires.
+
+    Please note that MarkUs is picky with filenames, and so you must submit filenames that match these exactly, including using lowercase letters. You can choose the names of the other Python files you submit, but make sure to follow standard Python naming conventions (lowercase letters, with words separated by underscores).
+
+4.  Test your program out on a *fresh computer* to check that everything will work properly for your TA.
+
+    Here are the steps to follow:
+
+    1.  If you don’t have a fresh computer, first *uninstall Python 3.9* and then re-install it. If you have a fresh computer, install Python 3.9 and PyCharm on it. If you are using one of the department’s computers, they should have PyCharm and Python 3.9 already installed.
+    2.  Download all of the files you submitted to MarkUs onto the computer, in a new folder.
+    3.  Install all of the Python libraries listed under the `requirements.txt` file you submitted.
+    4.  Follow any additional installation instructions you wrote in your project report.
+    5.  Download all required datasets by following the instructions you wrote in your project report.
+    6.  Run your `main.py` file (e.g., in PyCharm). It should “just work”—if you run into any errors, fix them and (if necessary) update your report’s instructions so that your TA doesn’t run into problems!
+    7.  Review the output/product of your program, and the descriptions/instructions you wrote in your report for interpreting the results or interacting with your program. Your TA should be able to make sense of them!
+
+    You can also test out your instructions with a family member or friend (not in CSC110)—they should be able to follow all of these required steps even if they don’t have any technical knowledge, except possibly needing help with “running” `main.py`. Plus it’s a good chance to show off your work! :)
+
+Remember, you can submit your files multiple times before the due date. So you can aim to submit your work early, and if you find an error or a place to improve before the due date, you can still make your changes and resubmit your work.
+
+After you’ve submitted your work, please give yourself a well-deserved pat on the back and go take a rest or do something fun or eat some chocolate. **You’ve just completed CSC110!**
+
+
+
+![](https://www.teach.cs.toronto.edu/~csc110y/fall/project/phase2/images/pineapple.jpg)
