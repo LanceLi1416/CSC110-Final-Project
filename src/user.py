@@ -11,7 +11,7 @@ class User:
     #     - 18
     #     - ...
     #     - 110
-    Dem_age = 0
+    Dem_age: int
 
     # Gender
     # - str
@@ -20,7 +20,7 @@ class User:
     #     - Female
     #     - Other/would rather not say
     #     - NA
-    Dem_gender = "Other / would rather not say"
+    Dem_gender: str
 
     # What best describes your level of education?
     # - str
@@ -34,7 +34,7 @@ class User:
     #     - PhD/Doctorate
     #     - Uninformative response
     #     - NA
-    Dem_edu = "None"
+    Dem_edu: str
 
     # What best describes your mother's level of education?
     # - str
@@ -48,7 +48,7 @@ class User:
     #     - PhD/Doctorate
     #     - Uninformative response
     #     - NA
-    Dem_edu_mom = "None"
+    Dem_edu_mom: str
 
     # Employment status
     # - str
@@ -60,13 +60,13 @@ class User:
     #     - Self-employed
     #     - Retired
     #     - NA
-    Dem_employment = "Not employed"
+    Dem_employment: str
 
     # Country of residence
     # - str
     # - QComboBox
     #     - See list_of_countries.txt
-    Country = "Afghanistan"
+    Country: str
 
     # Are you currently living outside of what you consider your home country?
     # - bool
@@ -74,12 +74,12 @@ class User:
     #     - NA
     #     - True  (Yes)
     #     - False (No)
-    Dem_Expat = False
+    Dem_Expat: bool
 
     # State / province
     # - str
     # - QLineEdit
-    Dem_state = ""
+    Dem_state: str
 
     # Marital statue
     # - str
@@ -90,13 +90,13 @@ class User:
     #     - Other or would rather not say
     #     - Uninformative response
     #     - NA
-    Dem_maritalstatus = "Single"
+    Dem_maritalstatus: str
 
     # Number dependents (i.e. family members relying on you for support. Usually children)
     # - int
     # - QComboBox
     #     - 0 - 110
-    Dem_dependents = 0
+    Dem_dependents: int
 
     # Are you or any of your close relations (family, close friends) in a high-risk group for
     # Coronavirus? (e.g. pregnant, elderly or due to a pre-existing medical condition)
@@ -106,7 +106,7 @@ class User:
     #     - no
     #     - not sure
     #     - NA
-    Dem_riskgroup = 'no'
+    Dem_riskgroup: str
 
     # What best describes your current situation?
     # - str
@@ -116,18 +116,18 @@ class User:
     #     - Isolated
     #     - Isolated in medical facility of similar location
     #     - NA
-    Dem_islolation = ""
+    Dem_islolation: str
 
     # If in relative isolation, how many other adults are staying together in the same place as
     # you are?
     # - int
     # - QComboBox
     #     - 0 - 110
-    Dem_isolation_adults = 0
+    Dem_isolation_adults: int
 
     # If in relative isolation, how many children under the age of 12 are staying together in
     # the same place as you are?
     # - int
     # - QComboBox
     #     - 0 - 110
-    Dem_isolation_kids = 0
+    Dem_isolation_kids: int

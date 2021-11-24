@@ -14,88 +14,97 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>30</y>
-      <width>551</width>
-      <height>240</height>
-     </rect>
+   <layout class="QGridLayout" name="gridLayoutMaster">
+    <property name="leftMargin">
+     <number>24</number>
     </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="5" column="0">
-      <widget class="QLabel" name="lblExpat">
-       <property name="text">
-        <string>Are you currently living outside of what you consider your home country?</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QComboBox" name="cboExpat"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="lblEdu">
-       <property name="text">
-        <string>Education</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QComboBox" name="cboEducation"/>
-     </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="cboEmployment"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="lblGender">
-       <property name="text">
-        <string>Gender</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QComboBox" name="cboGender"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="lblEmployeement">
-       <property name="text">
-        <string>Employment</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="cboCountry"/>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="lblCountry">
-       <property name="text">
-        <string>Country</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="cboAge"/>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="lblAge">
-       <property name="text">
-        <string>Age</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="lblState">
-       <property name="text">
-        <string>State</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QLineEdit" name="lneState"/>
-     </item>
-    </layout>
-   </widget>
+    <property name="topMargin">
+     <number>24</number>
+    </property>
+    <property name="rightMargin">
+     <number>24</number>
+    </property>
+    <property name="bottomMargin">
+     <number>24</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QWidget" name="graphWidget" native="true"/>
+    </item>
+    <item row="1" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="5" column="0">
+       <widget class="QLabel" name="lblExpat">
+        <property name="text">
+         <string>Are you currently living outside of what you consider your home country?</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QComboBox" name="cboExpat"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lblEdu">
+        <property name="text">
+         <string>Education</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="cboEducation"/>
+      </item>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="cboEmployment"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblGender">
+        <property name="text">
+         <string>Gender</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="cboGender"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lblEmployeement">
+        <property name="text">
+         <string>Employment</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QComboBox" name="cboCountry"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="lblCountry">
+        <property name="text">
+         <string>Country</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cboAge"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblAge">
+        <property name="text">
+         <string>Age</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="lblState">
+        <property name="text">
+         <string>State</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLineEdit" name="lneState"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
