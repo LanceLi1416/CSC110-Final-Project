@@ -36,20 +36,6 @@ class User:
     #     - NA
     Dem_edu: str
 
-    # What best describes your mother's level of education?
-    # - str
-    # - QComboBox
-    #     - None
-    #     - Up to 6 years of school
-    #     - Up to 9 years of school
-    #     - Up to 12 years of school
-    #     - Some College, short continuing education or equivalent
-    #     - College degree, bachelor, master
-    #     - PhD/Doctorate
-    #     - Uninformative response
-    #     - NA
-    Dem_edu_mom: str
-
     # Employment status
     # - str
     # - QComboBox
@@ -76,11 +62,6 @@ class User:
     #     - False (No)
     Dem_Expat: bool
 
-    # State / province
-    # - str
-    # - QLineEdit
-    Dem_state: str
-
     # Marital statue
     # - str
     # - QComboBox
@@ -91,12 +72,6 @@ class User:
     #     - Uninformative response
     #     - NA
     Dem_maritalstatus: str
-
-    # Number dependents (i.e. family members relying on you for support. Usually children)
-    # - int
-    # - QComboBox
-    #     - 0 - 110
-    Dem_dependents: int
 
     # Are you or any of your close relations (family, close friends) in a high-risk group for
     # Coronavirus? (e.g. pregnant, elderly or due to a pre-existing medical condition)
@@ -118,16 +93,23 @@ class User:
     #     - NA
     Dem_islolation: str
 
-    # If in relative isolation, how many other adults are staying together in the same place as
-    # you are?
+    # If in relative isolation, how many other adults are staying together in the same place as you
+    # are?
     # - int
     # - QComboBox
     #     - 0 - 110
     Dem_isolation_adults: int
 
-    # If in relative isolation, how many children under the age of 12 are staying together in
-    # the same place as you are?
+    # If in relative isolation, how many children under the age of 12 are staying together in the
+    # same place as you are?
     # - int
     # - QComboBox
     #     - 0 - 110
     Dem_isolation_kids: int
+
+
+dict_gender = {
+    'Male': (0, 0),
+    'Female': (0 + 50, 0 + 1),
+    'Other': (0, 0)
+}

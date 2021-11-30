@@ -19,7 +19,7 @@ class Ui(QtWidgets.QMainWindow):
     """ The master UI class for the GUI Application """
     # ------------------------------------------ Widgets -------------------------------------------
     _statusBar: QtWidgets.QStatusBar
-    _cboAge: QtWidgets.QComboBox
+    _spiAge = QtWidgets.QSpinBox
     _cboGender: QtWidgets.QComboBox
     _cboEducation: QtWidgets.QComboBox
     _cboEmployment: QtWidgets.QComboBox
@@ -41,8 +41,8 @@ class Ui(QtWidgets.QMainWindow):
 
         self._statusBar = self.statusBar()
 
-        self._cboAge = self.findChild(QtWidgets.QComboBox, "cboAge")
-        self._cboAge.addItems(str(_) for _ in range(18, 111))
+        self._spiAge = self.findChild(QtWidgets.QSpinBox, "spiAge")
+        self._spiAge.setRange(18, 110)
 
         self._cboGender = self.findChild(QtWidgets.QComboBox, "cboGender")
         self._cboGender.addItems(constants.DEM_GENDER)
@@ -69,13 +69,10 @@ class Ui(QtWidgets.QMainWindow):
         self._user = User(18,
                           "Other / would rather not say",
                           "None",
-                          "None",
                           "Not employed",
                           "Canada",
                           False,
-                          "",
                           "Single",
-                          0,
                           "no",
                           "Life carries on as usual",
                           0,
@@ -89,6 +86,8 @@ class Ui(QtWidgets.QMainWindow):
             "Fardin Faruk, Sharon Hsieh, Sinan Li, and Jeffery Zhan \u00A9 2021")
         lbl_copyright.setAlignment(QtCore.Qt.AlignCenter)
         self._statusBar.addWidget(lbl_copyright, 1)
+        # Disable resize
+        # self.setFixedSize(self.size())
 
     def plot(self):
         pass
