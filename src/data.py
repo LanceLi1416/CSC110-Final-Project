@@ -19,7 +19,7 @@ def calc_stress_score(person: list) -> int:
     survey_scale = [(5, 10), (5, 3), (11, 2), (11, 6), (6, 5), (12, 1),
                     (6, 6), (6, 15), (6, 25), (6, 10), (6, 15), (6, 6)]
     # List of values from dataset of survey used for calculations
-    answer_values = person[21:54] + person[69:108]
+    answer_values = person[21:54] + person[70:143]
     # ACCUMULATOR stress_so_far: running sum of stress score
     stress = 0
     # ACCUMULATOR index: running index
