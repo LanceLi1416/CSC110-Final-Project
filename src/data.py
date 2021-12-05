@@ -19,15 +19,18 @@ def calc_stress_score(person: list) -> int:
     survey_scale = [(5, 10), (5, 3), (11, 2), (11, 6), (6, 5), (12, 1),
                     (6, 6), (6, 15), (6, 25), (6, 10), (6, 15), (6, 6)]
     # List of values from dataset of survey used for calculations
-    answer_values = person[21:126]
+    answer_values = person[21:54] + person[69:108]
     # ACCUMULATOR stress_so_far: running sum of stress score
     stress = 0
     # ACCUMULATOR index: running index
     index = 0
     for survey in survey_scale:
-        for _ in range(survey[1]):
-            stress += reg_row[int(((answer_values[index] / survey[1]) * 100) // 20)] \
-                      * stress_method[index]
+        for _ in range(survey[1] - 1):
+            if answer_values[index] != 'NA' and answer_values[index] != '99':
+                print(answer_values[index], survey[0])
+                print(int(((int(answer_values[index]) / survey[0]) * 100) // 20))
+                stress += reg_row[int(((int(answer_values[index]) / survey[0]) * 100) // 20) - 1] \
+                          * stress_method[index]
             index += 1
     return stress
 
@@ -188,14 +191,13 @@ def read_csv_file() -> list[dict[str, tuple[int, int]]]:
         # The header row is *not* included in this list.
         for row in reader:
             # Collect all attributes of each row (participant)
-            age = row[4]
-            gender = row[5]
-            education = row[6]
             index = 4
             stress_score = calc_stress_score(row)
             # Update the data dictionary
             for category in data_processed_so_far:
                 if category == header[4] or category == header[16] or category == header[17]:
+                    stress_score += 1
+                else:
                     value = category[row[index]]
                     category[row[index]] = (value[0] + 1, value[1] + stress_score)
                     index += 1
