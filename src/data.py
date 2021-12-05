@@ -36,6 +36,8 @@ def calc_stress_score(person: list) -> int:
 
     return stress_so_far
 
+    # TODO: Delete?
+
     # for survey in survey_scale:
     #     for _ in range(survey[1] - 1):
     #         if answer_values[index] != 'NA' and answer_values[index] != '99':
