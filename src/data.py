@@ -196,7 +196,21 @@ def read_csv_file() -> list[dict[str, tuple[int, int]]]:
             # Update the data dictionary
             for category in data_processed_so_far:
                 if category == header[4] or category == header[16] or category == header[17]:
-                    stress_score += 1
+                    age = int(row[index])
+                    value = category[row[index]]
+                    if 18 <= age <= 24:
+                        category['18-24'] = (value[0] + 1, value[1] + stress_score)
+                    elif 25 <= age <= 34:
+                        category['25-34'] = (value[0] + 1, value[1] + stress_score)
+                    elif 35 <= age <= 44:
+                        category['35-44'] = (value[0] + 1, value[1] + stress_score)
+                    elif 45 <= age <= 54:
+                        category['45-54'] = (value[0] + 1, value[1] + stress_score)
+                    elif 55 <= age <= 64:
+                        category['55-64'] = (value[0] + 1, value[1] + stress_score)
+                    else:
+                        category['65+'] = (value[0] + 1, value[1] + stress_score)
+                    index += 1
                 else:
                     value = category[row[index]]
                     category[row[index]] = (value[0] + 1, value[1] + stress_score)
