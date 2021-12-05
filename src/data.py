@@ -235,7 +235,7 @@ def read_csv_file() -> list[dict[str, tuple[int, int]]]:
                         category['NA'] = (num_dependents_tuple[0] + 1, num_dependents_tuple[1] + stress_score)
                     else:
                         num_dependents = int(row[index])
-                        num_dependents_tuple = category[row[index]]
+                        num_dependents_tuple = category[row[index]]  # TODO: Run file and check error
                         if num_dependents == 0:
                             category['0'] = (num_dependents_tuple[0] + 1, num_dependents_tuple[1] + stress_score)
                         if num_dependents == 1:
