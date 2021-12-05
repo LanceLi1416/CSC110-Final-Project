@@ -78,7 +78,7 @@ def initialize_data_dict() -> list[dict[str, tuple[int, int]]]:
          'Full time employed': (0, 0),
          'Self-employed': (0, 0),
          'Retired': (0, 0),
-         'NA': (0, 0),
+         'NA': (0, 0)
          },
         # Initialize country of residence
         countries,
