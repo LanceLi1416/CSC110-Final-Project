@@ -27,8 +27,8 @@ def calc_stress_score(person: list) -> int:
     for survey in survey_scale:
         for _ in range(survey[1] - 1):
             if answer_values[index] != 'NA' and answer_values[index] != '99':
-                print(answer_values[index], survey[0])
-                print(int(((int(answer_values[index]) / survey[0]) * 100) // 20))
+                # print(answer_values[index], survey[0])
+                # print(int(((int(answer_values[index]) / survey[0]) * 100) // 20))
                 stress += reg_row[int(((int(answer_values[index]) / survey[0]) * 100) // 20) - 1] \
                           * stress_method[index]
             index += 1
@@ -195,8 +195,10 @@ def read_csv_file() -> list[dict[str, tuple[int, int]]]:
             stress_score = calc_stress_score(row)
             # Update the data dictionary
             for category in data_processed_so_far:
-                if category == header[4] or category == header[16] or category == header[17]:
+                # Adding values for range based categories
+                if category == header[4]:
                     age = int(row[index])
+                    print(age)
                     value = category[row[index]]
                     if 18 <= age <= 24:
                         category['18-24'] = (value[0] + 1, value[1] + stress_score)
@@ -208,12 +210,58 @@ def read_csv_file() -> list[dict[str, tuple[int, int]]]:
                         category['45-54'] = (value[0] + 1, value[1] + stress_score)
                     elif 55 <= age <= 64:
                         category['55-64'] = (value[0] + 1, value[1] + stress_score)
-                    else:
+                    elif 65 <= age:
                         category['65+'] = (value[0] + 1, value[1] + stress_score)
-                    index += 1
+                    else:
+                        category['NA'] = (value[0] + 1, value[1] + stress_score)
+                elif category == header[16] or category == header[17]:
+                    age = int(row[index])
+                    if age == 0:
+                        category['0'] = (value[0] + 1, value[1] + stress_score)
+                    if age == 1:
+                        category['1'] = (value[0] + 1, value[1] + stress_score)
+                    elif age == 2:
+                        category['2'] = (value[0] + 1, value[1] + stress_score)
+                    elif age == 3:
+                        category['3'] = (value[0] + 1, value[1] + stress_score)
+                    elif age == 4:
+                        category['4'] = (value[0] + 1, value[1] + stress_score)
+                    elif age == 5:
+                        category['5'] = (value[0] + 1, value[1] + stress_score)
+                    elif age == 6:
+                        category['6'] = (value[0] + 1, value[1] + stress_score)
+                    elif age == 7:
+                        category['7'] = (value[0] + 1, value[1] + stress_score)
+                    elif age == 9:
+                        category['9'] = (value[0] + 1, value[1] + stress_score)
+                    elif age == 10:
+                        category['10'] = (value[0] + 1, value[1] + stress_score)
+                    elif 11 <= age <= 20:
+                        category['11-20'] = (value[0] + 1, value[1] + stress_score)
+                    elif 21 <= age <= 30:
+                        category['21-30'] = (value[0] + 1, value[1] + stress_score)
+                    elif 31 <= age <= 40:
+                        category['31-40'] = (value[0] + 1, value[1] + stress_score)
+                    elif 41 <= age <= 50:
+                        category['41-50'] = (value[0] + 1, value[1] + stress_score)
+                    elif 51 <= age <= 60:
+                        category['51-60'] = (value[0] + 1, value[1] + stress_score)
+                    elif 61 <= age <= 70:
+                        category['61-70'] = (value[0] + 1, value[1] + stress_score)
+                    elif 71 <= age <= 80:
+                        category['71-80'] = (value[0] + 1, value[1] + stress_score)
+                    elif 81 <= age <= 90:
+                        category['81-90'] = (value[0] + 1, value[1] + stress_score)
+                    elif 91 <= age <= 100:
+                        category['91-100'] = (value[0] + 1, value[1] + stress_score)
+                    elif 101 <= age <= 110:
+                        category['101-110'] = (value[0] + 1, value[1] + stress_score)
+                    else:
+                        category['NA'] = (value[0] + 1, value[1] + stress_score)
+                # Adding values for the rest
                 else:
                     value = category[row[index]]
                     category[row[index]] = (value[0] + 1, value[1] + stress_score)
-                    index += 1
+                index += 1
 
     return data_processed_so_far
