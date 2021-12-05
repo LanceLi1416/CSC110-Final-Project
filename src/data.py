@@ -7,10 +7,11 @@ def calc_stress_score(person: list) -> int:
     # Value added for each response in the survey
     reg_row = [-2, -1, 0, 1, 2]
     # Depending on the nature of the question we may want to reduce or increase the stress score
-    stress_method = [1, 1, 1, -1, -1, 1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1,
-                     -1, 0, 0, 1, -1, 1, 1, 1, -1, 0, 0, 0, 0, 0, 0, 0, 1, 0, -1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1]
+    stress_method = [1, 1, 1, -1, -1, 1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, 1,
+                     1, 1, 1, 1, -1, -1, 0, 0, 1, -1, 1, 1, 1, -1, 0, 0, 0, 0, 0, 0, 0, 1, 0, -1, 0,
+                     0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                     -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1]
 
     # Tuple Consists of:
     # First element is scale
@@ -150,19 +151,27 @@ def initialize_data_dict() -> list[dict[str, tuple[int, int]]]:
     return data_start
 
 
-def read_csv_file(filename: str) -> list[dict[str, tuple[int, int]]]:
-    """Return the headers and data stored in a csv file with the given filename.
+def read_csv_file() -> list[dict[str, tuple[int, int]]]:
+    """Return the data stored in a csv file with the given filename.
 
-    The return value is list consisting of 11 dictionaries: # TODO This
-    - The first is a list of strings for the headers of the csv file.
-    - The second is a list of Delays (using the data class you just defined).
+    The return value is list consisting of 11 dictionaries:
+    - The first is a dictionary with age ranges (in groups of 10)
+    - The second is a dictionary of genders
+    - The third is a dictionary of education statuses
+    - The fourth is a dictionary of employment statuses
+    - The fifth is a dictionary of countries of residence
+    - The sixth is a dictionary of whether or not the participant is an expatriate
+    - The seventh is a dictionary of marital statuses
+    - The eighth is a dictionary of whether or not the participant is part of a high-risk group
+        for Coronavirus
+    - The ninth is a dictionary of isolation status
+    - The tenth is a dictionary of ranges of the number of adults the participant is isolating with
+    - The eleventh is a dictionary of ranges of the number of children the participant
+        is isolating with (edited)
 
-    The dictionaries
-
-    Preconditions: # TODO Figure this out
-      - filename refers to a valid csv file with headers
-      -
-
+    The dictionaries each map to their own tuple of two items,
+    the first being the total stress_score that has been added to them,
+    and the second being the population (or number of people) that have added their score to it
     """
     # ACCUMULATOR data_processed_so_far: the running list of
     data_processed_so_far = initialize_data_dict()
@@ -178,11 +187,17 @@ def read_csv_file(filename: str) -> list[dict[str, tuple[int, int]]]:
         # where each row is represented as a list of strings.
         # The header row is *not* included in this list.
         for row in reader:
+            # Collect all attributes of each row (participant)
+            age = row[4]
+            gender = row[5]
+            education = row[6]
+            index = 4
             stress_score = calc_stress_score(row)
-
-            # collect the row general info (columns 4- 17)
-            # keys which we will use to map to value we will reassign to 'update' the variables
-            # helper function to find the sum of stress scores (value will be returned)
-            # use a helper function to iterate through the list and actually update the values
+            # Update the data dictionary
+            for category in data_processed_so_far:
+                if category == header[4] or category == header[16] or category == header[17]:
+                    value = category[row[index]]
+                    category[row[index]] = (value[0] + 1, value[1] + stress_score)
+                    index += 1
 
     return data_processed_so_far
