@@ -9,7 +9,7 @@ Quotation Rules:
 ''  for char
 ""  for string
 """
-from PyQt5 import QtCore, QtWidgets, uic
+from PyQt5 import QtCore, QtWidgets, QtGui, uic
 
 import src.constants as constants
 from src.user import User
@@ -88,6 +88,44 @@ class Ui(QtWidgets.QMainWindow):
         self._statusBar.addWidget(lbl_copyright, 1)
         # Disable resize
         # self.setFixedSize(self.size())
+
+        shadow = QtWidgets.QGraphicsDropShadowEffect(self)
+        shadow.setBlurRadius(0.5)
+        shadow.setOffset(5)
+        shadow.setColor(QtGui.QColor.fromRgb(255, 255, 255))
+        self._lneState.setGraphicsEffect(shadow)
+
+        self._btnRun = self.findChild(QtWidgets.QPushButton, "btnRun")
+        self._btnRun.setStyleSheet(
+            """ QPushButton { 
+                    background-color: red; 
+                    border-style: outset;
+                    border-width: 2px;
+                    border-radius: 10px;
+                    border-color: beige;
+                    font: bold 14px;
+                    min-width: 10em;
+                    padding: 6px; 
+                } 
+                QPushButton:pressed { 
+                    background-color: rgb(224, 0, 0); 
+                    border-style: inset; 
+                } """)
+        self._cboGender.setStyleSheet(
+            """ QComboBox:item { 
+                    color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(199, 199, 199, 255), stop:1 rgba(99, 99, 99, 255));
+                    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(99, 99, 99, 255), stop:1 rgba(199, 199, 199, 255));
+                }
+                QComboBox:item:selected {
+                    padding-left: 20px;
+                    color: blue;
+                    background-color: red;
+                }
+                QComboBox:item:checked {
+                    padding-left: 20px;
+                    color: yellow;
+                    background-color: blue;
+                } """)
 
     def plot(self):
         pass
