@@ -1,10 +1,13 @@
 """ The file to save and extract data from the dataset """
 import csv
+
+from typing import Dict, List
+
 real_data = "../data/COVIDiSTRESS June 17.csv"
 test_data = "../data/sample_data.csv"
 
 
-def generate_interval_list(interval_value: float) -> list[float]:
+def generate_interval_list(interval_value: float) -> List[float]:
     """Return a scale fitted from the values -2 to 2 with intervals of interval_value per element"""
     start = -2
     da_row = [start]
@@ -15,7 +18,7 @@ def generate_interval_list(interval_value: float) -> list[float]:
     return da_row
 
 
-def calc_stress_score(person: list[str]) -> int:
+def calc_stress_score(person: List[str]) -> int:
     """Return stress score from a row of the dataset"""
     # Value added for each response in the survey
     # Depending on the nature of the question we may want to reduce or increase the stress score
@@ -51,7 +54,7 @@ def calc_stress_score(person: list[str]) -> int:
     return stress_so_far
 
 
-def process_country() -> dict[str, tuple[int, int]]:
+def process_country() -> Dict[str, tuple[int, int]]:
     """Return country values for data_dict"""
     countries_dict = {}
     with open('../data/list_of_countries.txt', encoding='utf-8') as file_2:
@@ -61,7 +64,7 @@ def process_country() -> dict[str, tuple[int, int]]:
     return countries_dict
 
 
-def initialize_data_list() -> list[dict[str, tuple[int, int]]]:
+def initialize_data_list() -> List[Dict[str, tuple[int, int]]]:
     """Return initialized values"""
     countries = process_country()
     data_start = [
@@ -169,7 +172,7 @@ def initialize_data_list() -> list[dict[str, tuple[int, int]]]:
     return data_start
 
 
-def read_csv_file(file_name: str) -> list[dict[str, tuple[int, int]]]:
+def read_csv_file(file_name: str) -> List[Dict[str, tuple[int, int]]]:
     """Return the data stored in a csv file with the given filename.
 
     The return value is list consisting of 11 dictionaries:
@@ -275,9 +278,11 @@ def read_csv_file(file_name: str) -> list[dict[str, tuple[int, int]]]:
             elif 81 <= num_dependents <= 90:
                 category['81-90'] = (category['81-90'][0] + 1, category['81-90'][1] + stress_score)
             elif 91 <= num_dependents <= 100:
-                category['91-100'] = (category['91-100'][0] + 1, category['91-100'][1] + stress_score)
+                category['91-100'] = (
+                    category['91-100'][0] + 1, category['91-100'][1] + stress_score)
             elif 101 <= num_dependents <= 110:
-                category['101-110'] = (category['101-110'][0] + 1, category['101-110'][1] + stress_score)
+                category['101-110'] = (
+                    category['101-110'][0] + 1, category['101-110'][1] + stress_score)
 
         for _ in {1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}:
             if row[index] == 'NA':
