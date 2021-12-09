@@ -14,7 +14,7 @@ TERNARY = [
 DEM_GENDER = [
     "Male",
     "Female",
-    "Other / would rather not say",
+    "Other/would rather not say",
 ]
 
 DEM_EDU = [
@@ -24,7 +24,7 @@ DEM_EDU = [
     'Up to 12 years of school',
     'Some College, short continuing education or equivalent',
     'College degree, bachelor, master',
-    'PhD / Doctorate'
+    'PhD/Doctorate'
 ]
 
 DEM_EMPLOYMENT = [
@@ -38,9 +38,9 @@ DEM_EMPLOYMENT = [
 
 DEM_MARITALSTATUS = [
     'Single',
-    'Married / cohabiting',
-    'Divorced / widowed',
-    'Other / would rather not say'
+    'Married/cohabiting',
+    'Divorced/widowed',
+    'Other/would rather not say'
 ]
 
 DEM_ISLOLATION = [
