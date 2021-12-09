@@ -66,7 +66,7 @@ class User:
     #     - False (No)
     Dem_Expat: bool
 
-    # Marital statue
+    # Marital status
     # - str
     # - QComboBox
     #     - Single
@@ -110,10 +110,3 @@ class User:
     # - QComboBox
     #     - 0 - 110
     Dem_isolation_kids: int
-
-
-dict_gender = {
-    'Male': (0, 0),
-    'Female': (0 + 50, 0 + 1),
-    'Other': (0, 0)
-}

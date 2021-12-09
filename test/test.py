@@ -7,9 +7,9 @@ class Example(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.initUI()
+        # self.initUI()
 
-    def initUI(self):
+    # def initUI(self):
         grid = QGridLayout()
         self.setLayout(grid)
 
