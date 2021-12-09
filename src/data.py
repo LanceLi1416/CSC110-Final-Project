@@ -15,7 +15,7 @@ def generate_interval_list(interval_value: float) -> list[float]:
     return da_row
 
 
-def calc_stress_score(person: list) -> int:
+def calc_stress_score(person: list[str]) -> int:
     """Return stress score from a row of the dataset"""
     # Value added for each response in the survey
     # Depending on the nature of the question we may want to reduce or increase the stress score
@@ -31,7 +31,7 @@ def calc_stress_score(person: list) -> int:
     category_tuples = [(5, 10), (5, 3), (11, 2), (11, 6), (6, 5), (12, 1),
                        (6, 6), (6, 15), (6, 25), (6, 10), (6, 15), (6, 6)]
     # List of values from dataset of survey used for calculations
-    answer_values = person[21:54] + person[70:143]
+    answer_values = person[21:54] + person[70:109] + person[110:136] + person[137:144]
     # ACCUMULATOR stress_so_far: running sum of stress score
     stress_so_far = 0
     # ACCUMULATOR absolute_index: running index to offset the for loop scaling
@@ -39,12 +39,14 @@ def calc_stress_score(person: list) -> int:
 
     for scale_tuple in category_tuples:
         # create a fitted interval of -2 to 2 (5 integers between -2 to 2)
-        intervals = 5 / scale_tuple[0]
+        intervals = 5 / (scale_tuple[0] + 1)
         da_row = generate_interval_list(intervals)
         # iterate through each section of questions
         for i in range(scale_tuple[1]):
-            answer_val = answer_values[i + absolute_index]
-            stress_so_far += da_row[answer_val] * stress_method[i + absolute_index]
+            if answer_values[i + absolute_index] != 'NA' and \
+                    int(answer_values[i + absolute_index]) <= scale_tuple[1]:
+                answer_val = int(answer_values[i + absolute_index])
+                stress_so_far += da_row[answer_val] * stress_method[i + absolute_index]
         absolute_index += scale_tuple[1]
     return stress_so_far
 
@@ -231,11 +233,12 @@ def read_csv_file(file_name: str) -> list[dict[str, tuple[int, int]]]:
             category['65+'] = (category['65+'][0] + 1, category['65+'][1] + stress_score)
 
         for index in range(16, 18):
-            category = data_processed_so_far[index - 4]
-            num_dependents = int(row[index])
+            category = data_processed_so_far[index - 7]
             if row[index] == 'NA':
                 category['NA'] = (category['NA'][0] + 1, category['NA'][1] + stress_score)
-            elif num_dependents == 0:
+                break
+            num_dependents = int(row[index])
+            if num_dependents == 0:
                 category['0'] = (category['0'][0] + 1, category['0'][1] + stress_score)
             elif num_dependents == 1:
                 category['1'] = (category['1'][0] + 1, category['1'][1] + stress_score)
@@ -276,7 +279,7 @@ def read_csv_file(file_name: str) -> list[dict[str, tuple[int, int]]]:
             elif 101 <= num_dependents <= 110:
                 category['101-110'] = (category['101-110'][0] + 1, category['101-110'][1] + stress_score)
 
-        for i in {1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}:
+        for _ in {1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}:
             if row[index] == 'NA':
                 category['NA'] = (category['NA'][0] + 1, category['NA'][1] + stress_score)
             elif 'other' in row[index].lower():
