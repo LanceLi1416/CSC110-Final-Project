@@ -1,11 +1,23 @@
 """ The file to save and extract data from the dataset """
 import csv
+real_data = "../data/COVIDiSTRESS June 17.csv"
+test_data = "../data/sample_data.csv"
+
+
+def generate_interval_list(interval_value: float) -> list[float]:
+    """Return a scale fitted from the values -2 to 2 with intervals of interval_value per element"""
+    start = -2
+    da_row = [start]
+    while start + interval_value < 2.0:
+        start += interval_value
+        da_row.append(round(start, 3))
+    da_row.append(2)
+    return da_row
 
 
 def calc_stress_score(person: list) -> int:
     """Return stress score from a row of the dataset"""
     # Value added for each response in the survey
-    reg_row = [-2, -1, 0, 1, 2]
     # Depending on the nature of the question we may want to reduce or increase the stress score
     stress_method = [1, 1, 1, -1, -1, 1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, 1,
                      1, 1, 1, 1, -1, -1, 0, 0, 1, -1, 1, 1, 1, -1, 0, 0, 0, 0, 0, 0, 0, 1, 0, -1, 0,
@@ -22,19 +34,31 @@ def calc_stress_score(person: list) -> int:
     answer_values = person[21:54] + person[70:143]
     # ACCUMULATOR stress_so_far: running sum of stress score
     stress_so_far = 0
-    # ACCUMULATOR index: running index
+    # ACCUMULATOR absolute_index: running index to offset the for loop scaling
     absolute_index = 0
 
     for scale_tuple in category_tuples:
-        if answer_values[absolute_index] != 'NA' and answer_values[absolute_index] != '99':
-            answer_val = int(answer_values[absolute_index])
-            interval = 1 / len(reg_row)
-            answer_decimal = answer_val / scale_tuple[0]
-
-            answer_index = int(answer_decimal // interval)
-            stress_so_far += reg_row[answer_index]
-
+        # create a fitted interval of -2 to 2 (5 integers between -2 to 2)
+        intervals = 5 / scale_tuple[0]
+        da_row = generate_interval_list(intervals)
+        # iterate through each section of questions
+        for i in range(scale_tuple[1]):
+            answer_val = answer_values[i + absolute_index]
+            stress_so_far += da_row[answer_val] * stress_method[i + absolute_index]
+        absolute_index += scale_tuple[1]
     return stress_so_far
+
+
+# for scale_tuple in category_tuples:
+#     if answer_values[absolute_index] != 'NA' and answer_values[absolute_index] != '99':
+#         answer_val = int(answer_values[absolute_index])
+#         interval = 1 / len(reg_row)
+#         answer_decimal = answer_val / scale_tuple[0]
+#
+#         answer_index = int(answer_decimal // interval)
+#         stress_so_far += reg_row[answer_index]
+#
+# return stress_so_far
 
 
 def process_country() -> dict[str, tuple[int, int]]:
@@ -155,7 +179,7 @@ def initialize_data_list() -> list[dict[str, tuple[int, int]]]:
     return data_start
 
 
-def read_csv_file() -> list[dict[str, tuple[int, int]]]:
+def read_csv_file(file_name: str) -> list[dict[str, tuple[int, int]]]:
     """Return the data stored in a csv file with the given filename.
 
     The return value is list consisting of 11 dictionaries:
@@ -180,91 +204,91 @@ def read_csv_file() -> list[dict[str, tuple[int, int]]]:
     # ACCUMULATOR data_processed_so_far: the running list of
     data_processed_so_far = initialize_data_list()
 
-    with open("../data/COVIDiSTRESS June 17.csv") as file:
-        reader = csv.reader(file)
+    file = open(file_name, encoding='ISO-8859-1')
+    reader = csv.reader(file)
 
-        # This line reads the first row of the csv file, which contains the headers.
-        # The result is a list of strings.
-        _ = next(reader)
-        # This list comprehension reads each remaining row of the file,
-        # where each row is represented as a list of strings.
-        # The header row is *not* included in this list.
-        for row in reader:
-            # Collect all attributes of each row (participant)
-            stress_score = calc_stress_score(row)
-            index = 3
-            j = 0
-            # Update the data dictionary
-            for i in range(4, 18):
-                index += 1
-                # Skipping a column in the dataset
-                if i == 7 or i == 11 or i == 13:
-                    continue
-                category = data_processed_so_far[j]
-                j += 1
-                # Filters unexpected/undesired responses from the original survey
-                if row[index] == 'NA' or 'other' in row[index].lower():
-                    category['NA'] = (category['NA'][0] + 1, category['NA'][1] + stress_score)
-                elif i == 4:
-                    age = int(row[index])
-                    if 18 <= age <= 24:
-                        category['18-24'] = (category['18-24'][0] + 1, category['18-24'][1] + stress_score)
-                    elif 25 <= age <= 34:
-                        category['25-34'] = (category['25-34'][0] + 1, category['25-34'][1] + stress_score)
-                    elif 35 <= age <= 44:
-                        category['35-44'] = (category['35-44'][0] + 1, category['35-44'][1] + stress_score)
-                    elif 45 <= age <= 54:
-                        category['45-54'] = (category['45-54'][0] + 1, category['45-54'][1] + stress_score)
-                    elif 55 <= age <= 64:
-                        category['55-64'] = (category['55-64'][0] + 1, category['55-64'][1] + stress_score)
-                    elif 65 <= age:
-                        category['65+'] = (category['65+'][0] + 1, category['65+'][1] + stress_score)
-                elif i == 16 or i == 17:
-                    num_dependents = int(row[index])
-                    if num_dependents == 0:
-                        category['0'] = (category['0'][0] + 1, category['0'][1] + stress_score)
-                    if num_dependents == 1:
-                        category['1'] = (category['1'][0] + 1, category['1'][1] + stress_score)
-                    elif num_dependents == 2:
-                        category['2'] = (category['2'][0] + 1, category['2'][1] + stress_score)
-                    elif num_dependents == 3:
-                        category['3'] = (category['3'][0] + 1, category['3'][1] + stress_score)
-                    elif num_dependents == 4:
-                        category['4'] = (category['4'][0] + 1, category['4'][1] + stress_score)
-                    elif num_dependents == 5:
-                        category['5'] = (category['5'][0] + 1, category['5'][1] + stress_score)
-                    elif num_dependents == 6:
-                        category['6'] = (category['6'][0] + 1, category['6'][1] + stress_score)
-                    elif num_dependents == 7:
-                        category['7'] = (category['7'][0] + 1, category['7'][1] + stress_score)
-                    elif num_dependents == 9:
-                        category['9'] = (category['9'][0] + 1, category['9'][1] + stress_score)
-                    elif num_dependents == 10:
-                        category['10'] = (category['10'][0] + 1, category['10'][1] + stress_score)
-                    elif 11 <= num_dependents <= 20:
-                        category['11-20'] = (category['11-20'][0] + 1, category['11-20'][1] + stress_score)
-                    elif 21 <= num_dependents <= 30:
-                        category['21-30'] = (category['21-30'][0] + 1, category['21-30'][1] + stress_score)
-                    elif 31 <= num_dependents <= 40:
-                        category['31-40'] = (category['31-40'][0] + 1, category['31-40'][1] + stress_score)
-                    elif 41 <= num_dependents <= 50:
-                        category['41-50'] = (category['41-50'][0] + 1, category['41-50'][1] + stress_score)
-                    elif 51 <= num_dependents <= 60:
-                        category['51-60'] = (category['51-60'][0] + 1, category['51-60'][1] + stress_score)
-                    elif 61 <= num_dependents <= 70:
-                        category['61-70'] = (category['61-70'][0] + 1, category['61-70'][1] + stress_score)
-                    elif 71 <= num_dependents <= 80:
-                        category['71-80'] = (category['71-80'][0] + 1, category['71-80'][1] + stress_score)
-                    elif 81 <= num_dependents <= 90:
-                        category['81-90'] = (category['81-90'][0] + 1, category['81-90'][1] + stress_score)
-                    elif 91 <= num_dependents <= 100:
-                        category['91-100'] = (category['91-100'][0] + 1, category['91-100'][1] + stress_score)
-                    elif 101 <= num_dependents <= 110:
-                        category['101-110'] = (category['101-110'][0] + 1, category['101-110'][1] + stress_score)
-                elif row[index] not in category:
-                    continue
-                else:
-                    # print(f'i: {i}, \n j: {j}, \n category: {category}, \n row[index]: {row[index]}, \n index: {index}')
-                    value = category[row[index]]
-                    category[row[index]] = (value[0] + 1, value[1] + stress_score)
+    # This line reads the first row of the csv file, which contains the headers.
+    # The result is a list of strings.
+    _ = next(reader)
+    # This list comprehension reads each remaining row of the file,
+    # where each row is represented as a list of strings.
+    # The header row is *not* included in this list.
+    for row in reader:
+        # Collect all attributes of each row (participant)
+        stress_score = calc_stress_score(row)
+        index = 3
+        j = 0
+        # Update the data dictionary
+        for i in range(4, 18):
+            index += 1
+            # Skipping a column in the dataset
+            if i == 7 or i == 11 or i == 13:
+                continue
+            category = data_processed_so_far[j]
+            j += 1
+            # Filters unexpected/undesired responses from the original survey
+            if row[index] == 'NA' or 'other' in row[index].lower():
+                category['NA'] = (category['NA'][0] + 1, category['NA'][1] + stress_score)
+            elif i == 4:
+                age = int(row[index])
+                if 18 <= age <= 24:
+                    category['18-24'] = (category['18-24'][0] + 1, category['18-24'][1] + stress_score)
+                elif 25 <= age <= 34:
+                    category['25-34'] = (category['25-34'][0] + 1, category['25-34'][1] + stress_score)
+                elif 35 <= age <= 44:
+                    category['35-44'] = (category['35-44'][0] + 1, category['35-44'][1] + stress_score)
+                elif 45 <= age <= 54:
+                    category['45-54'] = (category['45-54'][0] + 1, category['45-54'][1] + stress_score)
+                elif 55 <= age <= 64:
+                    category['55-64'] = (category['55-64'][0] + 1, category['55-64'][1] + stress_score)
+                elif 65 <= age:
+                    category['65+'] = (category['65+'][0] + 1, category['65+'][1] + stress_score)
+            elif i == 16 or i == 17:
+                num_dependents = int(row[index])
+                if num_dependents == 0:
+                    category['0'] = (category['0'][0] + 1, category['0'][1] + stress_score)
+                if num_dependents == 1:
+                    category['1'] = (category['1'][0] + 1, category['1'][1] + stress_score)
+                elif num_dependents == 2:
+                    category['2'] = (category['2'][0] + 1, category['2'][1] + stress_score)
+                elif num_dependents == 3:
+                    category['3'] = (category['3'][0] + 1, category['3'][1] + stress_score)
+                elif num_dependents == 4:
+                    category['4'] = (category['4'][0] + 1, category['4'][1] + stress_score)
+                elif num_dependents == 5:
+                    category['5'] = (category['5'][0] + 1, category['5'][1] + stress_score)
+                elif num_dependents == 6:
+                    category['6'] = (category['6'][0] + 1, category['6'][1] + stress_score)
+                elif num_dependents == 7:
+                    category['7'] = (category['7'][0] + 1, category['7'][1] + stress_score)
+                elif num_dependents == 9:
+                    category['9'] = (category['9'][0] + 1, category['9'][1] + stress_score)
+                elif num_dependents == 10:
+                    category['10'] = (category['10'][0] + 1, category['10'][1] + stress_score)
+                elif 11 <= num_dependents <= 20:
+                    category['11-20'] = (category['11-20'][0] + 1, category['11-20'][1] + stress_score)
+                elif 21 <= num_dependents <= 30:
+                    category['21-30'] = (category['21-30'][0] + 1, category['21-30'][1] + stress_score)
+                elif 31 <= num_dependents <= 40:
+                    category['31-40'] = (category['31-40'][0] + 1, category['31-40'][1] + stress_score)
+                elif 41 <= num_dependents <= 50:
+                    category['41-50'] = (category['41-50'][0] + 1, category['41-50'][1] + stress_score)
+                elif 51 <= num_dependents <= 60:
+                    category['51-60'] = (category['51-60'][0] + 1, category['51-60'][1] + stress_score)
+                elif 61 <= num_dependents <= 70:
+                    category['61-70'] = (category['61-70'][0] + 1, category['61-70'][1] + stress_score)
+                elif 71 <= num_dependents <= 80:
+                    category['71-80'] = (category['71-80'][0] + 1, category['71-80'][1] + stress_score)
+                elif 81 <= num_dependents <= 90:
+                    category['81-90'] = (category['81-90'][0] + 1, category['81-90'][1] + stress_score)
+                elif 91 <= num_dependents <= 100:
+                    category['91-100'] = (category['91-100'][0] + 1, category['91-100'][1] + stress_score)
+                elif 101 <= num_dependents <= 110:
+                    category['101-110'] = (category['101-110'][0] + 1, category['101-110'][1] + stress_score)
+            elif row[index] not in category:
+                continue
+            else:
+                # print(f'i: {i}, \n j: {j}, \n category: {category}, \n row[index]: {row[index]}, \n index: {index}')
+                value = category[row[index]]
+                category[row[index]] = (value[0] + 1, value[1] + stress_score)
     return data_processed_so_far
