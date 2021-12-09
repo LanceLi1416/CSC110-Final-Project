@@ -1,12 +1,14 @@
 """ The entry point of the program """
 import sys
 
+from PyQt5.QtWidgets import QApplication
+
 import src.ui as ui
 
 
 def main():
-    app = ui.QtWidgets.QApplication(sys.argv)
-    window = ui.Ui()
+    app = QApplication(sys.argv)
+    window = ui.MainWindow()
     window.show()
     app.exec_()
 

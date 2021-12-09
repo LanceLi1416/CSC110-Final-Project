@@ -11,6 +11,15 @@ TERNARY = [
     'Not sure'
 ]
 
+DEM_AGE = [
+    '18-24',
+    '25-34',
+    '35-44',
+    '45-54',
+    '55-64',
+    '65+'
+]
+
 DEM_GENDER = [
     "Male",
     "Female",
@@ -24,7 +33,7 @@ DEM_EDU = [
     'Up to 12 years of school',
     'Some College, short continuing education or equivalent',
     'College degree, bachelor, master',
-    'PhD/Doctorate'
+    'PhD / Doctorate'
 ]
 
 DEM_EMPLOYMENT = [
@@ -48,6 +57,20 @@ DEM_ISLOLATION = [
     'Life carries on with minor changes',
     'Isolated',
     'Isolated in medical facility of similar location'
+]
+
+DEM_ISOLATION_PEOPLE = [
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+    '11-20',
+    '21-30',
+    '31-40',
+    '41-50',
+    '51-60',
+    '61-70',
+    '71-80',
+    '81-90',
+    '91-100',
+    '101-110'
 ]
 
 # COUNTRY = [line.replace('\n', '') for line in open("data/list_of_countries.txt").readlines()]

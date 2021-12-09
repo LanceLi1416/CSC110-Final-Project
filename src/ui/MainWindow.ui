@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
@@ -31,7 +34,11 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QComboBox" name="comboBox"/>
+         <widget class="QComboBox" name="comboBox">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="PlotWidget" name="graphWidget" native="true"/>
@@ -53,7 +60,11 @@
            </widget>
           </item>
           <item row="6" column="1">
-           <widget class="QLineEdit" name="lneState"/>
+           <widget class="QLineEdit" name="lneState">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="lblGender">
@@ -97,7 +108,11 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QComboBox" name="cboGender"/>
+           <widget class="QComboBox" name="cboGender">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+           </widget>
           </item>
           <item row="2" column="1">
            <widget class="QComboBox" name="cboEducation"/>
@@ -106,15 +121,33 @@
            <widget class="QComboBox" name="cboEmployment"/>
           </item>
           <item row="0" column="1">
-           <widget class="QSpinBox" name="spiAge"/>
+           <widget class="QSpinBox" name="spiAge">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+           </widget>
           </item>
          </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnRun">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string>PushButton</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="PlotWidget" name="widget" native="true"/>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox_2"/>
+         <widget class="QComboBox" name="comboBox_2">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="PlotWidget" name="widget_2" native="true"/>
