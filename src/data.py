@@ -216,7 +216,7 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
                 category['101-110'] = (
                     category['101-110'][0] + 1, category['101-110'][1] + stress_score)
 
-        for _ in {1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}:
+        for index in {1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}:
             if row[index] == 'NA':
                 category['NA'] = (category['NA'][0] + 1, category['NA'][1] + stress_score)
             elif 'other' in row[index].lower():
