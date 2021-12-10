@@ -61,36 +61,36 @@ def calc_stress_score(person: List[str]) -> float:
     return stress_so_far
 
 
-def initialize_data_list() -> List[Dict[str, tuple[int, int]]]:
+def initialize_data_list() -> List[Dict[str, Tuple[int, float]]]:
     """Return initialized values"""
     data_start = [
         # Initialize age
-        {age: (0, 0) for age in constants.DEM_AGE + ['NA']},
+        {age: (0, 0.0) for age in constants.DEM_AGE + ['NA']},
         # Initialize gender
-        {gender: (0, 0) for gender in constants.DEM_GENDER + ['NA']},
+        {gender: (0, 0.0) for gender in constants.DEM_GENDER + ['NA']},
         # Initialize education
-        {edu: (0, 0) for edu in constants.DEM_EDU + ['NA']},
+        {edu: (0, 0.0) for edu in constants.DEM_EDU + ['NA']},
         # Initialize employment status
-        {employment: (0, 0) for employment in constants.DEM_EMPLOYMENT + ['NA']},
+        {employment: (0, 0.0) for employment in constants.DEM_EMPLOYMENT + ['NA']},
         # Initialize country of residence
-        {country: (0, 0) for country in constants.COUNTRIES + ['NA']},
+        {country: (0, 0.0) for country in constants.COUNTRIES + ['NA']},
         # Initialize whether they are an expatriate
-        {expat: (0, 0) for expat in constants.EXPAT + ['NA']},
+        {expat: (0, 0.0) for expat in constants.EXPAT + ['NA']},
         # Initialize marital status
-        {marital_status: (0, 0) for marital_status in constants.DEM_MARITAL_STATUS + ['NA']},
+        {marital_status: (0, 0.0) for marital_status in constants.DEM_MARITAL_STATUS + ['NA']},
         # Initialize whether they reside in a high risk group
-        {risk_group: (0, 0) for risk_group in constants.RISK_GROUP + ['NA']},
+        {risk_group: (0, 0.0) for risk_group in constants.RISK_GROUP + ['NA']},
         # Initialize isolation status
-        {isolation: (0, 0) for isolation in constants.DEM_ISOLATION + ['NA']},
+        {isolation: (0, 0.0) for isolation in constants.DEM_ISOLATION + ['NA']},
         # Initialize adults isolated with participant
-        {isolation_adults: (0, 0) for isolation_adults in constants.DEM_ISOLATION_PEOPLE + ['NA']},
+        {iso_adults: (0, 0.0) for iso_adults in constants.DEM_ISOLATION_PEOPLE + ['NA']},
         # Initialize children isolated with participant
-        {isolation_kid: (0, 0) for isolation_kid in constants.DEM_ISOLATION_PEOPLE + ['NA']}
+        {iso_kids: (0, 0.0) for iso_kids in constants.DEM_ISOLATION_PEOPLE + ['NA']}
     ]
     return data_start
 
 
-def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, tuple[int, float]]]:
+def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, Tuple[int, float]]]:
     """Return the data stored in a csv file with the given filename.
 
     The return value is list consisting of 11 dictionaries:
@@ -213,10 +213,42 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
     return data_processed_so_far
 
 
+def regulate_na(data: List[Dict[str, Tuple[int, float]]]) -> List[Dict[str, Tuple[int, float]]]:
+    regulated_data = []
+
+    for i in range(len(data)):
+        regulated_data.append({})
+        na_population, na_score = data[i]['NA']
+        if na_score != 0.0:
+            identity_list = list(data[i].keys())[:-1]  # pop 'NA'
+            for identity in identity_list:
+                regulated_data[i][identity] = (data[i][identity][0] + na_population,
+                                               data[i][identity][1] + na_score)
+        else:
+            # regulated_data[i] = data[i]
+            regulated_data[i] = {k: data[i][k] for k in list(data[i])[:-1]}
+
+    return regulated_data
+
+
+def calculate_data_average(data: List[Dict[str, Tuple[int, float]]]) -> List[Dict[str, float]]:
+    average_data = []
+
+    for i in range(len(data)):
+        average_data.append({})
+        for identity in data[i]:
+            if data[i][identity][0] != 0:
+                average_data[i][identity] = data[i][identity][1] / data[i][identity][0]
+            else:
+                average_data[i][identity] = 0.0
+
+    return average_data
+
+
 def process_data(input_file_name: str, output_file_name: str,
                  input_encoding='ISO-8859-1', output_encoding='utf-8') -> None:
     """Process the data, then store it in a json file for future reference"""
-    data = read_csv_file(input_file_name, input_encoding)
+    data = calculate_data_average(regulate_na(read_csv_file(input_file_name, input_encoding)))
     with open(output_file_name, 'w', encoding=output_encoding) as json_file:
         json.dump(data, json_file)
 

@@ -1,21 +1,6 @@
 """ The file storing all the constants """
 from enum import Enum
-
-
-# Identity group indexing in processed list---------------------------------------------------------
-class Identities(Enum):
-    AGE = 0,
-    GENDER = 1,
-    EDU = 2,
-    EMPLOYMENT = 3,
-    COUNTRY = 4,
-    EXPAT = 5,
-    MARITAL_STATUS = 6,
-    RISK_GROUP = 7,
-    ISOLATION = 8,
-    ISOLATION_ADULTS = 9,
-    ISOLATION_KIDS = 10
-
+from PyQt5.QtGui import QColor
 
 # Global constants ---------------------------------------------------------------------------------
 NUMBER_OF_IDENTITIES = 11
@@ -134,4 +119,7 @@ TEST_DATA_CSV_FILE = 'data/sample_data.csv'
 REAL_DATA_CSV_FILE = 'data/COVIDiSTRESS June 17.csv'
 
 TEST_DATA_JSON_FILE = 'data/sample_data.json'
-READ_DATA_JSON_FILE = 'data/read_data.json'
+REAL_DATA_JSON_FILE = 'data/real_data.json'
+
+# Colours ------------------------------------------------------------------------------------------
+PLOT_COLOR = QColor(198, 198, 198, 255)

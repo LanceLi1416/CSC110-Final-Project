@@ -1,7 +1,8 @@
 import sys
 
-from PyQt5 import QtWidgets, QtCore
-from pyqtgraph import PlotWidget
+import pyqtgraph as pg
+
+from PyQt5 import QtWidgets, QtGui
 
 import src.analoggaugewidget as gauge
 import src.constants as constants
@@ -23,15 +24,16 @@ class MainWindow(QtWidgets.QMainWindow):
         # User avatar (cartoon image)
         lbl_avatar = QtWidgets.QLabel('USER AVATAR')
         # Title of program
-        lbl_title = QtWidgets.QLabel('ANXIETY')
+        lbl_title = QtWidgets.QLabel('ANXIETY')  # TODO: find a font and proper title
         # Data plot
         self._cbo_data_graph = QtWidgets.QComboBox()
-        plt_data = PlotWidget()
+        # self._plt_data = pg.PlotWidget()
+        self._plt_data = pg.GraphicsLayoutWidget()
         # Gauge
         self._wgt_gauge = gauge.AnalogGaugeWidget()
         # Specific identity group plot
         self._cbo_user_graph = QtWidgets.QComboBox()
-        plt_user = PlotWidget()
+        plt_user = pg.PlotWidget()
         # Identity input ------------------------------------------------------------------------- |
         grid_id = QtWidgets.QGridLayout()
         frm_id = QtWidgets.QFrame()
@@ -53,8 +55,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # Data storage --------------------------------------------------------------------------- |
         self._user = User(18, 'Other/would rather not say', 'None', 'Not employed', 'Canada', 'No',
                           'Single', 'No', 'Life carries on as usual', 0, 0)
-        self.anxiety_data = load_json_data(constants.TEST_DATA_JSON_FILE)
-        self.exterma = calculate_extrema(self.anxiety_data)
+        self.anxiety_data = load_json_data(constants.REAL_DATA_JSON_FILE)
+        self.extrema = calculate_extrema(self.anxiety_data)
 
         # ------------------------------- Connect Signals and Slots --------------------------------
         self._setup_slots()
@@ -103,7 +105,7 @@ class MainWindow(QtWidgets.QMainWindow):
         grid_central.addWidget(self._cbo_data_graph, row, 0)
         grid_central.addWidget(self._cbo_user_graph, row, 2)
         row += 1
-        grid_central.addWidget(plt_data, row, 0)
+        grid_central.addWidget(self._plt_data, row, 0)
         grid_central.addWidget(self._wgt_gauge, row, 1)
         grid_central.addWidget(plt_user, row, 2)
 
@@ -210,12 +212,38 @@ class MainWindow(QtWidgets.QMainWindow):
         self._cbo_situation.currentIndexChanged.connect(self._update_gauge)
         self._spi_iso_adult.valueChanged.connect(self._update_gauge)
         self._spi_iso_kids.valueChanged.connect(self._update_gauge)
+        # Update graph
+        self._cbo_data_graph.currentIndexChanged.connect(self._plot_data)
 
     def _update_gauge(self):
         """Calculate the user's anxiety score, then update the gauge"""
         self._user.estimate_anxiety_score(self.anxiety_data)
-        self._wgt_gauge.updateValue((self._user.get_anxiety_score() - self.exterma[0]) /
-                                    (self.exterma[1] - self.exterma[0]) * 100)
+        self._wgt_gauge.updateValue((self._user.get_anxiety_score() - self.extrema[0]) /
+                                    (self.extrema[1] - self.extrema[0]) * 100)
+
+    def _plot_data(self) -> None:
+        self._plt_data.clear()  # clear current graph
+        id_group = self._cbo_data_graph.currentText()
+
+        string_axis = pg.AxisItem(orientation='bottom')  # Textual x-axis
+
+        if id_group == constants.IDENTITY_GROUP_NAMES[0]:  # age
+            bar_graph = pg.BarGraphItem(
+                x=[i for i in range(len(constants.DEM_AGE))],
+                height=list(self.anxiety_data[0].values()),
+                width=1.0, brush=constants.PLOT_COLOR
+            )
+            string_axis.setTicks(list(dict(enumerate(constants.DEM_AGE)).items()))
+        elif id_group == constants.IDENTITY_GROUP_NAMES[1]:
+            bar_graph = pg.BarGraphItem(
+                x=[i for i in range(len(constants.DEM_GENDER))],
+                height=list(self.anxiety_data[1].values()),
+                width=0.75, brush=constants.PLOT_COLOR
+            )
+
+        plot_item = self._plt_data.addPlot(axisItems={'bottom': string_axis})
+        plot_item.setTitle(id_group)
+        plot_item.addItem(bar_graph)
 
 
 if __name__ == '__main__':
