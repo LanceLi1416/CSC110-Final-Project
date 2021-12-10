@@ -10,18 +10,7 @@ REAL_DATA = "../data/COVIDiSTRESS June 17.csv"
 TEST_DATA = "../data/sample_data.csv"
 
 
-def generate_interval_list(interval_value: float) -> List[float]:
-    """Return a scale fitted from the values -2 to 2 with intervals of interval_value per element"""
-    start = -2
-    da_row = [start]
-    while start + interval_value < 2.0:
-        start += interval_value
-        da_row.append(round(start, 3))
-    da_row.append(2)
-    return da_row
-
-
-def calc_stress_score(person: List[str]) -> int:
+def calc_stress_score(person: List[str]) -> float:
     """Return stress score from a row of the dataset"""
     # Value added for each response in the survey
     # Depending on the nature of the question we may want to reduce or increase the stress score
@@ -57,21 +46,18 @@ def calc_stress_score(person: List[str]) -> int:
     # List of values from dataset of survey used for calculations
     answer_values = person[21:54] + person[70:109] + person[110:136] + person[137:144]
     # ACCUMULATOR stress_so_far: running sum of stress score
-    stress_so_far = 0
+    stress_so_far = 0.0
     # ACCUMULATOR absolute_index: running index to offset the for loop scaling
     absolute_index = 0
 
     for scale_tuple in category_tuples:
-        # create a fitted interval of -2 to 2 (5 integers between -2 to 2)
-        intervals = 5 / (scale_tuple[0] + 1)
-        da_row = generate_interval_list(intervals)
-        # iterate through each section of questions
-        for i in range(scale_tuple[1]):
-            if answer_values[i + absolute_index] != 'NA' and \
-                    int(answer_values[i + absolute_index]) <= scale_tuple[1]:
-                answer_val = int(answer_values[i + absolute_index])
-                stress_so_far += da_row[answer_val] * stress_method[i + absolute_index]
-        absolute_index += scale_tuple[1]
+        for _ in range(scale_tuple[1]):
+            og_answer = answer_values[absolute_index]
+            if og_answer != 'NA' and int(og_answer) <= scale_tuple[0]:
+                bounded_answer = ((int(og_answer) - 1) * (4 / (scale_tuple[0] - 1))) - 2
+                stress_so_far += bounded_answer * stress_method[absolute_index]
+                # print(f'og: {og_answer}, bounded: {bounded_answer}, scale: {scale_tuple[0]}')
+            absolute_index += 1
     return stress_so_far
 
 
@@ -104,7 +90,7 @@ def initialize_data_list() -> List[Dict[str, tuple[int, int]]]:
     return data_start
 
 
-def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, tuple[int, int]]]:
+def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, tuple[int, float]]]:
     """Return the data stored in a csv file with the given filename.
 
     The return value is list consisting of 11 dictionaries:
@@ -123,8 +109,8 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
         is isolating with (edited)
 
     The dictionaries each map to their own tuple of two items,
-    the first being the total stress_score that has been added to them,
-    and the second being the population (or number of people) that have added their score to it
+    the first being the population (or number of people) that have added their score to it
+    and the second being the total stress_score that has been added to them,
     """
     # ACCUMULATOR data_processed_so_far: the running list of
     data_processed_so_far = initialize_data_list()
@@ -141,20 +127,10 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
     for row in reader:
         stress_score = calc_stress_score(row)
 
-        index = 4
-        category = data_processed_so_far[index - 4]
-        age = int(row[index])
-
-        if row[index] == 'NA':
-            category['NA'] = (category['NA'][0] + 1, category['NA'][1] + stress_score)
-        elif 'other' in row[index].lower():
-            if 'Other/would rather not say' not in category:
-                category['Other/would rather not say'] = (0, 0)
-            category['Other/would rather not say'] = (
-                category['Other/would rather not say'][0] + 1,
-                category['Other/would rather not say'][1] + stress_score
-            )
-        elif 18 <= age <= 24:
+        csv_index = 4
+        category = data_processed_so_far[csv_index - 4]
+        age = int(row[csv_index])
+        if 18 <= age <= 24:
             category['18-24'] = (category['18-24'][0] + 1, category['18-24'][1] + stress_score)
         elif 25 <= age <= 34:
             category['25-34'] = (category['25-34'][0] + 1, category['25-34'][1] + stress_score)
@@ -167,12 +143,12 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
         elif 65 <= age:
             category['65+'] = (category['65+'][0] + 1, category['65+'][1] + stress_score)
 
-        for index in range(16, 18):
-            category = data_processed_so_far[index - 7]
-            if row[index] == 'NA':
+        for csv_index in range(16, 18):
+            category = data_processed_so_far[csv_index - 7]
+            if row[csv_index] == 'NA':
                 category['NA'] = (category['NA'][0] + 1, category['NA'][1] + stress_score)
                 break
-            num_dependents = int(row[index])
+            num_dependents = int(row[csv_index])
             if num_dependents == 0:
                 category['0'] = (category['0'][0] + 1, category['0'][1] + stress_score)
             elif num_dependents == 1:
@@ -216,23 +192,24 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
                 category['101-110'] = (
                     category['101-110'][0] + 1, category['101-110'][1] + stress_score)
 
-        for index in {1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}:
-            if row[index] == 'NA':
+        remaining_columns = [5, 6, 8, 9, 10, 12, 14, 15]
+        for csv_index in remaining_columns:
+            category = data_processed_so_far[remaining_columns.index(csv_index) + 1]
+
+            if row[csv_index] == 'NA':
                 category['NA'] = (category['NA'][0] + 1, category['NA'][1] + stress_score)
-            elif 'other' in row[index].lower():
+            elif 'would rather not say' in row[csv_index].lower():
                 if 'Other/would rather not say' not in category:
                     category['Other/would rather not say'] = (0, 0)
                 category['Other/would rather not say'] = (
                     category['Other/would rather not say'][0] + 1,
                     category['Other/would rather not say'][1] + stress_score
                 )
-            elif row[index] not in category:
+            elif row[csv_index] not in category:
                 continue
             else:
-                value = category[row[index]]
-                category[row[index]] = (value[0] + 1, value[1] + stress_score)
-
-    file.close()
+                value = category[row[csv_index]]
+                category[row[csv_index]] = (value[0] + 1, value[1] + stress_score)
     return data_processed_so_far
 
 
