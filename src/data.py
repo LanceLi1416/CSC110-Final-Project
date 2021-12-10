@@ -54,7 +54,7 @@ def calc_stress_score(person: List[str]) -> float:
         for _ in range(scale_tuple[1]):
             og_answer = answer_values[absolute_index]
             if og_answer != 'NA' and int(og_answer) <= scale_tuple[0]:
-                bounded_answer = ((int(og_answer) - 1) * (4 / (scale_tuple[0] - 1))) - 2
+                bounded_answer = ((int(og_answer) - 1) * (4 / (scale_tuple[0] - 1)))
                 stress_so_far += bounded_answer * stress_method[absolute_index]
                 # print(f'og: {og_answer}, bounded: {bounded_answer}, scale: {scale_tuple[0]}')
             absolute_index += 1
