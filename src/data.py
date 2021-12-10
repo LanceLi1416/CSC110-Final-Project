@@ -5,8 +5,8 @@ test_data = "../data/sample_data.csv"
 
 
 def generate_interval_list(interval_value: float) -> list[float]:
-    """Return a scale fitted from the values -2 to 2 with intervals of interval_value per element"""
-    start = -2
+    """Return a scale fitted from the values 0 to 5 with intervals of interval_value per element"""
+    start = 0
     da_row = [start]
     while start + interval_value < 2.0:
         start += interval_value
