@@ -130,11 +130,11 @@ IDENTITY_GROUP_OPTIONS_LIST = [
 ]
 
 # File paths ---------------------------------------------------------------------------------------
-TEST_DATA_CSV_FILE = os.path.join(os.path.dirname(__file__), '../data/sample_data.csv')
-REAL_DATA_CSV_FILE = os.path.join(os.path.dirname(__file__), '../data/COVIDiSTRESS June 17.csv')
+TEST_DATA_CSV_FILE = os.path.join(os.path.dirname(__file__), '../', 'data/sample_data.csv')
+REAL_DATA_CSV_FILE = os.path.join(os.path.dirname(__file__), '../', 'data/COVIDiSTRESS June 17.csv')
 
-TEST_DATA_JSON_FILE = os.path.join(os.path.dirname(__file__), '../data/sample_data.json')
-REAL_DATA_JSON_FILE = os.path.join(os.path.dirname(__file__), '../data/sample_data.json')
+TEST_DATA_JSON_FILE = os.path.join(os.path.dirname(__file__), '../', 'data/sample_data.json')
+REAL_DATA_JSON_FILE = os.path.join(os.path.dirname(__file__), '../', 'data/real_data.json')
 
 # Colours ------------------------------------------------------------------------------------------
 PLOT_COLOR = QColor(198, 198, 198, 255)
