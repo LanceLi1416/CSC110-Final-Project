@@ -31,7 +31,7 @@ def calc_stress_score(person: List[str]) -> int:
     # Tuple Consists of:
     # First element is the scale that all the questions in a category are measured upon
     # Second element is number of questions within the same category
-    category_tuples = [(5, 10), (5, 3), (11, 2), (11, 6), (6, 5), (12, 1),
+    category_tuples = [(5, 10), (5, 3), (11, 2), (11, 6), (6, 5), (11, 1),
                        (6, 6), (6, 15), (6, 25), (6, 10), (6, 15), (6, 6)]
     # List of values from dataset of survey used for calculations
     answer_values = person[21:54] + person[70:109] + person[110:136] + person[137:144]
