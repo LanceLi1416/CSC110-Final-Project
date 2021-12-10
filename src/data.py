@@ -1,5 +1,6 @@
 """ The file to save and extract data from the dataset """
 import csv
+import json
 
 from typing import Dict, List
 
@@ -24,11 +25,29 @@ def calc_stress_score(person: List[str]) -> int:
     """Return stress score from a row of the dataset"""
     # Value added for each response in the survey
     # Depending on the nature of the question we may want to reduce or increase the stress score
-    stress_method = [1, 1, 1, -1, -1, 1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, 1,
-                     1, 1, 1, 1, -1, -1, 0, 0, 1, -1, 1, 1, 1, -1, 0, 0, 0, 0, 0, 0, 0, 1, 0, -1, 0,
-                     0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                     -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1]
+    stress_method = [
+        # Scale_PSS10_UCLA
+        1, 1, 1, -1, -1, 1, -1, -1, 1, 1,
+        1, 1, 1,
+        # OECD_people
+        -1, -1,
+        # OECD_institutions
+        -1, -1, -1, -1, -1, -1,
+        # Corona_concerns
+        1, 1, 1, 1, 1,
+        # Trust_countrymeasure
+        -1,
+        # Compliance
+        -1, 0, 0, 1, -1, 1,
+        # BFF_15
+        1, 1, -1, 0, 0, 0, 0, 0, 0, 0, 1, 0, -1, 0, 0,
+        # Expl_Distress
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        # SPS
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+        1, 1, 1, 1, 1, -1
+    ]
 
     # Tuple Consists of:
     # First element is the scale that all the questions in a category are measured upon
@@ -68,7 +87,7 @@ def initialize_data_list() -> List[Dict[str, tuple[int, int]]]:
         # Initialize employment status
         {employment: (0, 0) for employment in constants.DEM_EMPLOYMENT + ['NA']},
         # Initialize country of residence
-        {country: (0, 0) for country in constants.COUNTRY + ['NA']},
+        {country: (0, 0) for country in constants.COUNTRIES + ['NA']},
         # Initialize whether they are an expatriate
         {expat: (0, 0) for expat in constants.BINARY + ['NA']},
         # Initialize marital status
@@ -78,7 +97,7 @@ def initialize_data_list() -> List[Dict[str, tuple[int, int]]]:
         # Initialize isolation status
         {isolation: (0, 0) for isolation in constants.DEM_ISLOLATION + ['NA']},
         # Initialize adults isolated with participant
-        {isolation_adult: (0, 0) for isolation_adult in constants.DEM_ISOLATION_PEOPLE + ['NA']},
+        {isolation_adults: (0, 0) for isolation_adults in constants.DEM_ISOLATION_PEOPLE + ['NA']},
         # Initialize children isolated with participant
         {isolation_kid: (0, 0) for isolation_kid in constants.DEM_ISOLATION_PEOPLE + ['NA']}
     ]
@@ -212,4 +231,20 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
             else:
                 value = category[row[index]]
                 category[row[index]] = (value[0] + 1, value[1] + stress_score)
+
+    file.close()
     return data_processed_so_far
+
+
+def process_data(input_file_name: str, output_file_name: str,
+                 input_encoding='ISO-8859-1', output_encoding='utf-8') -> None:
+    """Process the data, then store it in a json file for future reference"""
+    data = read_csv_file(input_file_name, input_encoding)
+    with open(output_file_name, 'w', encoding=output_encoding) as json_file:
+        json.dump(data, json_file)
+
+
+def load_json_data(file_name: str, file_encoding='utf-8') -> List[Dict[str, float]]:
+    with open(file_name, 'r', encoding=file_encoding) as json_file:
+        data = json.load(json_file)
+    return data

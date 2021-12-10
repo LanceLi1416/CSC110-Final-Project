@@ -3,10 +3,11 @@ import sys
 from PyQt5 import QtWidgets, QtCore
 from pyqtgraph import PlotWidget
 
-import src.constants as constants
-from src.user import User
-
 import src.analoggaugewidget as gauge
+import src.constants as constants
+
+from src.data import load_json_data
+from src.user import User
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -72,6 +73,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Data storage --------------------------------------------------------------------------- |
         self._user = User(18, 'Other/would rather not say', 'None', 'Not employed', 'Canada', 'no',
                           'Single', 'no', 'Life carries on as usual', 0, 0)
+        self.anxiety_data = load_json_data(constants.TEST_DATA_JSON_FILE)
 
         # ------------------------------- Connect Signals and Slots --------------------------------
         self._spi_age.valueChanged.connect(
@@ -124,7 +126,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._cbo_gender.addItems(constants.DEM_GENDER)
         self._cbo_edu.addItems(constants.DEM_EDU)
         self._cbo_employment.addItems(constants.DEM_EMPLOYMENT)
-        self._cbo_country.addItems(constants.COUNTRY)
+        self._cbo_country.addItems(constants.COUNTRIES)
         self._cbo_expat.addItems(constants.BINARY)
         self._cbo_martial.addItems(constants.DEM_MARITALSTATUS)
         self._cbo_risk.addItems(constants.TERNARY)
