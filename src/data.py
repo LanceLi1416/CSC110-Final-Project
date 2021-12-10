@@ -2,7 +2,7 @@
 import csv
 import json
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import src.constants as constants
 
@@ -248,3 +248,13 @@ def load_json_data(file_name: str, file_encoding='utf-8') -> List[Dict[str, floa
     with open(file_name, 'r', encoding=file_encoding) as json_file:
         data = json.load(json_file)
     return data
+
+
+def calculate_extrema(data: List[Dict[str, float]]) -> Tuple[float, float]:
+    min_so_far, max_so_far = 0, 0
+
+    for identity_group in data:
+        min_so_far = min_so_far + min(identity_group.values())
+        max_so_far = max_so_far + max(identity_group.values())
+
+    return min_so_far / 11, max_so_far / 11

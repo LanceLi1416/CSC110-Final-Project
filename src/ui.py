@@ -6,7 +6,7 @@ from pyqtgraph import PlotWidget
 import src.analoggaugewidget as gauge
 import src.constants as constants
 
-from src.data import load_json_data
+from src.data import load_json_data, calculate_extrema
 from src.user import User
 
 
@@ -20,43 +20,48 @@ class MainWindow(QtWidgets.QMainWindow):
         wgt_central = QtWidgets.QWidget()
         status_bar = self.statusBar()
         # Graphs --------------------------------------------------------------------------------- |
-        # wgt_avatar = QtWidgets.QWidget()
-        wgt_avatar = QtWidgets.QLabel('USER AVATAR')
+        # User avatar (cartoon image)
+        lbl_avatar = QtWidgets.QLabel('USER AVATAR')
+        # Title of program
         lbl_title = QtWidgets.QLabel('ANXIETY')
+        # Data plot
+        self._cbo_data_graph = QtWidgets.QComboBox()
         plt_data = PlotWidget()
-        # wgt_gauge = QtWidgets.QWidget()
-        wgt_gauge = gauge.AnalogGaugeWidget()
-        wgt_gauge.setMinimumWidth(300)
+        # Gauge
+        self._wgt_gauge = gauge.AnalogGaugeWidget()
+        # Specific identity group plot
+        self._cbo_user_graph = QtWidgets.QComboBox()
         plt_user = PlotWidget()
         # Identity input ------------------------------------------------------------------------- |
         grid_id = QtWidgets.QGridLayout()
         frm_id = QtWidgets.QFrame()
 
+        # id_groups =
         # Age
-        lbl_age = QtWidgets.QLabel("Age")
+        lbl_age = QtWidgets.QLabel('Age')
         # Gender
-        lbl_gender = QtWidgets.QLabel("Gender")
+        lbl_gender = QtWidgets.QLabel('Gender')
         # What best describes your level of education?
-        lbl_edu = QtWidgets.QLabel("Education")
+        lbl_edu = QtWidgets.QLabel('Education')
         # Employment status
-        lbl_employment = QtWidgets.QLabel("Employment Status")
+        lbl_employment = QtWidgets.QLabel('Employment Status')
         # Country of residence
-        lbl_country = QtWidgets.QLabel("Country of Residence")
+        lbl_country = QtWidgets.QLabel('Country of Residence')
         # Are you currently living outside of what you consider your home country?
-        lbl_expat = QtWidgets.QLabel("Outside Home Country")
+        lbl_expat = QtWidgets.QLabel('Outside Home Country')
         # Marital statue
-        lbl_marital = QtWidgets.QLabel("Marital status")
+        lbl_marital = QtWidgets.QLabel('Marital status')
         # Are you or any of your close relations (family, close friends) in a high-risk group for
         # Coronavirus? (e.g. pregnant, elderly or due to a pre-existing medical condition)
-        lbl_risk = QtWidgets.QLabel("Risk Group")
+        lbl_risk = QtWidgets.QLabel('Risk Group')
         # What best describes your current situation?
-        lbl_situation = QtWidgets.QLabel("Current Situation")
+        lbl_situation = QtWidgets.QLabel('Current Situation')
         # If in relative isolation, how many other adults are staying together in the same place as
         # you are?
-        lbl_iso_adult = QtWidgets.QLabel("Isolation Adult")
+        lbl_iso_adult = QtWidgets.QLabel('Isolation Adult')
         # If in relative isolation, how many children under the age of 12 are staying together in
         # the same place as you are?
-        lbl_iso_children = QtWidgets.QLabel("Isolation Children")
+        lbl_iso_children = QtWidgets.QLabel('Isolation Children')
 
         self._spi_age = QtWidgets.QSpinBox()
         self._cbo_gender = QtWidgets.QComboBox()
@@ -71,33 +76,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self._spi_iso_kids = QtWidgets.QSpinBox()
 
         # Data storage --------------------------------------------------------------------------- |
-        self._user = User(18, 'Other/would rather not say', 'None', 'Not employed', 'Canada', 'no',
-                          'Single', 'no', 'Life carries on as usual', 0, 0)
+        self._user = User(18, 'Other/would rather not say', 'None', 'Not employed', 'Canada', 'No',
+                          'Single', 'No', 'Life carries on as usual', 0, 0)
         self.anxiety_data = load_json_data(constants.TEST_DATA_JSON_FILE)
+        self.exterma = calculate_extrema(self.anxiety_data)
 
         # ------------------------------- Connect Signals and Slots --------------------------------
-        self._spi_age.valueChanged.connect(
-            lambda: self._user.set_age(self._spi_age.value()))
-        self._cbo_gender.currentIndexChanged.connect(
-            lambda: setattr(self._user, 'dem_gender', self._cbo_gender.currentText()))
-        self._cbo_edu.currentIndexChanged.connect(
-            lambda: setattr(self._user, 'dem_edu', self._cbo_edu.currentText()))
-        self._cbo_employment.currentIndexChanged.connect(
-            lambda: setattr(self._user, 'dem_employment', self._cbo_employment.currentText()))
-        self._cbo_country.currentIndexChanged.connect(
-            lambda: setattr(self._user, 'country', self._cbo_country.currentText()))
-        self._cbo_expat.currentIndexChanged.connect(
-            lambda: setattr(self._user, 'dem_expat', self._cbo_expat.currentText()))
-        self._cbo_martial.currentIndexChanged.connect(
-            lambda: setattr(self._user, 'dem_marital_status', self._cbo_martial.currentText()))
-        self._cbo_risk.currentIndexChanged.connect(
-            lambda: setattr(self._user, 'dem_risk_group', self._cbo_risk.currentText()))
-        self._cbo_situation.currentIndexChanged.connect(
-            lambda: setattr(self._user, 'dem_isolation', self._cbo_situation.currentText()))
-        self._spi_iso_adult.valueChanged.connect(
-            lambda: self._user.set_isolation_adults(self._spi_iso_adult.value()))
-        self._spi_iso_kids.valueChanged.connect(
-            lambda: self._user.set_isolation_kids(self._spi_iso_kids.value()))
+        self._setup_slots()
 
         # --------------------------------------- Behaviour ----------------------------------------
         # Main Window ---------------------------------------------------------------------------- |
@@ -121,22 +106,12 @@ class MainWindow(QtWidgets.QMainWindow):
                                  'together in the same place as you are?')
         lbl_iso_children.setToolTip('If in relative isolation, how many children under the age of '
                                     '12 are staying together in the same place as you are?')
-        # Input fields - Values
-        self._spi_age.setRange(18, 110)
-        self._cbo_gender.addItems(constants.DEM_GENDER)
-        self._cbo_edu.addItems(constants.DEM_EDU)
-        self._cbo_employment.addItems(constants.DEM_EMPLOYMENT)
-        self._cbo_country.addItems(constants.COUNTRIES)
-        self._cbo_expat.addItems(constants.BINARY)
-        self._cbo_martial.addItems(constants.DEM_MARITALSTATUS)
-        self._cbo_risk.addItems(constants.TERNARY)
-        self._cbo_situation.addItems(constants.DEM_ISLOLATION)
-        self._spi_iso_adult.setRange(0, 110)
-        self._spi_iso_kids.setRange(0, 110)
 
+        self._setup_intractable_values()
         # --------------------------------------- Dimensions ---------------------------------------
         # Main Window ---------------------------------------------------------------------------- |
-        # self.resize(self._cbo_edu.width() + 600, 720)
+        self.resize(self._cbo_edu.width() + 600, 720)
+        self._wgt_gauge.setMinimumWidth(300)
         # Identity input ------------------------------------------------------------------------- |
         # Labels
         lbl_age.resize(150, lbl_age.height())
@@ -194,24 +169,81 @@ class MainWindow(QtWidgets.QMainWindow):
         # Main Layout ---------------------------------------------------------------------------- |
         row = 0
         grid_central.addWidget(frm_id, row, 0)
-        grid_central.addWidget(wgt_avatar, row, 1)
+        grid_central.addWidget(lbl_avatar, row, 1)
         grid_central.addWidget(lbl_title, row, 2)
         row += 1
-
-        # row += 1
+        grid_central.addWidget(self._cbo_data_graph, row, 0)
+        grid_central.addWidget(self._cbo_user_graph, row, 2)
+        row += 1
         grid_central.addWidget(plt_data, row, 0)
-        grid_central.addWidget(wgt_gauge, row, 1)
+        grid_central.addWidget(self._wgt_gauge, row, 1)
         grid_central.addWidget(plt_user, row, 2)
 
         wgt_central.setLayout(grid_central)
         self.setCentralWidget(wgt_central)
 
+        self._wgt_gauge.setMinValue(0)
+        self._wgt_gauge.setMaxValue(100)
+        self._wgt_gauge.setMouseTracking(False)
+
+    def _setup_intractable_values(self):
+        """Initialize the values for the intractable widgets"""
+        # Input fields - Values
+        self._spi_age.setRange(18, 110)
+        self._cbo_gender.addItems(constants.DEM_GENDER)
+        self._cbo_edu.addItems(constants.DEM_EDU)
+        self._cbo_employment.addItems(constants.DEM_EMPLOYMENT)
+        self._cbo_country.addItems(constants.COUNTRIES)
+        self._cbo_expat.addItems(constants.BINARY)
+        self._cbo_martial.addItems(constants.DEM_MARITALSTATUS)
+        self._cbo_risk.addItems(constants.TERNARY)
+        self._cbo_situation.addItems(constants.DEM_ISLOLATION)
+        self._spi_iso_adult.setRange(0, 110)
+        self._spi_iso_kids.setRange(0, 110)
+
+    def _setup_slots(self):
+        """Connect components to slots"""
+        # Update self._user
         self._spi_age.valueChanged.connect(
-            lambda val=self._spi_age.value(): wgt_gauge.updateValue(val))
-        wgt_gauge.updateValue(50)
-        wgt_gauge.setMinValue(0)
-        wgt_gauge.setMaxValue(100)
-        wgt_gauge.setMouseTracking(False)
+            lambda: self._user.set_age(self._spi_age.value()))
+        self._cbo_gender.currentIndexChanged.connect(
+            lambda: setattr(self._user, 'dem_gender', self._cbo_gender.currentText()))
+        self._cbo_edu.currentIndexChanged.connect(
+            lambda: setattr(self._user, 'dem_edu', self._cbo_edu.currentText()))
+        self._cbo_employment.currentIndexChanged.connect(
+            lambda: setattr(self._user, 'dem_employment', self._cbo_employment.currentText()))
+        self._cbo_country.currentIndexChanged.connect(
+            lambda: setattr(self._user, 'country', self._cbo_country.currentText()))
+        self._cbo_expat.currentIndexChanged.connect(
+            lambda: setattr(self._user, 'dem_expat', self._cbo_expat.currentText()))
+        self._cbo_martial.currentIndexChanged.connect(
+            lambda: setattr(self._user, 'dem_marital_status', self._cbo_martial.currentText()))
+        self._cbo_risk.currentIndexChanged.connect(
+            lambda: setattr(self._user, 'dem_risk_group', self._cbo_risk.currentText()))
+        self._cbo_situation.currentIndexChanged.connect(
+            lambda: setattr(self._user, 'dem_isolation', self._cbo_situation.currentText()))
+        self._spi_iso_adult.valueChanged.connect(
+            lambda: self._user.set_isolation_adults(self._spi_iso_adult.value()))
+        self._spi_iso_kids.valueChanged.connect(
+            lambda: self._user.set_isolation_kids(self._spi_iso_kids.value()))
+        # Update Gauge
+        self._spi_age.valueChanged.connect(self._update_gauge)
+        self._cbo_gender.currentIndexChanged.connect(self._update_gauge)
+        self._cbo_edu.currentIndexChanged.connect(self._update_gauge)
+        self._cbo_employment.currentIndexChanged.connect(self._update_gauge)
+        self._cbo_country.currentIndexChanged.connect(self._update_gauge)
+        self._cbo_expat.currentIndexChanged.connect(self._update_gauge)
+        self._cbo_martial.currentIndexChanged.connect(self._update_gauge)
+        self._cbo_risk.currentIndexChanged.connect(self._update_gauge)
+        self._cbo_situation.currentIndexChanged.connect(self._update_gauge)
+        self._spi_iso_adult.valueChanged.connect(self._update_gauge)
+        self._spi_iso_kids.valueChanged.connect(self._update_gauge)
+
+    def _update_gauge(self):
+        """Calculate the user's anxiety score, then update the gauge"""
+        self._user.estimate_anxiety_score(self.anxiety_data)
+        self._wgt_gauge.updateValue((self._user.get_anxiety_score() - self.exterma[0]) /
+                                    (self.exterma[1] - self.exterma[0]) * 100)
 
 
 if __name__ == '__main__':
