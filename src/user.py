@@ -206,17 +206,48 @@ class User:
 
 def get_user_percentage(user: User, id_group: str, data: List[Dict[str, float]]) -> float:
     """Returns the user's position in the population with the selected id group. """
+    id_index = constants.IDENTITY_GROUP_NAMES.index(id_group)
+
     lowest_score = 0
     highest_score = 0
-    for identity_group in data:
-        if id_group != identity_group:
-            lowest_score = lowest_score + min(identity_group.values())
-            highest_score = highest_score + max(identity_group.values())
+
+    for i in range(len(data)):
+        if i != id_index:
+            # print(id_group, constants.IDENTITY_GROUP_OPTIONS_LIST[i])
+            lowest_score = lowest_score + min(data[i].values())
+            highest_score = highest_score + max(data[i].values())
         else:
-            lowest_score = lowest_score + identity_group[id_group]
-            highest_score = highest_score + identity_group[id_group]
+            if id_group == 'Age':
+                attr = user.dem_age
+            elif id_group == 'Gender':
+                attr = user.dem_gender
+            elif id_group == 'Education':
+                attr = user.dem_edu
+            elif id_group == 'Employment Status':
+                attr = user.dem_employment
+            elif id_group == 'Country of Residence':
+                attr = user.country
+            elif id_group == 'Expatriate':
+                attr = user.dem_expat
+            elif id_group == 'Marital status':
+                attr = user.dem_marital_status
+            elif id_group == 'Risk Group':
+                attr = user.dem_risk_group
+            elif id_group == 'Current Situation':
+                attr = user.dem_isolation
+            elif id_group == 'Isolation Adult':
+                attr = user.dem_isolation_adults
+            elif id_group == 'Isolation Children':
+                attr = user.dem_isolation_kids
+            else:
+                attr = 0
+
+            lowest_score = lowest_score + data[i][attr]
+            highest_score = highest_score + data[i][attr]
+
+    lowest_score, highest_score = lowest_score / 11, highest_score / 11
 
     delta_score = highest_score - lowest_score
-    delta_user = user._anxiety_score
+    delta_user = user.get_anxiety_score() - lowest_score
 
     return delta_user / delta_score * 100

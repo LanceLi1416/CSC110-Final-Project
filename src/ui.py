@@ -8,7 +8,7 @@ import src.analoggaugewidget as gauge
 import src.constants as constants
 
 from src.data import load_json_data, calculate_extrema
-from src.user import User
+from src.user import User, get_user_percentage
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -34,7 +34,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self._wgt_gauge = gauge.AnalogGaugeWidget()
         # Specific identity group plot
         self._cbo_user_graph = QtWidgets.QComboBox()
-        plt_user = pg.PlotWidget()
+        self._plt_user = QtWidgets.QProgressBar()
+        self._plt_user.setRange(0, 100)
         # Identity input ------------------------------------------------------------------------- |
         grid_id = QtWidgets.QGridLayout()
         frm_id = QtWidgets.QFrame()
@@ -59,9 +60,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.anxiety_data = load_json_data(constants.REAL_DATA_JSON_FILE)
         self.extrema = calculate_extrema(self.anxiety_data)
 
-        # ------------------------------- Connect Signals and Slots --------------------------------
-        self._setup_slots()
-
         # --------------------------------------- Behaviour ----------------------------------------
         # Main Window ---------------------------------------------------------------------------- |
         self.setWindowTitle("Rate Your Anxiety")  # TODO: find a better name
@@ -70,10 +68,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self._setup_id_group_labels()
         self._setup_intractable_values()
 
+        # ------------------------------- Connect Signals and Slots --------------------------------
+        self._setup_slots()
+
         # ---------------------------------------- Geometry ----------------------------------------
         # Main Window ---------------------------------------------------------------------------- |
         self.resize(self._cbo_edu.width() + 600, 720)
         self._wgt_gauge.setMinimumWidth(300)
+        self._wgt_gauge.setMinimumHeight(300)
         # Identity input ------------------------------------------------------------------------- |
         self._setup_geometry()
 
@@ -108,14 +110,15 @@ class MainWindow(QtWidgets.QMainWindow):
         row += 1
         grid_central.addWidget(self._plt_data, row, 0)
         grid_central.addWidget(self._wgt_gauge, row, 1)
-        grid_central.addWidget(plt_user, row, 2)
+        grid_central.addWidget(self._plt_user, row, 2)
 
         wgt_central.setLayout(grid_central)
         self.setCentralWidget(wgt_central)
 
-        self._wgt_gauge.setMinValue(0)
-        self._wgt_gauge.setMaxValue(100)
-        self._wgt_gauge.setMouseTracking(False)
+        # initialize graphs
+        self._plot_data()
+        self._update_gauge()
+        self._plot_user()
 
     def _setup_id_group_labels(self):
         tool_tips = [
@@ -163,18 +166,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 150,
                 self._id_group_labels[i].height()
             )
-        # Input fields
-        # self._spi_age.resize(150, self._spi_age.height())
-        # self._cbo_gender.resize(150, self._cbo_gender.height())
-        # self._cbo_edu.resize(150, self._cbo_edu.height())
-        # self._cbo_employment.resize(150, self._cbo_employment.height())
-        # self._cbo_country.resize(150, self._cbo_country.height())
-        # self._cbo_expat.resize(150, self._cbo_expat.height())
-        # self._cbo_martial.resize(150, self._cbo_martial.height())
-        # self._cbo_risk.resize(150, self._cbo_risk.height())
-        # self._cbo_situation.resize(150, self._cbo_situation.height())
-        # self._spi_iso_adult.resize(150, self._spi_iso_adult.height())
-        # self._spi_iso_kids.resize(150, self._spi_iso_kids.height())
 
     def _setup_slots(self):
         """Connect components to slots"""
@@ -215,6 +206,24 @@ class MainWindow(QtWidgets.QMainWindow):
         self._spi_iso_kids.valueChanged.connect(self._update_gauge)
         # Update graph
         self._cbo_data_graph.currentIndexChanged.connect(self._plot_data)
+        # Update progress bar
+        self._cbo_user_graph.currentIndexChanged.connect(self._plot_user)
+        self._spi_age.valueChanged.connect(self._plot_user)
+        self._cbo_gender.currentIndexChanged.connect(self._plot_user)
+        self._cbo_edu.currentIndexChanged.connect(self._plot_user)
+        self._cbo_employment.currentIndexChanged.connect(self._plot_user)
+        self._cbo_country.currentIndexChanged.connect(self._plot_user)
+        self._cbo_expat.currentIndexChanged.connect(self._plot_user)
+        self._cbo_martial.currentIndexChanged.connect(self._plot_user)
+        self._cbo_risk.currentIndexChanged.connect(self._plot_user)
+        self._cbo_situation.currentIndexChanged.connect(self._plot_user)
+        self._spi_iso_adult.valueChanged.connect(self._plot_user)
+        self._spi_iso_kids.valueChanged.connect(self._plot_user)
+
+    def _setup_gauge(self):
+        """Set up the gauge widget"""
+        self._wgt_gauge.setMinValue(0)
+        self._wgt_gauge.setMaxValue(100)
 
     def _update_gauge(self):
         """Calculate the user's anxiety score, then update the gauge"""
@@ -223,6 +232,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                     (self.extrema[1] - self.extrema[0]) * 100)
 
     def _plot_data(self) -> None:
+        """Plots the data from the csv file"""
         self._plt_data.clear()  # clear current graph
 
         id_index, id_group = self._cbo_data_graph.currentIndex(), self._cbo_data_graph.currentText()
@@ -231,7 +241,7 @@ class MainWindow(QtWidgets.QMainWindow):
             y=[i for i in range(len(constants.IDENTITY_GROUP_OPTIONS_LIST[id_index]))],
             x0=0,
             width=list(self.anxiety_data[id_index].values()),
-            height=1.0, brush=constants.PLOT_COLOR
+            height=0.75, brush=constants.PLOT_COLOR
         )
 
         string_axis = pg.AxisItem(orientation='left')  # Textual x-axis
@@ -241,6 +251,16 @@ class MainWindow(QtWidgets.QMainWindow):
         plot_item = self._plt_data.addPlot(axisItems={'left': string_axis})
         plot_item.setTitle(id_group)
         plot_item.addItem(bar_graph)
+
+    def _plot_user(self) -> None:
+        """Plots the user's ranking"""
+        self._user.estimate_anxiety_score(self.anxiety_data)
+        val = get_user_percentage(
+            self._user,
+            self._cbo_user_graph.currentText(),
+            self.anxiety_data
+        )
+        self._plt_user.setValue(int(val))
 
 
 if __name__ == '__main__':

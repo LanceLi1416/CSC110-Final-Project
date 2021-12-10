@@ -137,3 +137,12 @@ REAL_DATA_JSON_FILE = 'data/real_data.json'
 
 # Colours ------------------------------------------------------------------------------------------
 PLOT_COLOR = QColor(198, 198, 198, 255)
+
+GAUGE_TEXT_COLOR = QColor(255, 255, 255, 255)
+GAUGE_SCALE_TEXT_COLOR = QColor(198, 198, 198, 198)
+GAUGE_BIG_SCALE_COLOR = QColor(0, 0, 0, 255)
+GAUGE_FINE_SCALE_COLOR = QColor(0, 0, 0, 255)
+
+# Fonts
+GAUGE_FONT_PATH = 'fonts/Orbitron/Orbitron-VariableFont_wght.ttf'
+GAUGE_FONT_NAME = 'Orbitron'
