@@ -36,32 +36,7 @@ class MainWindow(QtWidgets.QMainWindow):
         grid_id = QtWidgets.QGridLayout()
         frm_id = QtWidgets.QFrame()
 
-        # id_groups =
-        # Age
-        lbl_age = QtWidgets.QLabel('Age')
-        # Gender
-        lbl_gender = QtWidgets.QLabel('Gender')
-        # What best describes your level of education?
-        lbl_edu = QtWidgets.QLabel('Education')
-        # Employment status
-        lbl_employment = QtWidgets.QLabel('Employment Status')
-        # Country of residence
-        lbl_country = QtWidgets.QLabel('Country of Residence')
-        # Are you currently living outside of what you consider your home country?
-        lbl_expat = QtWidgets.QLabel('Outside Home Country')
-        # Marital statue
-        lbl_marital = QtWidgets.QLabel('Marital status')
-        # Are you or any of your close relations (family, close friends) in a high-risk group for
-        # Coronavirus? (e.g. pregnant, elderly or due to a pre-existing medical condition)
-        lbl_risk = QtWidgets.QLabel('Risk Group')
-        # What best describes your current situation?
-        lbl_situation = QtWidgets.QLabel('Current Situation')
-        # If in relative isolation, how many other adults are staying together in the same place as
-        # you are?
-        lbl_iso_adult = QtWidgets.QLabel('Isolation Adult')
-        # If in relative isolation, how many children under the age of 12 are staying together in
-        # the same place as you are?
-        lbl_iso_children = QtWidgets.QLabel('Isolation Children')
+        self._id_group_labels = [QtWidgets.QLabel() for _ in range(constants.NUMBER_OF_IDENTITIES)]
 
         self._spi_age = QtWidgets.QSpinBox()
         self._cbo_gender = QtWidgets.QComboBox()
@@ -89,68 +64,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("Rate Your Anxiety")  # TODO: find a better name
         # Graphs ----------------------------------------------------------------------------------|
         # Identity input ------------------------------------------------------------------------- |
-        # Labels - Tips
-        lbl_age.setToolTip('What is your age?')
-        lbl_gender.setToolTip('What is your gender?')
-        lbl_edu.setToolTip('What best describes your level of education?')
-        lbl_employment.setToolTip('What is your employment status?')
-        lbl_country.setToolTip('What is your current country of residence?')
-        lbl_expat.setToolTip('Are you currently living outside of what you consider your home '
-                             'country?')
-        lbl_marital.setToolTip('What is yoru marital status?')
-        lbl_risk.setToolTip('Are you or any of your close relations (family, close friends) in a '
-                            'high-risk group for Coronavirus? (e.g. pregnant, elderly or due to a '
-                            'pre-existing medical condition)')
-        lbl_situation.setToolTip('What best describes your current situation?')
-        lbl_iso_adult.setToolTip('If in relative isolation, how many other adults are staying '
-                                 'together in the same place as you are?')
-        lbl_iso_children.setToolTip('If in relative isolation, how many children under the age of '
-                                    '12 are staying together in the same place as you are?')
-
+        self._setup_id_group_labels()
         self._setup_intractable_values()
-        # --------------------------------------- Dimensions ---------------------------------------
+
+        # ---------------------------------------- Geometry ----------------------------------------
         # Main Window ---------------------------------------------------------------------------- |
         self.resize(self._cbo_edu.width() + 600, 720)
         self._wgt_gauge.setMinimumWidth(300)
         # Identity input ------------------------------------------------------------------------- |
-        # Labels
-        lbl_age.resize(150, lbl_age.height())
-        lbl_gender.resize(150, lbl_gender.height())
-        lbl_edu.resize(150, lbl_edu.height())
-        lbl_employment.resize(150, lbl_employment.height())
-        lbl_country.resize(150, lbl_country.height())
-        lbl_expat.resize(150, lbl_expat.height())
-        lbl_marital.resize(150, lbl_marital.height())
-        lbl_risk.resize(150, lbl_risk.height())
-        lbl_situation.resize(150, lbl_situation.height())
-        lbl_iso_adult.resize(150, lbl_iso_adult.height())
-        lbl_iso_children.resize(150, lbl_iso_children.height())
-        # Input fields
-        # self._spi_age.resize(150, self._spi_age.height())
-        # self._cbo_gender.resize(150, self._cbo_gender.height())
-        # self._cbo_edu.resize(150, self._cbo_edu.height())
-        # self._cbo_employment.resize(150, self._cbo_employment.height())
-        # self._cbo_country.resize(150, self._cbo_country.height())
-        # self._cbo_expat.resize(150, self._cbo_expat.height())
-        # self._cbo_martial.resize(150, self._cbo_martial.height())
-        # self._cbo_risk.resize(150, self._cbo_risk.height())
-        # self._cbo_situation.resize(150, self._cbo_situation.height())
-        # self._spi_iso_adult.resize(150, self._spi_iso_adult.height())
-        # self._spi_iso_kids.resize(150, self._spi_iso_kids.height())
+        self._setup_geometry()
+
         # ----------------------------------------- Layout -----------------------------------------
         # Identity input ------------------------------------------------------------------------- |
         # Labels
-        grid_id.addWidget(lbl_age, 0, 0)
-        grid_id.addWidget(lbl_gender, 1, 0)
-        grid_id.addWidget(lbl_edu, 2, 0)
-        grid_id.addWidget(lbl_employment, 3, 0)
-        grid_id.addWidget(lbl_country, 4, 0)
-        grid_id.addWidget(lbl_expat, 5, 0)
-        grid_id.addWidget(lbl_marital, 6, 0)
-        grid_id.addWidget(lbl_risk, 7, 0)
-        grid_id.addWidget(lbl_situation, 8, 0)
-        grid_id.addWidget(lbl_iso_adult, 9, 0)
-        grid_id.addWidget(lbl_iso_children, 10, 0)
+        for i in range(constants.NUMBER_OF_IDENTITIES):
+            grid_id.addWidget(self._id_group_labels[i], i, 0)
         # Input fields
         grid_id.addWidget(self._spi_age, 0, 1)
         grid_id.addWidget(self._cbo_gender, 1, 1)
@@ -186,20 +114,64 @@ class MainWindow(QtWidgets.QMainWindow):
         self._wgt_gauge.setMaxValue(100)
         self._wgt_gauge.setMouseTracking(False)
 
+    def _setup_id_group_labels(self):
+        tool_tips = [
+            'What is your age?',
+            'What is your gender?',
+            'What best describes your level of education?',
+            'What is your employment status?',
+            'What is your current country of residence?',
+            'Are you currently living outside of what you consider your home country?',
+            'What is your marital status?',
+            'Are you or any of your close relations (family, close friends) in a high-risk group '
+            'for Coronavirus? (e.g. pregnant, elderly or due to a pre-existing medical condition)',
+            'What best describes your current situation?',
+            'If in relative isolation, how many other adults are staying together in the same '
+            'place as you are?',
+            'If in relative isolation, how many children under the age of 12 are staying together '
+            'in the same place as you are?',
+        ]
+        for i in range(constants.NUMBER_OF_IDENTITIES):
+            self._id_group_labels[i].setText(constants.IDENTITY_GROUP_NAMES[i])
+            self._id_group_labels[i].setToolTip(tool_tips[i])
+
     def _setup_intractable_values(self):
         """Initialize the values for the intractable widgets"""
-        # Input fields - Values
+        # Input fields
         self._spi_age.setRange(18, 110)
         self._cbo_gender.addItems(constants.DEM_GENDER)
         self._cbo_edu.addItems(constants.DEM_EDU)
         self._cbo_employment.addItems(constants.DEM_EMPLOYMENT)
         self._cbo_country.addItems(constants.COUNTRIES)
-        self._cbo_expat.addItems(constants.BINARY)
-        self._cbo_martial.addItems(constants.DEM_MARITALSTATUS)
-        self._cbo_risk.addItems(constants.TERNARY)
-        self._cbo_situation.addItems(constants.DEM_ISLOLATION)
+        self._cbo_expat.addItems(constants.EXPAT)
+        self._cbo_martial.addItems(constants.DEM_MARITAL_STATUS)
+        self._cbo_risk.addItems(constants.RISK_GROUP)
+        self._cbo_situation.addItems(constants.DEM_ISOLATION)
         self._spi_iso_adult.setRange(0, 110)
         self._spi_iso_kids.setRange(0, 110)
+        # Graphs
+        self._cbo_data_graph.addItems(constants.IDENTITY_GROUP_NAMES)
+        self._cbo_user_graph.addItems(constants.IDENTITY_GROUP_NAMES)
+
+    def _setup_geometry(self):
+        """Set up the sizes of the widgets"""
+        for i in range(constants.NUMBER_OF_IDENTITIES):
+            self._id_group_labels[i].resize(
+                150,
+                self._id_group_labels[i].height()
+            )
+        # Input fields
+        # self._spi_age.resize(150, self._spi_age.height())
+        # self._cbo_gender.resize(150, self._cbo_gender.height())
+        # self._cbo_edu.resize(150, self._cbo_edu.height())
+        # self._cbo_employment.resize(150, self._cbo_employment.height())
+        # self._cbo_country.resize(150, self._cbo_country.height())
+        # self._cbo_expat.resize(150, self._cbo_expat.height())
+        # self._cbo_martial.resize(150, self._cbo_martial.height())
+        # self._cbo_risk.resize(150, self._cbo_risk.height())
+        # self._cbo_situation.resize(150, self._cbo_situation.height())
+        # self._spi_iso_adult.resize(150, self._spi_iso_adult.height())
+        # self._spi_iso_kids.resize(150, self._spi_iso_kids.height())
 
     def _setup_slots(self):
         """Connect components to slots"""

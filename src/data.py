@@ -89,13 +89,13 @@ def initialize_data_list() -> List[Dict[str, tuple[int, int]]]:
         # Initialize country of residence
         {country: (0, 0) for country in constants.COUNTRIES + ['NA']},
         # Initialize whether they are an expatriate
-        {expat: (0, 0) for expat in constants.BINARY + ['NA']},
+        {expat: (0, 0) for expat in constants.EXPAT + ['NA']},
         # Initialize marital status
-        {marital_status: (0, 0) for marital_status in constants.DEM_MARITALSTATUS + ['NA']},
+        {marital_status: (0, 0) for marital_status in constants.DEM_MARITAL_STATUS + ['NA']},
         # Initialize whether they reside in a high risk group
-        {risk_group: (0, 0) for risk_group in constants.TERNARY + ['NA']},
+        {risk_group: (0, 0) for risk_group in constants.RISK_GROUP + ['NA']},
         # Initialize isolation status
-        {isolation: (0, 0) for isolation in constants.DEM_ISLOLATION + ['NA']},
+        {isolation: (0, 0) for isolation in constants.DEM_ISOLATION + ['NA']},
         # Initialize adults isolated with participant
         {isolation_adults: (0, 0) for isolation_adults in constants.DEM_ISOLATION_PEOPLE + ['NA']},
         # Initialize children isolated with participant
