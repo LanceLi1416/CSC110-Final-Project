@@ -233,7 +233,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 height=list(self.anxiety_data[0].values()),
                 width=1.0, brush=constants.PLOT_COLOR
             )
-            string_axis.setTicks(list(dict(enumerate(constants.DEM_AGE)).items()))
+            string_axis.setTicks([dict(enumerate(constants.DEM_AGE)).items()])
         elif id_group == constants.IDENTITY_GROUP_NAMES[1]:
             bar_graph = pg.BarGraphItem(
                 x=[i for i in range(len(constants.DEM_GENDER))],
