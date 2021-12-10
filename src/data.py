@@ -3,8 +3,10 @@ import csv
 
 from typing import Dict, List
 
-real_data = "../data/COVIDiSTRESS June 17.csv"
-test_data = "../data/sample_data.csv"
+import src.constants as constants
+
+REAL_DATA = "../data/COVIDiSTRESS June 17.csv"
+TEST_DATA = "../data/sample_data.csv"
 
 
 def generate_interval_list(interval_value: float) -> List[float]:
@@ -54,125 +56,36 @@ def calc_stress_score(person: List[str]) -> int:
     return stress_so_far
 
 
-def process_country() -> Dict[str, tuple[int, int]]:
-    """Return country values for data_dict"""
-    countries_dict = {}
-    with open('../data/list_of_countries.txt', encoding='utf-8') as file_2:
-        for country in file_2:
-            countries_dict[country.strip()] = (0, 0)
-    countries_dict['NA'] = (0, 0)
-    return countries_dict
-
-
 def initialize_data_list() -> List[Dict[str, tuple[int, int]]]:
     """Return initialized values"""
-    countries = process_country()
     data_start = [
         # Initialize age
-        {'18-24': (0, 0),
-         '25-34': (0, 0),
-         '35-44': (0, 0),
-         '45-54': (0, 0),
-         '55-64': (0, 0),
-         '65+': (0, 0),
-         'NA': (0, 0)},
+        {age: (0, 0) for age in constants.DEM_AGE + ['NA']},
         # Initialize gender
-        {'Male': (0, 0),
-         'Female': (0, 0),
-         'NA': (0, 0)},
+        {gender: (0, 0) for gender in constants.DEM_GENDER + ['NA']},
         # Initialize education
-        {'None': (0, 0),
-         'Up to 6 years of school': (0, 0),
-         'Up to 9 years of school': (0, 0),
-         'Up to 12 years of school': (0, 0),
-         'Some College, short continuing education or equivalent': (0, 0),
-         'College degree, bachelor, master': (0, 0),
-         'PhD/Doctorate': (0, 0),
-         'Uninformative response': (0, 0),
-         'NA': (0, 0)},
+        {edu: (0, 0) for edu in constants.DEM_EDU + ['NA']},
         # Initialize employment status
-        {'Not employed': (0, 0),
-         'Student': (0, 0),
-         'Part time employed': (0, 0),
-         'Full time employed': (0, 0),
-         'Self-employed': (0, 0),
-         'Retired': (0, 0),
-         'NA': (0, 0)
-         },
+        {employment: (0, 0) for employment in constants.DEM_EMPLOYMENT + ['NA']},
         # Initialize country of residence
-        countries,
+        {country: (0, 0) for country in constants.COUNTRY + ['NA']},
         # Initialize whether they are an expatriate
-        {'yes': (0, 0),
-         'no': (0, 0),
-         'NA': (0, 0)
-         },
+        {expat: (0, 0) for expat in constants.BINARY + ['NA']},
         # Initialize marital status
-        {'Single': (0, 0),
-         'Married/cohabiting': (0, 0),
-         'Divorced/widowed': (0, 0),
-         'Uninformative response': (0, 0),
-         'NA': (0, 0)},
+        {marital_status: (0, 0) for marital_status in constants.DEM_MARITALSTATUS + ['NA']},
         # Initialize whether they reside in a high risk group
-        {'Yes': (0, 0),
-         'No': (0, 0),
-         'Not sure': (0, 0),
-         'NA': (0, 0)},
+        {risk_group: (0, 0) for risk_group in constants.TERNARY + ['NA']},
         # Initialize isolation status
-        {'Life carries on as usual': (0, 0),
-         'Life carries on with minor changes': (0, 0),
-         'Isolated': (0, 0),
-         'Isolated in medical facility of similar location': (0, 0),
-         'NA': (0, 0)},
+        {isolation: (0, 0) for isolation in constants.DEM_ISLOLATION + ['NA']},
         # Initialize adults isolated with participant
-        {'0': (0, 0),
-         '1': (0, 0),
-         '2': (0, 0),
-         '3': (0, 0),
-         '4': (0, 0),
-         '5': (0, 0),
-         '6': (0, 0),
-         '7': (0, 0),
-         '8': (0, 0),
-         '9': (0, 0),
-         '10': (0, 0),
-         '11-20': (0, 0),
-         '21-30': (0, 0),
-         '31-40': (0, 0),
-         '41-50': (0, 0),
-         '51-60': (0, 0),
-         '61-70': (0, 0),
-         '71-80': (0, 0),
-         '81-90': (0, 0),
-         '91-100': (0, 0),
-         '101-110': (0, 0),
-         'NA': (0, 0)},
+        {isolation_adult: (0, 0) for isolation_adult in constants.DEM_ISOLATION_PEOPLE + ['NA']},
         # Initialize children isolated with participant
-        {'0': (0, 0),
-         '1': (0, 0),
-         '2': (0, 0),
-         '3': (0, 0),
-         '4': (0, 0),
-         '5': (0, 0),
-         '6': (0, 0),
-         '7': (0, 0),
-         '8': (0, 0),
-         '9': (0, 0),
-         '10': (0, 0),
-         '11-20': (0, 0),
-         '21-30': (0, 0),
-         '31-40': (0, 0),
-         '41-50': (0, 0),
-         '51-60': (0, 0),
-         '61-70': (0, 0),
-         '71-80': (0, 0),
-         '81-90': (0, 0),
-         '91-100': (0, 0),
-         '101-110': (0, 0),
-         'NA': (0, 0)}]
+        {isolation_kid: (0, 0) for isolation_kid in constants.DEM_ISOLATION_PEOPLE + ['NA']}
+    ]
     return data_start
 
 
-def read_csv_file(file_name: str) -> List[Dict[str, tuple[int, int]]]:
+def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, tuple[int, int]]]:
     """Return the data stored in a csv file with the given filename.
 
     The return value is list consisting of 11 dictionaries:
@@ -197,7 +110,7 @@ def read_csv_file(file_name: str) -> List[Dict[str, tuple[int, int]]]:
     # ACCUMULATOR data_processed_so_far: the running list of
     data_processed_so_far = initialize_data_list()
 
-    file = open(file_name, encoding='ISO-8859-1')
+    file = open(file_name, encoding=file_encoding)
     reader = csv.reader(file)
 
     # This line reads the first row of the csv file, which contains the headers.
