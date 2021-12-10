@@ -31,7 +31,7 @@ DEM_EDU = [
     'Up to 12 years of school',
     'Some College, short continuing education or equivalent',
     'College degree, bachelor, master',
-    'PhD / Doctorate'
+    'PhD/Doctorate'
 ]
 
 DEM_EMPLOYMENT = [
@@ -112,6 +112,20 @@ DEM_ISOLATION_PEOPLE = [
     '81-90',
     '91-100',
     '101-110'
+]
+
+IDENTITY_GROUP_OPTIONS_LIST = [
+    DEM_AGE,
+    DEM_GENDER,
+    DEM_EDU,
+    DEM_EMPLOYMENT,
+    COUNTRIES,
+    EXPAT,
+    DEM_MARITAL_STATUS,
+    RISK_GROUP,
+    DEM_ISOLATION,
+    DEM_ISOLATION_PEOPLE,
+    DEM_ISOLATION_PEOPLE
 ]
 
 # File paths ---------------------------------------------------------------------------------------

@@ -118,102 +118,66 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
     file = open(file_name, encoding=file_encoding)
     reader = csv.reader(file)
 
-    # This line reads the first row of the csv file, which contains the headers.
-    # The result is a list of strings.
-    _ = next(reader)
+    # Reads the first row of the csv file, which contains the headers.
+    next(reader)
     # This list comprehension reads each remaining row of the file,
     # where each row is represented as a list of strings.
     # The header row is *not* included in this list.
     for row in reader:
         stress_score = calc_stress_score(row)
 
+        # age
         csv_index = 4
         category = data_processed_so_far[csv_index - 4]
         age = int(row[csv_index])
-        if 18 <= age <= 24:
-            category['18-24'] = (category['18-24'][0] + 1, category['18-24'][1] + stress_score)
-        elif 25 <= age <= 34:
-            category['25-34'] = (category['25-34'][0] + 1, category['25-34'][1] + stress_score)
-        elif 35 <= age <= 44:
-            category['35-44'] = (category['35-44'][0] + 1, category['35-44'][1] + stress_score)
-        elif 45 <= age <= 54:
-            category['45-54'] = (category['45-54'][0] + 1, category['45-54'][1] + stress_score)
-        elif 55 <= age <= 64:
-            category['55-64'] = (category['55-64'][0] + 1, category['55-64'][1] + stress_score)
-        elif 65 <= age:
-            category['65+'] = (category['65+'][0] + 1, category['65+'][1] + stress_score)
+        key = constants.DEM_AGE[(age - 15) // 10] if age < 65 else '65+'
+        category[key] = (category[key][0] + 1, category[key][1] + stress_score)
 
+        # isolation_adults & isolation_kids
         for csv_index in range(16, 18):
             category = data_processed_so_far[csv_index - 7]
             if row[csv_index] == 'NA':
                 category['NA'] = (category['NA'][0] + 1, category['NA'][1] + stress_score)
-                break
-            num_dependents = int(row[csv_index])
-            if num_dependents == 0:
-                category['0'] = (category['0'][0] + 1, category['0'][1] + stress_score)
-            elif num_dependents == 1:
-                category['1'] = (category['1'][0] + 1, category['1'][1] + stress_score)
-            elif num_dependents == 2:
-                category['2'] = (category['2'][0] + 1, category['2'][1] + stress_score)
-            elif num_dependents == 3:
-                category['3'] = (category['3'][0] + 1, category['3'][1] + stress_score)
-            elif num_dependents == 4:
-                category['4'] = (category['4'][0] + 1, category['4'][1] + stress_score)
-            elif num_dependents == 5:
-                category['5'] = (category['5'][0] + 1, category['5'][1] + stress_score)
-            elif num_dependents == 6:
-                category['6'] = (category['6'][0] + 1, category['6'][1] + stress_score)
-            elif num_dependents == 7:
-                category['7'] = (category['7'][0] + 1, category['7'][1] + stress_score)
-            elif num_dependents == 9:
-                category['9'] = (category['9'][0] + 1, category['9'][1] + stress_score)
-            elif num_dependents == 10:
-                category['10'] = (category['10'][0] + 1, category['10'][1] + stress_score)
-            elif 11 <= num_dependents <= 20:
-                category['11-20'] = (category['11-20'][0] + 1, category['11-20'][1] + stress_score)
-            elif 21 <= num_dependents <= 30:
-                category['21-30'] = (category['21-30'][0] + 1, category['21-30'][1] + stress_score)
-            elif 31 <= num_dependents <= 40:
-                category['31-40'] = (category['31-40'][0] + 1, category['31-40'][1] + stress_score)
-            elif 41 <= num_dependents <= 50:
-                category['41-50'] = (category['41-50'][0] + 1, category['41-50'][1] + stress_score)
-            elif 51 <= num_dependents <= 60:
-                category['51-60'] = (category['51-60'][0] + 1, category['51-60'][1] + stress_score)
-            elif 61 <= num_dependents <= 70:
-                category['61-70'] = (category['61-70'][0] + 1, category['61-70'][1] + stress_score)
-            elif 71 <= num_dependents <= 80:
-                category['71-80'] = (category['71-80'][0] + 1, category['71-80'][1] + stress_score)
-            elif 81 <= num_dependents <= 90:
-                category['81-90'] = (category['81-90'][0] + 1, category['81-90'][1] + stress_score)
-            elif 91 <= num_dependents <= 100:
-                category['91-100'] = (
-                    category['91-100'][0] + 1, category['91-100'][1] + stress_score)
-            elif 101 <= num_dependents <= 110:
-                category['101-110'] = (
-                    category['101-110'][0] + 1, category['101-110'][1] + stress_score)
-
-        remaining_columns = [5, 6, 8, 9, 10, 12, 14, 15]
-        for csv_index in remaining_columns:
-            category = data_processed_so_far[remaining_columns.index(csv_index) + 1]
-
-            if row[csv_index] == 'NA':
-                category['NA'] = (category['NA'][0] + 1, category['NA'][1] + stress_score)
-            elif 'would rather not say' in row[csv_index].lower():
-                if 'Other/would rather not say' not in category:
-                    category['Other/would rather not say'] = (0, 0)
-                category['Other/would rather not say'] = (
-                    category['Other/would rather not say'][0] + 1,
-                    category['Other/would rather not say'][1] + stress_score
-                )
-            elif row[csv_index] not in category:
-                continue
             else:
+                num_dependents = int(row[csv_index])
+                key = str(num_dependents) if num_dependents < 10 else \
+                    constants.DEM_ISOLATION_PEOPLE[(num_dependents - 11) // 10 + 11]
+                category[key] = (category[key][0] + 1, category[key][1] + stress_score)
+
+        # expat - csv file uses lower case
+        expat = row[10]
+        category = data_processed_so_far[5]
+        if expat == 'yes':
+            value = category['Yes']
+            category['Yes'] = (value[0] + 1, value[1] + stress_score)
+        elif expat == 'no':
+            value = category['No']
+            category['No'] = (value[0] + 1, value[1] + stress_score)
+
+        # marital - csv file uses ' or ' instead of '/'
+        marital = row[12]
+        category = data_processed_so_far[6]
+        if marital == 'Other or would rather not say':
+            value = category['Other/would rather not say']
+            category['Other/would rather not say'] = (value[0] + 1, value[1] + stress_score)
+        else:
+            if row[12] in category:
+                value = category[row[12]]
+                category[row[12]] = (value[0] + 1, value[1] + stress_score)
+
+        # remaining ones
+        remaining_columns = [5, 6, 8, 9, 14, 15]
+        for csv_index in remaining_columns:
+            category = data_processed_so_far[
+                remaining_columns.index(csv_index) + (1 if csv_index < 10 else 3)]
+            if row[csv_index] in category:
                 value = category[row[csv_index]]
                 category[row[csv_index]] = (value[0] + 1, value[1] + stress_score)
     return data_processed_so_far
 
 
 def regulate_na(data: List[Dict[str, Tuple[int, float]]]) -> List[Dict[str, Tuple[int, float]]]:
+    """Add the score and population for NA to all other identities in the identity group"""
     regulated_data = []
 
     for i in range(len(data)):
@@ -232,6 +196,7 @@ def regulate_na(data: List[Dict[str, Tuple[int, float]]]) -> List[Dict[str, Tupl
 
 
 def calculate_data_average(data: List[Dict[str, Tuple[int, float]]]) -> List[Dict[str, float]]:
+    """Calculate the average anxiety score for every identity group in the data"""
     average_data = []
 
     for i in range(len(data)):
@@ -247,19 +212,31 @@ def calculate_data_average(data: List[Dict[str, Tuple[int, float]]]) -> List[Dic
 
 def process_data(input_file_name: str, output_file_name: str,
                  input_encoding='ISO-8859-1', output_encoding='utf-8') -> None:
-    """Process the data, then store it in a json file for future reference"""
+    """Process the data, then store it in a json file for future reference
+
+    Preconditions:
+      - The input file exists
+      - input_file_name.endswith('.csv')
+      - output_file_name.endswith('.json')
+    """
     data = calculate_data_average(regulate_na(read_csv_file(input_file_name, input_encoding)))
     with open(output_file_name, 'w', encoding=output_encoding) as json_file:
         json.dump(data, json_file)
 
 
 def load_json_data(file_name: str, file_encoding='utf-8') -> List[Dict[str, float]]:
+    """Load the previously stored json file
+
+    Preconditions:
+      - The file exists
+    """
     with open(file_name, 'r', encoding=file_encoding) as json_file:
         data = json.load(json_file)
     return data
 
 
 def calculate_extrema(data: List[Dict[str, float]]) -> Tuple[float, float]:
+    """Calculate the minimum and maximum anxiety score for all combinations of identity groups."""
     min_so_far, max_so_far = 0, 0
 
     for identity_group in data:

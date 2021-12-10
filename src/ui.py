@@ -27,8 +27,9 @@ class MainWindow(QtWidgets.QMainWindow):
         lbl_title = QtWidgets.QLabel('ANXIETY')  # TODO: find a font and proper title
         # Data plot
         self._cbo_data_graph = QtWidgets.QComboBox()
-        # self._plt_data = pg.PlotWidget()
         self._plt_data = pg.GraphicsLayoutWidget()
+        self._plt_data.setToolTip(
+            'Left click to pan, scroll wheel to zoom, right click for more options')
         # Gauge
         self._wgt_gauge = gauge.AnalogGaugeWidget()
         # Specific identity group plot
@@ -223,25 +224,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _plot_data(self) -> None:
         self._plt_data.clear()  # clear current graph
-        id_group = self._cbo_data_graph.currentText()
 
-        string_axis = pg.AxisItem(orientation='bottom')  # Textual x-axis
+        id_index, id_group = self._cbo_data_graph.currentIndex(), self._cbo_data_graph.currentText()
 
-        if id_group == constants.IDENTITY_GROUP_NAMES[0]:  # age
-            bar_graph = pg.BarGraphItem(
-                x=[i for i in range(len(constants.DEM_AGE))],
-                height=list(self.anxiety_data[0].values()),
-                width=1.0, brush=constants.PLOT_COLOR
-            )
-            string_axis.setTicks([dict(enumerate(constants.DEM_AGE)).items()])
-        elif id_group == constants.IDENTITY_GROUP_NAMES[1]:
-            bar_graph = pg.BarGraphItem(
-                x=[i for i in range(len(constants.DEM_GENDER))],
-                height=list(self.anxiety_data[1].values()),
-                width=0.75, brush=constants.PLOT_COLOR
-            )
+        bar_graph = pg.BarGraphItem(
+            y=[i for i in range(len(constants.IDENTITY_GROUP_OPTIONS_LIST[id_index]))],
+            x0=0,
+            width=list(self.anxiety_data[id_index].values()),
+            height=1.0, brush=constants.PLOT_COLOR
+        )
 
-        plot_item = self._plt_data.addPlot(axisItems={'bottom': string_axis})
+        string_axis = pg.AxisItem(orientation='left')  # Textual x-axis
+        string_axis.setTicks(
+            [dict(enumerate(constants.IDENTITY_GROUP_OPTIONS_LIST[id_index])).items()])
+
+        plot_item = self._plt_data.addPlot(axisItems={'left': string_axis})
         plot_item.setTitle(id_group)
         plot_item.addItem(bar_graph)
 

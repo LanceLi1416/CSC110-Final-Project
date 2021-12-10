@@ -7,7 +7,6 @@ class User:
     """ The class storing the user's input """
     # Age
     # - int
-    # - QComboBox
     #     - 18 - 24
     #     - 25 - 34
     #     - 35 - 44
@@ -18,7 +17,6 @@ class User:
     dem_age: str
     # Gender
     # - str
-    # - QComboBox
     #     - Male
     #     - Female
     #     - Other/would rather not say
@@ -26,7 +24,6 @@ class User:
     dem_gender: str
     # What best describes your level of education?
     # - str
-    # - QComboBox
     #     - None
     #     - Up to 6 years of school
     #     - Up to 9 years of school
@@ -39,7 +36,6 @@ class User:
     dem_edu: str
     # Employment status
     # - str
-    # - QComboBox
     #     - Not employed
     #     - Student
     #     - Part time employed
@@ -50,19 +46,16 @@ class User:
     dem_employment: str
     # Country of residence
     # - str
-    # - QComboBox
     #     - See list_of_countries.txt
     country: str
     # Are you currently living outside of what you consider your home country?
     # - bool
-    # - QComboBox
     #     - NA
     #     - True  (Yes)
     #     - False (No)
     dem_expat: str
     # Marital status
     # - str
-    # - QComboBox
     #     - Single
     #     - Married/cohabiting
     #     - Divorced/widowed
@@ -73,7 +66,6 @@ class User:
     # Are you or any of your close relations (family, close friends) in a high-risk group for
     # Coronavirus? (e.g. pregnant, elderly or due to a pre-existing medical condition)
     # - str
-    # - QComboBox
     #     - yes
     #     - no
     #     - not sure
@@ -81,7 +73,6 @@ class User:
     dem_risk_group: str
     # What best describes your current situation?
     # - str
-    # - QComboBox
     #     - Life carries on as usual
     #     - Life carries on with minor changes
     #     - Isolated
@@ -91,18 +82,16 @@ class User:
     # If in relative isolation, how many other adults are staying together in the same place as you
     # are?
     # - int
-    # - QComboBox
     #     - 0 - 110
     dem_isolation_adults: str
     # If in relative isolation, how many children under the age of 12 are staying together in the
     # same place as you are?
     # - int
-    # - QComboBox
     #     - 0 - 110
     dem_isolation_kids: str
 
     # The estimated anxiety score, calculated based on the given data
-    anxiety_score: float
+    _anxiety_score: float
 
     def __init__(self, age: int, gender: str, edu: str, employment: str, country: str, expat: str,
                  marital_status: str, risk_group: str, isolation: str, isolation_adults: int,
@@ -118,7 +107,7 @@ class User:
         self.dem_isolation = isolation
         self.set_isolation_adults(isolation_adults)
         self.set_isolation_kids(isolation_kids)
-        self.anxiety_score = -100.0
+        self._anxiety_score = -100.0
 
     def set_age(self, age: int) -> None:
         """Update the age of the user
@@ -196,23 +185,23 @@ class User:
         >>> user.estimate_anxiety_score(data) == 15
         True
         """
-        self.anxiety_score = (data[0][self.dem_age] +
-                              data[1][self.dem_gender] +
-                              data[2][self.dem_edu] +
-                              data[3][self.dem_employment] +
-                              data[4][self.country] +
-                              data[5][self.dem_expat] +
-                              data[6][self.dem_marital_status] +
-                              data[7][self.dem_risk_group] +
-                              data[8][self.dem_isolation] +
-                              data[9][self.dem_isolation_adults] +
-                              data[10][self.dem_isolation_kids]
-                              ) / 11
-        return self.anxiety_score
+        self._anxiety_score = (data[0][self.dem_age] +
+                               data[1][self.dem_gender] +
+                               data[2][self.dem_edu] +
+                               data[3][self.dem_employment] +
+                               data[4][self.country] +
+                               data[5][self.dem_expat] +
+                               data[6][self.dem_marital_status] +
+                               data[7][self.dem_risk_group] +
+                               data[8][self.dem_isolation] +
+                               data[9][self.dem_isolation_adults] +
+                               data[10][self.dem_isolation_kids]
+                               ) / 11
+        return self._anxiety_score
 
     def get_anxiety_score(self) -> float:
         """Returns the anxiety score of the user"""
-        return self.anxiety_score
+        return self._anxiety_score
 
 
 def get_user_percentage(user: User, id_group: str, data: List[Dict[str, float]]) -> float:
@@ -228,6 +217,6 @@ def get_user_percentage(user: User, id_group: str, data: List[Dict[str, float]])
             highest_score = highest_score + identity_group[id_group]
 
     delta_score = highest_score - lowest_score
-    delta_user = user.anxiety_score
+    delta_user = user._anxiety_score
 
     return delta_user / delta_score * 100
