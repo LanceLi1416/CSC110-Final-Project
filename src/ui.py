@@ -1,8 +1,9 @@
+import os.path
 import sys
 
 import pyqtgraph as pg
 
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 import src.analoggaugewidget as gauge
 import src.constants as constants
@@ -67,6 +68,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("Rate Your Anxiety")  # TODO: find a better name
         # Graphs ----------------------------------------------------------------------------------|
         self._pgb_user.setRange(0, 100)
+        self._lbl_avatar.setAlignment(QtCore.Qt.AlignCenter)
         self._lbl_textual_output.setWordWrap(True)
         # Identity input ------------------------------------------------------------------------- |
         self._setup_id_group_labels()
@@ -94,32 +96,28 @@ class MainWindow(QtWidgets.QMainWindow):
         grid_id.addWidget(self._spi_iso_kids, 10, 1)
 
         frm_id.setLayout(grid_id)
-
         # Main Layout ---------------------------------------------------------------------------- |
-        grid_central.addWidget(frm_id, 0, 0, 2, 1)
+        grid_central.addWidget(frm_id, 0, 0, 3, 1)
         grid_central.addWidget(lbl_title, 0, 1, 1, 2)
-        grid_central.addWidget(self._lbl_avatar, 1, 1, 1, 2)
+        grid_central.addWidget(self._lbl_avatar, 1, 1, 2, 2)
 
-        grid_central.addWidget(self._cbo_data_graph, 2, 0, 1, 1)
-        grid_central.addWidget(self._wgt_gauge, 2, 1, 4, 1)
+        grid_central.addWidget(self._cbo_data_graph, 3, 0, 1, 1)
+        grid_central.addWidget(self._wgt_gauge, 3, 1, 3, 1)
+        grid_central.addWidget(self._cbo_user_graph, 3, 2, 1, 1)
 
-        grid_central.addWidget(self._plt_data, 3, 0, 3, 1)
-        grid_central.addWidget(self._cbo_user_graph, 2, 2, 1, 1)
-        grid_central.addWidget(self._pgb_user, 3, 2, 1, 1)
-        grid_central.addWidget(self._lbl_textual_output, 4, 2, 1, 1)
+        grid_central.addWidget(self._plt_data, 4, 0, 2, 1)
+        grid_central.addWidget(self._pgb_user, 4, 2, 1, 1)
+        grid_central.addWidget(self._lbl_textual_output, 5, 2, 1, 1)
 
         wgt_central.setLayout(grid_central)
         self.setCentralWidget(wgt_central)
 
         # ---------------------------------------- Geometry ----------------------------------------
-        # Identity input ------------------------------------------------------------------------- |
         self._setup_geometry()
-        # Main Window ---------------------------------------------------------------------------- |
-        self.setFixedSize(1500, 1000)
-        self._wgt_gauge.setMinimumWidth(300)
-        self._wgt_gauge.setMinimumHeight(300)
 
         # initialize graphs
+        self._setup_graphs()
+
         self._plot_data()
         self._update_output()
 
@@ -164,12 +162,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _setup_geometry(self):
         """Set up the sizes of the widgets"""
+        self.setFixedSize(1080, 720)
+        self._wgt_gauge.setMinimumWidth(300)
+        self._wgt_gauge.setMinimumHeight(300)
+
+        self._lbl_avatar.resize(300, 200)
+
         for i in range(constants.NUMBER_OF_IDENTITIES):
             self._id_group_labels[i].resize(
                 150,
                 self._id_group_labels[i].height()
             )
-        self._lbl_avatar.resize(300, 200)
 
     def _setup_slots(self):
         """Connect components to slots"""
@@ -211,10 +214,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self._spi_iso_adult.valueChanged.connect(self._update_output)
         self._spi_iso_kids.valueChanged.connect(self._update_output)
 
+        self._cbo_user_graph.currentIndexChanged.connect(self._update_output)
+
     def _setup_gauge(self):
         """Set up the gauge widget"""
         self._wgt_gauge.setMinValue(0)
         self._wgt_gauge.setMaxValue(100)
+
+    def _setup_graphs(self):
+        """Set up the three graphs (plot, gauge, progress bar)"""
+        self._setup_gauge()
+
+        self._plt_data.setBackground(constants.PLOT_BACKGROUND_COLOR)
 
     def _plot_data(self) -> None:
         """Plots the data from the csv file"""
@@ -285,13 +296,13 @@ class MainWindow(QtWidgets.QMainWindow):
                              f'more likely to be anxious than ' \
                              f'<b>{percentage:.2f}%</b>'
 
-        textual_output = textual_output + f' of the entire population. You are also '
+        textual_output = textual_output + f' of the population. You are also '
         if id_percentage < 50:
             textual_output = textual_output + f'less like to be anxious than' \
-                                              f' {100 - id_percentage:.2f}% '
+                                              f' <b<{100 - id_percentage:.2f}%</b> '
         else:
             textual_output = textual_output + f'more like to be anxious than' \
-                                              f' {id_percentage:.2f}% '
+                                              f' <b>{id_percentage:.2f}%</b> '
         textual_output = textual_output + f'of the population who chose "{id_group}" as their ' \
                                           f'"{self._cbo_user_graph.currentText().lower()}" ' \
                                           f'identity.'
@@ -309,6 +320,93 @@ class MainWindow(QtWidgets.QMainWindow):
         self._update_gauge(percentage)
         self._plot_user(id_percentage)
         self._display_textual_output(percentage, id_percentage)
+        self._draw_user_avatar()
+
+    def _draw_user_avatar(self) -> None:
+        """Draws the user's cartoon character based on their input identity"""
+        # TODO: set flag by country
+        flag_name = self._user.country
+        hair_name, clothes_name = '', ''
+        # set hair image name
+        if self._user.dem_gender == constants.DEM_GENDER[0] and \
+                self._user.dem_age in constants.DEM_AGE[:4]:
+            hair_name = 'hair1'
+        # male, age 55+
+        elif self._user.dem_gender == constants.DEM_GENDER[0]:
+            hair_name = 'hair5'
+        # female, age 18-54
+        elif self._user.dem_gender == constants.DEM_GENDER[1] and \
+                self._user.dem_age in constants.DEM_AGE[:4]:
+            hair_name = 'hair2'
+        # female, age 55+
+        elif self._user.dem_gender == constants.DEM_GENDER[1]:
+            hair_name = 'hair4'
+        # neutral, age 18-54
+        elif self._user.dem_gender == constants.DEM_GENDER[2] and \
+                self._user.dem_age in constants.DEM_AGE[:4]:
+            hair_name = 'hair1'
+        # neutral, age 55+
+        elif self._user.dem_gender == constants.DEM_GENDER[2]:
+            hair_name = 'hair3'
+
+        # set clothes image name
+        # unemployed (not employed, student)
+        if self._user.dem_employment in (constants.DEM_EMPLOYMENT[:2]):
+            clothes_name = 'unemployed'
+        # employed (part time, fill time, self-employed, ~retired~)
+        elif self._user.dem_employment in constants.DEM_EMPLOYMENT[2:]:
+            clothes_name = 'employed'
+
+        pxm_flag = QtGui.QImage(
+            constants.os.path.join(constants.IMAGE_PATH, f'Flags/{flag_name}.png'))
+        pxm_hair = QtGui.QImage(
+            constants.os.path.join(constants.IMAGE_PATH, f'Character/{hair_name}.png'))
+        pxm_face = QtGui.QImage(
+            constants.os.path.join(constants.IMAGE_PATH, f'Character/face.png'))
+        pxm_cloth = QtGui.QImage(
+            constants.os.path.join(constants.IMAGE_PATH, f'Character/{clothes_name}.png'))
+        pmx_edu = []
+
+        # TODO: education
+        index = constants.DEM_EDU.index(self._user.dem_edu)
+        # PhD
+        if index > 5:
+            pmx_edu.append(QtGui.QImage(
+                constants.os.path.join(constants.IMAGE_PATH, f'Character/school4.png')))
+        # college to ~
+        if index > 4:
+            pmx_edu.append(QtGui.QImage(
+                constants.os.path.join(constants.IMAGE_PATH, f'Character/school3.png')))
+        # 12 to some college to ~
+        if index > 2:
+            pmx_edu.append(QtGui.QImage(
+                constants.os.path.join(constants.IMAGE_PATH, f'Character/school2.png')))
+        # 6 to 9 to ~
+        if index > 0:
+            pmx_edu.append(QtGui.QImage(
+                constants.os.path.join(constants.IMAGE_PATH, f'Character/school1.png')))
+
+        painter = QtGui.QPainter()
+
+        painter.begin(pxm_flag)
+        # cloth
+        painter.drawImage(0, 0, pxm_cloth)
+        # retired vest
+        if self._user.dem_employment == constants.DEM_EMPLOYMENT[-1]:
+            painter.drawImage(0, 0, QtGui.QImage(
+                constants.os.path.join(constants.IMAGE_PATH, f'Character/retired.png')))
+            painter.drawImage(0, 0, pxm_face)
+        # face
+        painter.drawImage(0, 0, pxm_face)
+        # hair
+        painter.drawImage(0, 0, pxm_hair)
+        # education
+        for pmx_edu_comp in pmx_edu:
+            painter.drawImage(0, 0, pmx_edu_comp)
+
+        painter.end()
+
+        self._lbl_avatar.setPixmap(QPixmap.fromImage(pxm_flag))
 
 
 if __name__ == '__main__':
