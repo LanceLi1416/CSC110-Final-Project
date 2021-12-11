@@ -1,3 +1,4 @@
+# -*- coding: <UTF-8> -*-
 """ The file to save and extract data from the dataset """
 import csv
 import json
@@ -120,8 +121,8 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
 
     # Reads the first row of the csv file, which contains the headers.
     next(reader)
-    # This list comprehension reads each remaining row of the file,
-    # where each row is represented as a list of strings.
+    # This list comprehension reads each remaining row of the file, where each row is represented as
+    # a list of strings.
     # The header row is *not* included in this list.
     for row in reader:
         stress_score = calc_stress_score(row)
@@ -143,6 +144,22 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
                 key = str(num_dependents) if num_dependents < 10 else \
                     constants.DEM_ISOLATION_PEOPLE[(num_dependents - 11) // 10 + 11]
                 category[key] = (category[key][0] + 1, category[key][1] + stress_score)
+
+        # country
+        country = row[9]
+        category = data_processed_so_far[4]
+        if country == 'China' or country == 'Taiwan':
+            value = category['China']
+            category['China'] = (value[0] + 1, value[1] + stress_score)
+        elif country == 'Côte dIvoire':
+            value = category['Côte d’Ivoire']
+            category['Côte d’Ivoire'] = (value[0] + 1, value[1] + stress_score)
+        else:
+            if country in category:
+                value = category[country]
+                category[country] = (value[0] + 1, value[1] + stress_score)
+            else:
+                print('\t', row[9])
 
         # expat - csv file uses lower case
         expat = row[10]
@@ -166,10 +183,11 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
                 category[row[12]] = (value[0] + 1, value[1] + stress_score)
 
         # remaining ones
-        remaining_columns = [5, 6, 8, 9, 14, 15]
+        # remaining_columns = [5, 6, 8, 9, 14, 15]
+        remaining_columns = [5, 6, 8, 14, 15]
         for csv_index in remaining_columns:
             category = data_processed_so_far[
-                remaining_columns.index(csv_index) + (1 if csv_index < 10 else 3)]
+                remaining_columns.index(csv_index) + (1 if csv_index < 10 else 4)]
             if row[csv_index] in category:
                 value = category[row[csv_index]]
                 category[row[csv_index]] = (value[0] + 1, value[1] + stress_score)
@@ -247,7 +265,4 @@ def calculate_extrema(data: List[Dict[str, float]]) -> Tuple[float, float]:
 
 
 if __name__ == '__main__':
-    print(constants.REAL_DATA_JSON_FILE)
-    process_data(
-        constants.REAL_DATA_CSV_FILE, constants.REAL_DATA_JSON_FILE
-    )
+    process_data(constants.REAL_DATA_CSV_FILE, constants.REAL_DATA_JSON_FILE)

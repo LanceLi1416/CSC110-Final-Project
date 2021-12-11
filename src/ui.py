@@ -5,10 +5,10 @@ import pyqtgraph as pg
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-import src.analoggaugewidget as gauge
 import src.constants as constants
 
 from src.data import load_json_data, calculate_extrema
+from src.gauge import GaugeWidget
 from src.user import User, get_user_percentage
 
 from PyQt5.QtGui import QPixmap
@@ -34,7 +34,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._plt_data.setToolTip(
             'Left click to pan, scroll wheel to zoom, right click for more options')
         # Gauge
-        self._wgt_gauge = gauge.AnalogGaugeWidget()
+        self._wgt_gauge = GaugeWidget()
         # Specific identity group plot
         self._cbo_user_graph = QtWidgets.QComboBox()
         self._pgb_user = QtWidgets.QProgressBar()
@@ -58,8 +58,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self._spi_iso_kids = QtWidgets.QSpinBox()
 
         # Data storage --------------------------------------------------------------------------- |
-        self._user = User(18, 'Other/would rather not say', 'None', 'Not employed', 'Canada', 'No',
-                          'Single', 'No', 'Life carries on as usual', 0, 0)
+        self._user = User(18, 'Male', 'None', 'Not employed', 'Afghanistan', 'Yes', 'Single', 'Yes',
+                          'Life carries on as usual', 0, 0)
         self.anxiety_data = load_json_data(constants.REAL_DATA_JSON_FILE)
         self.extrema = calculate_extrema(self.anxiety_data)
 
@@ -218,8 +218,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _setup_gauge(self):
         """Set up the gauge widget"""
-        self._wgt_gauge.setMinValue(0)
-        self._wgt_gauge.setMaxValue(100)
+        pass
 
     def _setup_graphs(self):
         """Set up the three graphs (plot, gauge, progress bar)"""
@@ -324,7 +323,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _draw_user_avatar(self) -> None:
         """Draws the user's cartoon character based on their input identity"""
-        # TODO: set flag by country
         flag_name = self._user.country
         hair_name, clothes_name = '', ''
         # set hair image name
@@ -358,7 +356,8 @@ class MainWindow(QtWidgets.QMainWindow):
             clothes_name = 'employed'
 
         pxm_flag = QtGui.QImage(
-            constants.os.path.join(constants.IMAGE_PATH, f'Flags/{flag_name}.png'))
+            constants.os.path.join(constants.IMAGE_PATH, f'Flags/{flag_name}.png')).convertToFormat(
+            QtGui.QImage.Format_ARGB32)
         pxm_hair = QtGui.QImage(
             constants.os.path.join(constants.IMAGE_PATH, f'Character/{hair_name}.png'))
         pxm_face = QtGui.QImage(
@@ -367,7 +366,6 @@ class MainWindow(QtWidgets.QMainWindow):
             constants.os.path.join(constants.IMAGE_PATH, f'Character/{clothes_name}.png'))
         pmx_edu = []
 
-        # TODO: education
         index = constants.DEM_EDU.index(self._user.dem_edu)
         # PhD
         if index > 5:

@@ -70,7 +70,7 @@ COUNTRIES = [
     'San Marino', 'Sao Tome and Principe', 'Saudi Arabia', 'Senegal', 'Serbia', 'Seychelles',
     'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Solomon Islands', 'Somalia',
     'South Africa', 'Spain', 'Sri Lanka', 'Sudan', 'Sudan, South', 'Suriname', 'Sweden',
-    'Switzerland', 'Syria', 'Taiwan', 'Tajikistan', 'Tanzania', 'Thailand', 'Togo', 'Tonga',
+    'Switzerland', 'Syria', 'Tajikistan', 'Tanzania', 'Thailand', 'Togo', 'Tonga',
     'Trinidad and Tobago', 'Tunisia', 'Turkey', 'Turkmenistan', 'Tuvalu', 'Uganda', 'Ukraine',
     'United Arab Emirates', 'United Kingdom', 'United States', 'Uruguay', 'Uzbekistan', 'Vanuatu',
     'Vatican City', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe'
@@ -143,6 +143,7 @@ PLOT_COLOR = QColor(255, 255, 255, 255)
 PLOT_BACKGROUND_COLOR = QColor(50, 50, 50, 255)
 
 GAUGE_TEXT_COLOR = QColor(255, 255, 255, 255)
+GAUGE_NEEDLE_COLOR = QColor(0, 0, 0, 255)
 GAUGE_SCALE_TEXT_COLOR = QColor(198, 198, 198, 198)
 GAUGE_BIG_SCALE_COLOR = QColor(0, 0, 0, 255)
 GAUGE_FINE_SCALE_COLOR = QColor(0, 0, 0, 255)
