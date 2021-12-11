@@ -2,7 +2,6 @@
 """ The file to save and extract data from the dataset """
 import csv
 import json
-
 from typing import Dict, List, Tuple
 
 import src.constants as constants

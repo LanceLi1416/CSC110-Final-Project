@@ -1,17 +1,13 @@
-import os.path
 import sys
 
 import pyqtgraph as pg
-
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QPixmap
 
 import src.constants as constants
-
 from src.data import load_json_data, calculate_extrema
 from src.gauge import GaugeWidget
 from src.user import User, get_user_percentage
-
-from PyQt5.QtGui import QPixmap
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -163,8 +159,8 @@ class MainWindow(QtWidgets.QMainWindow):
     def _setup_geometry(self):
         """Set up the sizes of the widgets"""
         self.setFixedSize(1080, 720)
-        self._wgt_gauge.setMinimumWidth(300)
-        self._wgt_gauge.setMinimumHeight(300)
+        self._wgt_gauge.setMinimumWidth(250)
+        self._wgt_gauge.setMinimumHeight(250)
 
         self._lbl_avatar.resize(300, 200)
 
@@ -216,14 +212,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._cbo_user_graph.currentIndexChanged.connect(self._update_output)
 
-    def _setup_gauge(self):
-        """Set up the gauge widget"""
-        pass
-
     def _setup_graphs(self):
         """Set up the three graphs (plot, gauge, progress bar)"""
-        self._setup_gauge()
-
         self._plt_data.setBackground(constants.PLOT_BACKGROUND_COLOR)
 
     def _plot_data(self) -> None:
@@ -249,7 +239,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _update_gauge(self, percentage: float):
         """Calculate the user's anxiety score, then update the gauge"""
-        self._wgt_gauge.updateValue(percentage)
+        self._wgt_gauge.update_value(percentage)
 
     def _plot_user(self, id_percentage: float) -> None:
         """Plots the user's ranking"""
@@ -401,6 +391,12 @@ class MainWindow(QtWidgets.QMainWindow):
         # education
         for pmx_edu_comp in pmx_edu:
             painter.drawImage(0, 0, pmx_edu_comp)
+
+        # risk group or under isolation
+        if self._user.dem_risk_group == constants.RISK_GROUP[0] or \
+                self._user.dem_isolation in constants.DEM_ISOLATION[2:]:
+            painter.drawImage(0, 0, QtGui.QImage(
+                constants.os.path.join(constants.IMAGE_PATH, f'Character/mask.png')))
 
         painter.end()
 
