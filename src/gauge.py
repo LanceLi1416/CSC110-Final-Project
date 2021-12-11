@@ -1,24 +1,27 @@
-import os
 import math
+import os
 
-from PyQt5.QtWidgets import QWidget
-
+from PyQt5.QtCore import Qt, QPoint, QPointF, QEvent
 from PyQt5.QtGui import QPolygon, QPolygonF, QColor, QPen, QFont, QPainter, QFontMetrics, \
-    QConicalGradient, QRadialGradient, QFontDatabase, QPaintEvent
-
-from PyQt5.QtCore import Qt, QPoint, QPointF, QObject, pyqtSignal
+    QConicalGradient, QRadialGradient, QFontDatabase
+from PyQt5.QtWidgets import QWidget
 
 import src.constants as constants
 
 
 class GaugeWidget(QWidget):
-    valueChanged = pyqtSignal(int)
+    """An analog gauge widget.
 
-    def __init__(self, *args, **kwargs):
+    modified from
+    https://khamisikibet.github.io/QT-PyQt-PySide-Custom-Widgets/docs/custom-analog-gauge.html
+    under the GNU General Public License v3.0
+    """
+
+    def __init__(self, *args, **kwargs) -> None:
         super(GaugeWidget, self).__init__(*args, **kwargs)
 
         # Value needle
-        self.value_needle = QObject
+        self.value_needle = QPolygon()
         self.pen = QPen()
 
         # Min and max
@@ -72,112 +75,41 @@ class GaugeWidget(QWidget):
             [1, QColor(30, 36, 45, 255)]
         ]
 
-        self.update()
-        # RESIZE GAUGE
+        # Resize gauge
+        self.widget_diameter = 0
         self.rescale_method()
 
-    # RESCALE
-    def rescale_method(self):
-        # SET WIDTH AND HEIGHT
-        if self.width() <= self.height():
-            self.widget_diameter = self.width()
-        else:
-            self.widget_diameter = self.height()
+    def rescale_method(self) -> None:
+        """Rescale the gauge """
+        self.widget_diameter = min(self.width(), self.height())
 
-        # SET NEEDLE SIZE
-        self.change_value_needle_style(
-            [QPolygon(
-                [QPoint(4, 30),
-                 QPoint(-4, 30),
-                 QPoint(-2, - self.widget_diameter /
-                        2 * self.needle_scale_factor),
-                 QPoint(0, - self.widget_diameter / 2 *
-                        self.needle_scale_factor - 6),
-                 QPoint(2, - self.widget_diameter /
-                        2 * self.needle_scale_factor)
-                 ])
-            ])
+        # Set needle size
+        self.value_needle = QPolygon(
+            [QPoint(4, 30),
+             QPoint(-4, 30),
+             QPoint(-2, - self.widget_diameter / 2 * self.needle_scale_factor),
+             QPoint(0, - self.widget_diameter / 2 * self.needle_scale_factor - 6),
+             QPoint(2, - self.widget_diameter / 2 * self.needle_scale_factor)
+             ])
 
-        # SET FONT SIZE
+        # Set font size
         self.scale_fontsize = self.initial_scale_fontsize * self.widget_diameter / 400
         self.value_fontsize = self.initial_value_fontsize * self.widget_diameter / 400
 
-    def change_value_needle_style(self, design):
-        # prepared for multiple needle instrument
-        self.value_needle = []
-        for i in design:
-            self.value_needle.append(i)
-        self.update()
-
-    ################################################################################################
-    # UPDATE VALUE
-    ################################################################################################
-    def updateValue(self, value):
+    def update_value(self, value) -> None:
+        """Update the value of the gauge, and repaint."""
         if value <= self.min_val:
             self.value = self.min_val
         elif value >= self.max_val:
             self.value = self.max_val
         else:
             self.value = value
-        # self.paintEvent("")
-        self.valueChanged.emit(int(value))
-        # print(self.value)
 
-        # ohne timer: aktiviere self.update()
-        self.update()
-
-    ################################################################################################
-    # SHOW HIDE SCALA MAIN CONT
-    ################################################################################################
-    def setScalaCount(self, count):
-        if count < 1:
-            count = 1
-        self.scala_count = count
-        self.update()
-
-    ################################################################################################
-    # SET MINIMUM VALUE
-    ################################################################################################
-    def setMinValue(self, min):
-        if self.value < min:
-            self.value = min
-        if min >= self.max_val:
-            self.min_val = self.max_val - 1
-        else:
-            self.min_val = min
-        self.update()
-
-    ################################################################################################
-    # SET MAXIMUM VALUE
-    ################################################################################################
-    def setMaxValue(self, max):
-        if self.value > max:
-            self.value = max
-        if max <= self.min_val:
-            self.max_val = self.min_val + 1
-        else:
-            self.max_val = max
-        self.update()
-
-    ################################################################################################
-    # SET SCALE SIZE
-    ################################################################################################
-    def setTotalScaleAngleSize(self, value):
-        self.scale_angle_size = value
-        # print("stopFill: " + str(self.scale_angle_size))
-        self.update()
-
-    ################################################################################################
-    # GET MAXIMUM VALUE
-    ################################################################################################
-    def get_value_max(self):
-        return self.max_val
-
-    # CREATE PIE
-    def create_polygon_pie(self, outer_radius: int, inner_radius: int, start: int, length: int):
+    def _create_polygon_pie(self, outer_radius: float, inner_radius: float,
+                            start: float, length: int) -> QPolygonF:
+        """Create the outer polygon pie."""
         polygon_pie = QPolygonF()
-        n = 360  # angle steps size for full circle
-        w = 360 / n  # angle per step
+        w = 1  # angle per step
         x = 0
         y = 0
 
@@ -187,8 +119,7 @@ class GaugeWidget(QWidget):
             x = outer_radius * math.cos(math.radians(t))
             y = outer_radius * math.sin(math.radians(t))
             polygon_pie.append(QPointF(x, y))
-        # create inner circle line from "start + lenght"-angle to "start"-angle add the points of
-        # polygon
+        # create inner circle line
         for i in range(length + 1):
             t = w * (length - i) + start
             x = inner_radius * math.cos(math.radians(t))
@@ -199,7 +130,8 @@ class GaugeWidget(QWidget):
         polygon_pie.append(QPointF(x, y))
         return polygon_pie
 
-    def draw_filled_polygon(self, outline_pen_with=0):
+    def _draw_filled_polygon(self, outline_pen_with=0) -> None:
+        """Draws the outer filled pie area"""
         painter_filled_polygon = QPainter(self)
         painter_filled_polygon.setRenderHint(QPainter.Antialiasing)
         painter_filled_polygon.translate(
@@ -211,7 +143,7 @@ class GaugeWidget(QWidget):
         if outline_pen_with > 0:
             painter_filled_polygon.setPen(self.pen)
 
-        colored_scale_polygon = self.create_polygon_pie(
+        colored_scale_polygon = self._create_polygon_pie(
             ((self.widget_diameter / 2) - (self.pen.width() / 2)) * 1,
             (((self.widget_diameter / 2) - (self.pen.width() / 2)) * 0.9
              ),
@@ -225,8 +157,8 @@ class GaugeWidget(QWidget):
 
         painter_filled_polygon.drawPolygon(colored_scale_polygon)
 
-    # BIG SCALE MARKERS
-    def draw_big_scaled_marker(self):
+    def _draw_big_scaled_marker(self) -> None:
+        """Draw the markers for the big scales."""
         my_painter = QPainter(self)
         my_painter.setRenderHint(QPainter.Antialiasing)
         my_painter.translate(self.width() / 2, self.height() / 2)
@@ -238,14 +170,13 @@ class GaugeWidget(QWidget):
         my_painter.rotate(self.scale_angle_start)
         steps_size = (float(self.scale_angle_size) / float(self.scala_count))
         scale_line_outer_start = self.widget_diameter / 2
-        scale_line_lenght = (self.widget_diameter / 2) - \
-                            (self.widget_diameter / 20)
+        scale_line_length = (self.widget_diameter / 2) - (self.widget_diameter / 20)
         for i in range(self.scala_count + 1):
-            my_painter.drawLine(scale_line_lenght, 0,
-                                scale_line_outer_start, 0)
+            my_painter.drawLine(scale_line_length, 0, scale_line_outer_start, 0)
             my_painter.rotate(steps_size)
 
-    def create_scale_marker_values_text(self):
+    def _create_scale_marker_values_text(self) -> None:
+        """Create the text for the scale."""
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
@@ -273,16 +204,12 @@ class GaugeWidget(QWidget):
             angle = angle_distance * i + float(self.scale_angle_start)
             x = text_radius * math.cos(math.radians(angle))
             y = text_radius * math.sin(math.radians(angle))
-            # print(w, h, x, y, text)
 
-            text = [x - int(w / 2), y - int(h / 2), int(w),
-                    int(h), Qt.AlignCenter, text]
-            painter.drawText(text[0], text[1], text[2],
-                             text[3], text[4], text[5])
+            text = [x - int(w / 2), y - int(h / 2), int(w), int(h), Qt.AlignCenter, text]
+            painter.drawText(text[0], text[1], text[2], text[3], text[4], text[5])
 
-    # FINE SCALE MARKERS
-    def create_fine_scaled_marker(self):
-        #  Description_dict = 0
+    def _create_fine_scaled_marker(self):
+        """Create the markers for the fine scale"""
         my_painter = QPainter(self)
 
         my_painter.setRenderHint(QPainter.Antialiasing)
@@ -293,19 +220,19 @@ class GaugeWidget(QWidget):
         steps_size = (
                 float(self.scale_angle_size) / float(self.scala_count * self.scala_subdiv_count))
         scale_line_outer_start = self.widget_diameter / 2
-        scale_line_lenght = (self.widget_diameter / 2) - (self.widget_diameter / 40)
+        scale_line_length = (self.widget_diameter / 2) - (self.widget_diameter / 40)
         for i in range((self.scala_count * self.scala_subdiv_count) + 1):
-            my_painter.drawLine(scale_line_lenght, 0, scale_line_outer_start, 0)
+            my_painter.drawLine(scale_line_length, 0, scale_line_outer_start, 0)
             my_painter.rotate(steps_size)
 
-    # VALUE TEXT
-    def create_values_text(self):
+    def _create_values_text(self) -> None:
+        """Create the main value text"""
         painter = QPainter(self)
         painter.setRenderHint(QPainter.HighQualityAntialiasing)
 
         painter.translate(self.width() / 2, self.height() / 2)
         font = QFont(self.value_fontname, self.value_fontsize, QFont.Bold)
-        fm = QFontMetrics(font)
+        font_matrices = QFontMetrics(font)
 
         pen_shadow = QPen()
 
@@ -315,11 +242,9 @@ class GaugeWidget(QWidget):
         text_radius = self.widget_diameter / 2 * 0.5
 
         text = f'{self.value:.0f} %'
-        w = fm.width(text) + 1
-        h = fm.height()
-        painter.setFont(QFont(self.value_fontname,
-                              self.value_fontsize,
-                              QFont.Bold))
+        w = font_matrices.width(text) + 1
+        h = font_matrices.height()
+        painter.setFont(QFont(self.value_fontname, self.value_fontsize, QFont.Bold))
 
         angle_end = float(self.scale_angle_start + self.scale_angle_size - 360)
         angle = (angle_end - self.scale_angle_start) / 2 + self.scale_angle_start
@@ -329,49 +254,48 @@ class GaugeWidget(QWidget):
         text = [x - int(w / 2), y - int(h / 2), int(w), int(h), Qt.AlignCenter, text]
         painter.drawText(text[0], text[1], text[2], text[3], text[4], text[5])
 
-    # CENTER POINTER
-    def draw_big_needle_center_point(self):
+    def _draw_center_point_cover(self) -> None:
+        """Draw the center pointer cover"""
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
         painter.translate(self.width() / 2, self.height() / 2)
         painter.setPen(Qt.NoPen)
 
-        colored_scale_polygon = self.create_polygon_pie(
+        colored_scale_polygon = self._create_polygon_pie(
             ((self.widget_diameter / 8) - (self.pen.width() / 2)),
             0, self.scale_angle_start, 360)
 
         grad = QConicalGradient(QPointF(0, 0), 0)
 
-        for eachcolor in self.needle_center_bg:
-            grad.setColorAt(eachcolor[0], eachcolor[1])
+        for color in self.needle_center_bg:
+            grad.setColorAt(color[0], color[1])
         painter.setBrush(grad)
 
         painter.drawPolygon(colored_scale_polygon)
 
-    # CREATE OUTER COVER
-    def draw_outer_circle(self):
+    def _draw_outer_circle(self) -> None:
+        """Create the outer circle of the gauge"""
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
         painter.translate(self.width() / 2, self.height() / 2)
         painter.setPen(Qt.NoPen)
-        colored_scale_polygon = self.create_polygon_pie(
+        colored_scale_polygon = self._create_polygon_pie(
             ((self.widget_diameter / 2) - (self.pen.width())),
-            (self.widget_diameter / 6),
-            self.scale_angle_start / 10, 360)
+            (self.widget_diameter / 6), self.scale_angle_start / 10, 360)
 
-        radialGradient = QRadialGradient(QPointF(0, 0), self.width())
+        radial_gradient = QRadialGradient(QPointF(0, 0), self.width())
 
-        for eachcolor in self.outer_circle_bg:
-            radialGradient.setColorAt(eachcolor[0], eachcolor[1])
+        for color in self.outer_circle_bg:
+            radial_gradient.setColorAt(color[0], color[1])
 
-        painter.setBrush(radialGradient)
+        painter.setBrush(radial_gradient)
 
         painter.drawPolygon(colored_scale_polygon)
 
-    # NEEDLE POINTER
-    def draw_needle(self):
+    def _draw_needle(self) -> None:
+        """Draw the needle pointer"""
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.translate(self.width() / 2, self.height() / 2)
@@ -380,32 +304,25 @@ class GaugeWidget(QWidget):
         painter.rotate(((self.value - self.min_val) * self.scale_angle_size /
                         (self.max_val - self.min_val)) + 90 + self.scale_angle_start)
 
-        painter.drawConvexPolygon(self.value_needle[0])
+        painter.drawConvexPolygon(self.value_needle)
 
-    # ON WINDOW RESIZE
-    def resizeEvent(self, event):
+    def resizeEvent(self, event: QEvent) -> None:
+        """The resize event. Called automatically on window resize."""
         self.rescale_method()
 
-    # ON PAINT EVENT
-    def paintEvent(self, event: QPaintEvent):
-        # Main Drawing Event:
-
-        self.draw_outer_circle()
+    def paintEvent(self, event: QEvent) -> None:
+        """The main drawing event for the gauge. Called automatically on paint event."""
+        self._draw_outer_circle()
         # colored pie area
-        self.draw_filled_polygon()
-
+        self._draw_filled_polygon()
         # draw scale marker lines
-        self.create_fine_scaled_marker()
-        self.draw_big_scaled_marker()
-
+        self._create_fine_scaled_marker()
+        self._draw_big_scaled_marker()
         # draw scale marker value text
-        self.create_scale_marker_values_text()
-
-        # Display Value
-        self.create_values_text()
-
+        self._create_scale_marker_values_text()
+        # Display value
+        self._create_values_text()
         # draw needle
-        self.draw_needle()
-
-        # Draw Center Point
-        self.draw_big_needle_center_point()
+        self._draw_needle()
+        # Draw center point
+        self._draw_center_point_cover()
