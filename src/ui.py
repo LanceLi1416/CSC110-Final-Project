@@ -10,6 +10,8 @@ import src.constants as constants
 from src.data import load_json_data, calculate_extrema
 from src.user import User, get_user_percentage
 
+from PyQt5.QtGui import QPixmap
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs) -> None:
@@ -22,7 +24,7 @@ class MainWindow(QtWidgets.QMainWindow):
         status_bar = self.statusBar()
         # Graphs --------------------------------------------------------------------------------- |
         # User avatar (cartoon image)
-        lbl_avatar = QtWidgets.QLabel('USER AVATAR')
+        self._lbl_avatar = QtWidgets.QLabel('USER AVATAR')
         # Title of program
         lbl_title = QtWidgets.QLabel('ANXIETY')  # TODO: find a font and proper title
         # Data plot
@@ -34,8 +36,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self._wgt_gauge = gauge.AnalogGaugeWidget()
         # Specific identity group plot
         self._cbo_user_graph = QtWidgets.QComboBox()
-        self._plt_user = QtWidgets.QProgressBar()
-        self._plt_user.setRange(0, 100)
+        self._pgb_user = QtWidgets.QProgressBar()
+        self._lbl_textual_output = QtWidgets.QLabel()
         # Identity input ------------------------------------------------------------------------- |
         grid_id = QtWidgets.QGridLayout()
         frm_id = QtWidgets.QFrame()
@@ -64,20 +66,14 @@ class MainWindow(QtWidgets.QMainWindow):
         # Main Window ---------------------------------------------------------------------------- |
         self.setWindowTitle("Rate Your Anxiety")  # TODO: find a better name
         # Graphs ----------------------------------------------------------------------------------|
+        self._pgb_user.setRange(0, 100)
+        self._lbl_textual_output.setWordWrap(True)
         # Identity input ------------------------------------------------------------------------- |
         self._setup_id_group_labels()
         self._setup_intractable_values()
 
         # ------------------------------- Connect Signals and Slots --------------------------------
         self._setup_slots()
-
-        # ---------------------------------------- Geometry ----------------------------------------
-        # Main Window ---------------------------------------------------------------------------- |
-        self.resize(self._cbo_edu.width() + 600, 720)
-        self._wgt_gauge.setMinimumWidth(300)
-        self._wgt_gauge.setMinimumHeight(300)
-        # Identity input ------------------------------------------------------------------------- |
-        self._setup_geometry()
 
         # ----------------------------------------- Layout -----------------------------------------
         # Identity input ------------------------------------------------------------------------- |
@@ -100,25 +96,32 @@ class MainWindow(QtWidgets.QMainWindow):
         frm_id.setLayout(grid_id)
 
         # Main Layout ---------------------------------------------------------------------------- |
-        row = 0
-        grid_central.addWidget(frm_id, row, 0)
-        grid_central.addWidget(lbl_avatar, row, 1)
-        grid_central.addWidget(lbl_title, row, 2)
-        row += 1
-        grid_central.addWidget(self._cbo_data_graph, row, 0)
-        grid_central.addWidget(self._cbo_user_graph, row, 2)
-        row += 1
-        grid_central.addWidget(self._plt_data, row, 0)
-        grid_central.addWidget(self._wgt_gauge, row, 1)
-        grid_central.addWidget(self._plt_user, row, 2)
+        grid_central.addWidget(frm_id, 0, 0, 2, 1)
+        grid_central.addWidget(lbl_title, 0, 1, 1, 2)
+        grid_central.addWidget(self._lbl_avatar, 1, 1, 1, 2)
+
+        grid_central.addWidget(self._cbo_data_graph, 2, 0, 1, 1)
+        grid_central.addWidget(self._wgt_gauge, 2, 1, 4, 1)
+
+        grid_central.addWidget(self._plt_data, 3, 0, 3, 1)
+        grid_central.addWidget(self._cbo_user_graph, 2, 2, 1, 1)
+        grid_central.addWidget(self._pgb_user, 3, 2, 1, 1)
+        grid_central.addWidget(self._lbl_textual_output, 4, 2, 1, 1)
 
         wgt_central.setLayout(grid_central)
         self.setCentralWidget(wgt_central)
 
+        # ---------------------------------------- Geometry ----------------------------------------
+        # Identity input ------------------------------------------------------------------------- |
+        self._setup_geometry()
+        # Main Window ---------------------------------------------------------------------------- |
+        self.setFixedSize(1500, 1000)
+        self._wgt_gauge.setMinimumWidth(300)
+        self._wgt_gauge.setMinimumHeight(300)
+
         # initialize graphs
         self._plot_data()
-        self._update_gauge()
-        self._plot_user()
+        self._update_output()
 
     def _setup_id_group_labels(self):
         tool_tips = [
@@ -166,6 +169,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 150,
                 self._id_group_labels[i].height()
             )
+        self._lbl_avatar.resize(300, 200)
 
     def _setup_slots(self):
         """Connect components to slots"""
@@ -192,44 +196,25 @@ class MainWindow(QtWidgets.QMainWindow):
             lambda: self._user.set_isolation_adults(self._spi_iso_adult.value()))
         self._spi_iso_kids.valueChanged.connect(
             lambda: self._user.set_isolation_kids(self._spi_iso_kids.value()))
-        # Update Gauge
-        self._spi_age.valueChanged.connect(self._update_gauge)
-        self._cbo_gender.currentIndexChanged.connect(self._update_gauge)
-        self._cbo_edu.currentIndexChanged.connect(self._update_gauge)
-        self._cbo_employment.currentIndexChanged.connect(self._update_gauge)
-        self._cbo_country.currentIndexChanged.connect(self._update_gauge)
-        self._cbo_expat.currentIndexChanged.connect(self._update_gauge)
-        self._cbo_martial.currentIndexChanged.connect(self._update_gauge)
-        self._cbo_risk.currentIndexChanged.connect(self._update_gauge)
-        self._cbo_situation.currentIndexChanged.connect(self._update_gauge)
-        self._spi_iso_adult.valueChanged.connect(self._update_gauge)
-        self._spi_iso_kids.valueChanged.connect(self._update_gauge)
-        # Update graph
+        # Update graph for data
         self._cbo_data_graph.currentIndexChanged.connect(self._plot_data)
-        # Update progress bar
-        self._cbo_user_graph.currentIndexChanged.connect(self._plot_user)
-        self._spi_age.valueChanged.connect(self._plot_user)
-        self._cbo_gender.currentIndexChanged.connect(self._plot_user)
-        self._cbo_edu.currentIndexChanged.connect(self._plot_user)
-        self._cbo_employment.currentIndexChanged.connect(self._plot_user)
-        self._cbo_country.currentIndexChanged.connect(self._plot_user)
-        self._cbo_expat.currentIndexChanged.connect(self._plot_user)
-        self._cbo_martial.currentIndexChanged.connect(self._plot_user)
-        self._cbo_risk.currentIndexChanged.connect(self._plot_user)
-        self._cbo_situation.currentIndexChanged.connect(self._plot_user)
-        self._spi_iso_adult.valueChanged.connect(self._plot_user)
-        self._spi_iso_kids.valueChanged.connect(self._plot_user)
+        # Update user selected outputs
+        self._spi_age.valueChanged.connect(self._update_output)
+        self._cbo_gender.currentIndexChanged.connect(self._update_output)
+        self._cbo_edu.currentIndexChanged.connect(self._update_output)
+        self._cbo_employment.currentIndexChanged.connect(self._update_output)
+        self._cbo_country.currentIndexChanged.connect(self._update_output)
+        self._cbo_expat.currentIndexChanged.connect(self._update_output)
+        self._cbo_martial.currentIndexChanged.connect(self._update_output)
+        self._cbo_risk.currentIndexChanged.connect(self._update_output)
+        self._cbo_situation.currentIndexChanged.connect(self._update_output)
+        self._spi_iso_adult.valueChanged.connect(self._update_output)
+        self._spi_iso_kids.valueChanged.connect(self._update_output)
 
     def _setup_gauge(self):
         """Set up the gauge widget"""
         self._wgt_gauge.setMinValue(0)
         self._wgt_gauge.setMaxValue(100)
-
-    def _update_gauge(self):
-        """Calculate the user's anxiety score, then update the gauge"""
-        self._user.estimate_anxiety_score(self.anxiety_data)
-        self._wgt_gauge.updateValue((self._user.get_anxiety_score() - self.extrema[0]) /
-                                    (self.extrema[1] - self.extrema[0]) * 100)
 
     def _plot_data(self) -> None:
         """Plots the data from the csv file"""
@@ -252,15 +237,78 @@ class MainWindow(QtWidgets.QMainWindow):
         plot_item.setTitle(id_group)
         plot_item.addItem(bar_graph)
 
-    def _plot_user(self) -> None:
+    def _update_gauge(self, percentage: float):
+        """Calculate the user's anxiety score, then update the gauge"""
+        self._wgt_gauge.updateValue(percentage)
+
+    def _plot_user(self, id_percentage: float) -> None:
         """Plots the user's ranking"""
+        self._pgb_user.setValue(int(id_percentage))
+
+    def _display_textual_output(self, percentage: float,
+                                id_percentage: float) -> None:
+        """Display the textual output of the user's anxiety data"""
+        # id_index = constants.IDENTITY_GROUP_NAMES.index(self._cbo_user_graph.currentText())
+        selection = self._cbo_user_graph.currentText()
+        if selection == 'Age':
+            id_group = self._spi_age.value()
+        elif selection == 'Gender':
+            id_group = self._cbo_gender.currentText()
+        elif selection == 'Education':
+            id_group = self._cbo_edu.currentText()
+        elif selection == 'Employment Status':
+            id_group = self._cbo_employment.currentText()
+        elif selection == 'Country of Residence':
+            id_group = self._cbo_country.currentText()
+        elif selection == 'Expatriate':
+            id_group = self._cbo_expat.currentText()
+        elif selection == 'Marital status':
+            id_group = self._cbo_martial.currentText()
+        elif selection == 'Risk Group':
+            id_group = self._cbo_risk.currentText()
+        elif selection == 'Current Situation':
+            id_group = self._cbo_situation.currentText()
+        elif selection == 'Isolation Adult':
+            id_group = self._spi_iso_adult.value()
+        elif selection == 'Isolation Children':
+            id_group = self._spi_iso_kids.value()
+        else:
+            id_group = 'NA'
+
+        textual_output = f'You are '
+        if percentage < 50:
+            textual_output = textual_output + \
+                             f'less likely to be anxious than ' \
+                             f'<b>{100 - percentage:.2f}%</b>'
+        else:
+            textual_output = textual_output + \
+                             f'more likely to be anxious than ' \
+                             f'<b>{percentage:.2f}%</b>'
+
+        textual_output = textual_output + f' of the entire population. You are also '
+        if id_percentage < 50:
+            textual_output = textual_output + f'less like to be anxious than' \
+                                              f' {100 - id_percentage:.2f}% '
+        else:
+            textual_output = textual_output + f'more like to be anxious than' \
+                                              f' {id_percentage:.2f}% '
+        textual_output = textual_output + f'of the population who chose "{id_group}" as their ' \
+                                          f'"{self._cbo_user_graph.currentText().lower()}" ' \
+                                          f'identity.'
+        self._lbl_textual_output.setText(textual_output)
+
+    def _update_output(self) -> None:
+        """Updates all the output (gauge, progress bar and textual)."""
         self._user.estimate_anxiety_score(self.anxiety_data)
-        val = get_user_percentage(
-            self._user,
-            self._cbo_user_graph.currentText(),
-            self.anxiety_data
-        )
-        self._plt_user.setValue(int(val))
+
+        percentage = (self._user.get_anxiety_score() - self.extrema[0]) / \
+                     (self.extrema[1] - self.extrema[0]) * 100
+        id_percentage = get_user_percentage(self._user,
+                                            self._cbo_user_graph.currentText(),
+                                            self.anxiety_data)
+        self._update_gauge(percentage)
+        self._plot_user(id_percentage)
+        self._display_textual_output(percentage, id_percentage)
 
 
 if __name__ == '__main__':
