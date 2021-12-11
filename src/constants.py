@@ -1,5 +1,6 @@
 """ The file storing all the constants """
-from enum import Enum
+import os
+
 from PyQt5.QtGui import QColor
 
 # Global constants ---------------------------------------------------------------------------------
@@ -129,11 +130,20 @@ IDENTITY_GROUP_OPTIONS_LIST = [
 ]
 
 # File paths ---------------------------------------------------------------------------------------
-TEST_DATA_CSV_FILE = 'data/sample_data.csv'
-REAL_DATA_CSV_FILE = 'data/COVIDiSTRESS June 17.csv'
+TEST_DATA_CSV_FILE = os.path.join(os.path.dirname(__file__), '../', 'data/sample_data.csv')
+REAL_DATA_CSV_FILE = os.path.join(os.path.dirname(__file__), '../', 'data/COVIDiSTRESS June 17.csv')
 
-TEST_DATA_JSON_FILE = 'data/sample_data.json'
-REAL_DATA_JSON_FILE = 'data/real_data.json'
+TEST_DATA_JSON_FILE = os.path.join(os.path.dirname(__file__), '../', 'data/sample_data.json')
+REAL_DATA_JSON_FILE = os.path.join(os.path.dirname(__file__), '../', 'data/real_data.json')
 
 # Colours ------------------------------------------------------------------------------------------
 PLOT_COLOR = QColor(198, 198, 198, 255)
+
+GAUGE_TEXT_COLOR = QColor(255, 255, 255, 255)
+GAUGE_SCALE_TEXT_COLOR = QColor(198, 198, 198, 198)
+GAUGE_BIG_SCALE_COLOR = QColor(0, 0, 0, 255)
+GAUGE_FINE_SCALE_COLOR = QColor(0, 0, 0, 255)
+
+# Fonts
+GAUGE_FONT_PATH = 'fonts/Orbitron/Orbitron-VariableFont_wght.ttf'
+GAUGE_FONT_NAME = 'Orbitron'

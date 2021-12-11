@@ -244,3 +244,10 @@ def calculate_extrema(data: List[Dict[str, float]]) -> Tuple[float, float]:
         max_so_far = max_so_far + max(identity_group.values())
 
     return min_so_far / 11, max_so_far / 11
+
+
+if __name__ == '__main__':
+    print(constants.REAL_DATA_JSON_FILE)
+    process_data(
+        constants.REAL_DATA_CSV_FILE, constants.REAL_DATA_JSON_FILE
+    )
