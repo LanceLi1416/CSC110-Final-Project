@@ -1,3 +1,5 @@
+import os
+import platform
 import sys
 
 import pyqtgraph as pg
@@ -23,7 +25,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # User avatar (cartoon image)
         self._lbl_avatar = QtWidgets.QLabel('USER AVATAR')
         # Title of program
-        lbl_title = QtWidgets.QLabel('ANXIETY')  # TODO: find a font and proper title
+        lbl_title = self._create_title_label()
         # Data plot
         self._cbo_data_graph = QtWidgets.QComboBox()
         self._plt_data = pg.GraphicsLayoutWidget()
@@ -61,7 +63,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # --------------------------------------- Behaviour ----------------------------------------
         # Main Window ---------------------------------------------------------------------------- |
-        self.setWindowTitle("Rate Your Anxiety")  # TODO: find a better name
+        self.setWindowTitle(constants.TITLE)
         # Graphs ----------------------------------------------------------------------------------|
         self._pgb_user.setRange(0, 100)
         self._lbl_avatar.setAlignment(QtCore.Qt.AlignCenter)
@@ -69,6 +71,16 @@ class MainWindow(QtWidgets.QMainWindow):
         # Identity input ------------------------------------------------------------------------- |
         self._setup_id_group_labels()
         self._setup_intractable_values()
+        self._cbo_data_graph.setToolTip(
+            'Select the identity group whose data you want to see.')
+        self._cbo_user_graph.setToolTip(
+            'Select the identity group of which you would like to compare yourself with.')
+        # Status bar
+        lbl_status_bar = QtWidgets.QLabel(
+            ' * Hover your mouse over the components for more details.')
+        lbl_status_bar.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        status_bar.addWidget(lbl_status_bar)
 
         # ------------------------------- Connect Signals and Slots --------------------------------
         self._setup_slots()
@@ -111,11 +123,105 @@ class MainWindow(QtWidgets.QMainWindow):
         # ---------------------------------------- Geometry ----------------------------------------
         self._setup_geometry()
 
-        # initialize graphs
-        self._setup_graphs()
+        # ------------------------------------------ Look ------------------------------------------
+        # Set style
+        self._setup_fonts()
+        self._setup_color()
 
         self._plot_data()
         self._update_output()
+
+    def _create_title_label(self) -> QtWidgets.QLabel:
+        """Creates and customized tha title label"""
+        lbl_title = QtWidgets.QLabel(constants.TITLE)
+        lbl_title.setWordWrap(True)
+        lbl_title.setAlignment(QtCore.Qt.AlignCenter)
+        QtGui.QFontDatabase.addApplicationFont(
+            os.path.join(os.path.dirname(__file__), '../', constants.TITLE_FONT_PATH)
+        )
+        lbl_title.setFont(QtGui.QFont(constants.TITLE_FONT_NAME, constants.TITLE_FONT_SIZE))
+        return lbl_title
+
+    def _setup_fonts(self) -> None:
+        """Set customized fonts to all the widgets"""
+        QtGui.QFontDatabase.addApplicationFont(
+            os.path.join(os.path.dirname(__file__), '../', constants.BODY_FONT_PATH)
+        )
+        # Labels
+        for i in range(constants.NUMBER_OF_IDENTITIES):
+            self._id_group_labels[i].setFont(
+                QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        # Intractable
+        self._spi_age.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        self._cbo_gender.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        self._cbo_edu.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        self._cbo_employment.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        self._cbo_country.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        self._cbo_expat.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        self._cbo_martial.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        self._cbo_risk.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        self._cbo_situation.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        self._spi_iso_adult.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        self._spi_iso_kids.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        self._cbo_data_graph.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        self._cbo_user_graph.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+        # Textual output
+        self._lbl_textual_output.setFont(
+            QtGui.QFont(constants.BODY_FONT_NAME, constants.BODY_FONT_SIZE))
+
+    def _setup_color(self) -> None:
+        """Setup color for all the widgets"""
+        style_sheet = f'background-color : {constants.BACKGROUND_COLOR.name()}; ' \
+                      f'color : {constants.FOREGROUND_COLOR.name()};'
+        spi_style = f'background-color : {constants.WHITE.name()}; ' \
+                    f'color : {constants.FOREGROUND_COLOR.name()};'
+        combo_style = f'background-color : {constants.WHITE.name()}; ' \
+                      f'color : {constants.FOREGROUND_COLOR.name()}; ' \
+                      f'QComboBox::drop-down {{ background-color : {constants.WHITE.name()} }}'
+        progress_style = f"""
+            QProgressBar {{ text-align: center; 
+                            background-color : {constants.WHITE.name()}; 
+                            border-radius : 10px; 
+                          }}
+            QProgressBar::chunk {{ background-color: {constants.PLOT_FOREGROUND.name()};
+                                   margin: 0.5px;
+                                   border-bottom-left-radius: 10px;
+                                   border-bottom-right-radius: 10px;
+                                }} """
+        # Main window
+        self.setStyleSheet(style_sheet)
+        if platform.platform() != 'Linux':
+            self._lbl_textual_output.setStyleSheet('padding : 0px 10px 0px 10px;')
+        # Interactive
+        self._spi_age.setStyleSheet(spi_style)
+        self._cbo_gender.setStyleSheet(combo_style)
+        self._cbo_edu.setStyleSheet(combo_style)
+        self._cbo_employment.setStyleSheet(combo_style)
+        self._cbo_country.setStyleSheet(combo_style)
+        self._cbo_expat.setStyleSheet(combo_style)
+        self._cbo_martial.setStyleSheet(combo_style)
+        self._cbo_risk.setStyleSheet(combo_style)
+        self._cbo_situation.setStyleSheet(combo_style)
+        self._spi_iso_adult.setStyleSheet(spi_style)
+        self._spi_iso_kids.setStyleSheet(spi_style)
+        self._cbo_data_graph.setStyleSheet(combo_style)
+        self._cbo_user_graph.setStyleSheet(combo_style)
+
+        self._plt_data.setBackground(constants.BACKGROUND_COLOR)
+        self._pgb_user.setStyleSheet(progress_style)
 
     def _setup_id_group_labels(self):
         tool_tips = [
@@ -212,10 +318,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._cbo_user_graph.currentIndexChanged.connect(self._update_output)
 
-    def _setup_graphs(self):
-        """Set up the three graphs (plot, gauge, progress bar)"""
-        self._plt_data.setBackground(constants.PLOT_BACKGROUND_COLOR)
-
     def _plot_data(self) -> None:
         """Plots the data from the csv file"""
         self._plt_data.clear()  # clear current graph
@@ -226,15 +328,17 @@ class MainWindow(QtWidgets.QMainWindow):
             y=[i for i in range(len(constants.IDENTITY_GROUP_OPTIONS_LIST[id_index]))],
             x0=0,
             width=list(self.anxiety_data[id_index].values()),
-            height=0.75, brush=constants.PLOT_COLOR
+            height=0.75, brush=constants.PLOT_FOREGROUND
         )
 
         string_axis = pg.AxisItem(orientation='left')  # Textual x-axis
+        string_axis.setTextPen((0, 0, 0, 255))
         string_axis.setTicks(
             [dict(enumerate(constants.IDENTITY_GROUP_OPTIONS_LIST[id_index])).items()])
 
         plot_item = self._plt_data.addPlot(axisItems={'left': string_axis})
-        plot_item.setTitle(id_group)
+        plot_item.getAxis("bottom").setTextPen((0, 0, 0, 255))
+        # plot_item.setTitle(id_group)
         plot_item.addItem(bar_graph)
 
     def _update_gauge(self, percentage: float):
@@ -287,10 +391,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         textual_output = textual_output + f' of the population. You are also '
         if id_percentage < 50:
-            textual_output = textual_output + f'less like to be anxious than' \
-                                              f' <b<{100 - id_percentage:.2f}%</b> '
+            textual_output = textual_output + f'less likely to be anxious than' \
+                                              f' <b>{100 - id_percentage:.2f}%</b> '
         else:
-            textual_output = textual_output + f'more like to be anxious than' \
+            textual_output = textual_output + f'more likely to be anxious than' \
                                               f' <b>{id_percentage:.2f}%</b> '
         textual_output = textual_output + f'of the population who chose "{id_group}" as their ' \
                                           f'"{self._cbo_user_graph.currentText().lower()}" ' \

@@ -43,7 +43,11 @@ class GaugeWidget(QWidget):
         )
 
         # Polygon color
-        self.scale_polygon_colors = [[.10, Qt.red], [.25, Qt.yellow], [.5, Qt.green]]
+        # self.scale_polygon_colors = [[.10, Qt.red], [.25, Qt.yellow], [.5, Qt.green]]
+        self.scale_polygon_colors = [
+            [.10, constants.RED],
+            [.25, constants.YELLOW],
+            [.50, constants.BLUE]]
 
         # Scale text
         self.initial_scale_fontsize = 14
@@ -69,10 +73,13 @@ class GaugeWidget(QWidget):
             [0.935, QColor(30, 35, 45, 255)],
             [1, QColor(35, 40, 3, 255)]
         ]
+        # self.outer_circle_bg = [
+        #     [0.0645161, QColor(30, 35, 45, 255)],
+        #     [0.37788, QColor(57, 67, 86, 255)],
+        #     [1, QColor(30, 36, 45, 255)]
+        # ]
         self.outer_circle_bg = [
-            [0.0645161, QColor(30, 35, 45, 255)],
-            [0.37788, QColor(57, 67, 86, 255)],
-            [1, QColor(30, 36, 45, 255)]
+            [0, QColor(255, 255, 255, 255)]
         ]
 
         # Resize gauge
@@ -104,6 +111,7 @@ class GaugeWidget(QWidget):
             self.value = self.max_val
         else:
             self.value = value
+        self.update()
 
     def _create_polygon_pie(self, outer_radius: float, inner_radius: float,
                             start: float, length: int) -> QPolygonF:

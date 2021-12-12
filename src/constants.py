@@ -1,9 +1,11 @@
 """ The file storing all the constants """
 import os
+import platform
 
 from PyQt5.QtGui import QColor
 
 # Global constants ---------------------------------------------------------------------------------
+TITLE = 'Your Anxiety During COVID-19'
 NUMBER_OF_IDENTITIES = 11
 IDENTITY_GROUP_NAMES = ['Age', 'Gender', 'Education', 'Employment Status', 'Country of Residence',
                         'Expatriate', 'Marital status', 'Risk Group', 'Current Situation',
@@ -139,15 +141,28 @@ REAL_DATA_JSON_FILE = os.path.join(os.path.dirname(__file__), '../', 'data/real_
 IMAGE_PATH = os.path.join(os.path.dirname(__file__), '../', 'img/')
 
 # Colours ------------------------------------------------------------------------------------------
-PLOT_COLOR = QColor(255, 255, 255, 255)
-PLOT_BACKGROUND_COLOR = QColor(50, 50, 50, 255)
+PLOT_FOREGROUND = QColor(180, 147, 243, 255)
+PLOT_BACKGROUND = QColor(255, 255, 255, 255)
+FOREGROUND_COLOR = QColor(0, 0, 0, 255)
+BACKGROUND_COLOR = QColor(245, 240, 224, 255)
 
-GAUGE_TEXT_COLOR = QColor(255, 255, 255, 255)
+GAUGE_TEXT_COLOR = QColor(0, 0, 0, 255)
 GAUGE_NEEDLE_COLOR = QColor(0, 0, 0, 255)
-GAUGE_SCALE_TEXT_COLOR = QColor(198, 198, 198, 198)
+GAUGE_SCALE_TEXT_COLOR = QColor(0, 0, 0, 198)
 GAUGE_BIG_SCALE_COLOR = QColor(0, 0, 0, 255)
 GAUGE_FINE_SCALE_COLOR = QColor(0, 0, 0, 255)
 
+WHITE = QColor(255, 255, 255, 255)
+RED = QColor(205, 86, 75)
+YELLOW = QColor(205, 152, 59)
+BLUE = QColor(103, 190, 224)
+
 # Fonts
-GAUGE_FONT_PATH = 'fonts/Orbitron/Orbitron-VariableFont_wght.ttf'
-GAUGE_FONT_NAME = 'Orbitron'
+TITLE_FONT_PATH = 'fonts/Galgony.ttf'
+TITLE_FONT_NAME = 'Galgony'
+TITLE_FONT_SIZE = 50 if platform.system() == 'Darwin' else 40
+BODY_FONT_PATH = 'fonts/made_tommy/MADE TOMMY Regular_PERSONAL USE.otf'
+BODY_FONT_NAME = 'MADE TOMMY'
+BODY_FONT_SIZE = 16 if platform.system() == 'Darwin' else 11
+GAUGE_FONT_PATH = 'fonts/made_tommy/MADE TOMMY Regular_PERSONAL USE.otf'
+GAUGE_FONT_NAME = 'MADE TOMMY'
