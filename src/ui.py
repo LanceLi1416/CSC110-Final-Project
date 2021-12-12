@@ -1,17 +1,17 @@
 import os
 import platform
-import sys
 
 import pyqtgraph as pg
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
 
-import src.constants as constants
+from src import constants
 from src.data import load_json_data, calculate_extrema
 from src.gauge import GaugeWidget
 from src.user import User, get_user_percentage
 
 
+# TODO: pacify python_ta
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs) -> None:
         super(MainWindow, self).__init__(*args, **kwargs)
@@ -30,7 +30,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._cbo_data_graph = QtWidgets.QComboBox()
         self._plt_data = pg.GraphicsLayoutWidget()
         self._plt_data.setToolTip(
-            'Left click to pan, scroll wheel to zoom, right click for more options')
+            'Left click to pan, middle button scroll to zoom, right click for more options')
         # Gauge
         self._wgt_gauge = GaugeWidget()
         # Specific identity group plot
@@ -379,26 +379,24 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             id_group = 'NA'
 
-        textual_output = f'You are '
+        textual_output = 'You are '
         if percentage < 50:
-            textual_output = textual_output + \
-                             f'less likely to be anxious than ' \
-                             f'<b>{100 - percentage:.2f}%</b>'
+            textual_output = textual_output + 'less likely to be anxious than ' \
+                                              f'<b>{100 - percentage:.2f}%</b>'
         else:
-            textual_output = textual_output + \
-                             f'more likely to be anxious than ' \
-                             f'<b>{percentage:.2f}%</b>'
+            textual_output = textual_output + 'more likely to be anxious than ' \
+                                              f'<b>{percentage:.2f}%</b>'
 
-        textual_output = textual_output + f' of the population. You are also '
+        textual_output = textual_output + ' of the population. You are also '
         if id_percentage < 50:
-            textual_output = textual_output + f'less likely to be anxious than' \
+            textual_output = textual_output + 'less likely to be anxious than' \
                                               f' <b>{100 - id_percentage:.2f}%</b> '
         else:
-            textual_output = textual_output + f'more likely to be anxious than' \
+            textual_output = textual_output + 'more likely to be anxious than' \
                                               f' <b>{id_percentage:.2f}%</b> '
         textual_output = textual_output + f'of the population who chose "{id_group}" as their ' \
                                           f'"{self._cbo_user_graph.currentText().lower()}" ' \
-                                          f'identity.'
+                                          'identity.'
         self._lbl_textual_output.setText(textual_output)
 
     def _update_output(self) -> None:
@@ -508,7 +506,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec_())
+    import python_ta
+
+    python_ta.check_all(config={
+        'extra-imports': ['os', 'platform', 'pyqtgraph', 'PyQt5', 'PyQt5.QtGui', 'src.data',
+                          'src.gauge', 'src.user', 'src'],
+        'allowed-io': [],
+        'max-line-length': 100,
+        'disable': ['R1705', 'C0200', 'E0611']
+        # E0611 (no-name-in-module): python_ta fails to find PyQt5 modules even if they exist
+    })
+
+    import python_ta.contracts
+
+    python_ta.contracts.check_all_contracts()
+
+    import doctest
+
+    doctest.testmod()

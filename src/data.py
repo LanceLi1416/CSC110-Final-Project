@@ -1,17 +1,40 @@
 # -*- coding: <UTF-8> -*-
-""" The file to save and extract data from the dataset """
+"""Your Anxiety During COVID-19: data
+
+Module Description
+==================
+This module contains the functions that read, extract, and process data from a dataset. It provides
+two public IO interfaces to store processed data, and to read the stored data. It also provides an
+interface for calculating the extrema of the processed data.
+
+Copyright and Usage Information
+===============================
+This project is licensed under the GNU General Public License v3.0.
+    Permissions of this strong copyleft license are conditioned on making available complete source
+    code of licensed works and modifications, which include larger works using a licensed work,
+    under the same license. Copyright and license notices must be preserved. Contributors provide an
+    express grant of patent rights.
+
+Authors (by alphabetical order):
+  - Faruk, Fardin   https://github.com/Fard-Faru
+  - Hsieh, Sharon   https://github.com/SharonHsieh22
+  - Li, Sinan       https://github.com/LanceLi1416/
+  - Zhan, Jeffery   https://github.com/jeffzhan
+"""
 import csv
 import json
+import os.path
 from typing import Dict, List, Tuple
 
-import src.constants as constants
-
-REAL_DATA = "../data/COVIDiSTRESS June 17.csv"
-TEST_DATA = "../data/sample_data.csv"
+from src import constants
 
 
-def calc_stress_score(person: List[str]) -> float:
-    """Return stress score from a row of the dataset"""
+def _calc_stress_score(person: List[str]) -> float:
+    """Return stress score from a row of the dataset
+
+    Preconditions:
+      - len(person) > 144
+    """
     # Value added for each response in the survey
     # Depending on the nature of the question we may want to reduce or increase the stress score
     stress_method = [
@@ -56,13 +79,18 @@ def calc_stress_score(person: List[str]) -> float:
             if og_answer != 'NA' and int(og_answer) <= scale_tuple[0]:
                 bounded_answer = ((int(og_answer) - 1) * (4 / (scale_tuple[0] - 1)))
                 stress_so_far += bounded_answer * stress_method[absolute_index]
-                # print(f'og: {og_answer}, bounded: {bounded_answer}, scale: {scale_tuple[0]}')
             absolute_index += 1
     return stress_so_far
 
 
-def initialize_data_list() -> List[Dict[str, Tuple[int, float]]]:
-    """Return initialized values"""
+def _initialize_data_list() -> List[Dict[str, Tuple[int, float]]]:
+    """Return initialized values
+
+    >>> initial = _initialize_data_list()
+    >>> all(list(initial[i].keys()) == (constants.IDENTITY_GROUP_OPTIONS_LIST[i] + ['NA']) \
+            for i in range(len(initial)))
+    True
+    """
     data_start = [
         # Initialize age
         {age: (0, 0.0) for age in constants.DEM_AGE + ['NA']},
@@ -87,10 +115,13 @@ def initialize_data_list() -> List[Dict[str, Tuple[int, float]]]:
         # Initialize children isolated with participant
         {iso_kids: (0, 0.0) for iso_kids in constants.DEM_ISOLATION_PEOPLE + ['NA']}
     ]
+
     return data_start
 
 
-def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, Tuple[int, float]]]:
+# TODO: pacify python_ta
+def read_csv_file(file_name: str, file_encoding: str = 'ISO-8859-1') -> \
+        List[Dict[str, Tuple[int, float]]]:
     """Return the data stored in a csv file with the given filename.
 
     The return value is list consisting of 11 dictionaries:
@@ -111,9 +142,13 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
     The dictionaries each map to their own tuple of two items,
     the first being the population (or number of people) that have added their score to it
     and the second being the total stress_score that has been added to them,
+
+    Preconditions:
+      - file_name.endswith('.csv')
+      - os.path.isfile(file_name)
     """
     # ACCUMULATOR data_processed_so_far: the running list of
-    data_processed_so_far = initialize_data_list()
+    data_processed_so_far = _initialize_data_list()
 
     file = open(file_name, encoding=file_encoding)
     reader = csv.reader(file)
@@ -124,7 +159,7 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
     # a list of strings.
     # The header row is *not* included in this list.
     for row in reader:
-        stress_score = calc_stress_score(row)
+        stress_score = _calc_stress_score(row)
 
         # age
         csv_index = 4
@@ -147,18 +182,16 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
         # country
         country = row[9]
         category = data_processed_so_far[4]
-        if country == 'China' or country == 'Taiwan':
+        if country == {'China', 'Taiwan'}:
             value = category['China']
             category['China'] = (value[0] + 1, value[1] + stress_score)
-        elif country == 'Côte dIvoire':
+        elif country == 'Côte dIvoire':  # '' is displayed correctly, don't worry
             value = category['Côte d’Ivoire']
             category['Côte d’Ivoire'] = (value[0] + 1, value[1] + stress_score)
         else:
             if country in category:
                 value = category[country]
                 category[country] = (value[0] + 1, value[1] + stress_score)
-            else:
-                print('\t', row[9])
 
         # expat - csv file uses lower case
         expat = row[10]
@@ -182,7 +215,6 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
                 category[row[12]] = (value[0] + 1, value[1] + stress_score)
 
         # remaining ones
-        # remaining_columns = [5, 6, 8, 9, 14, 15]
         remaining_columns = [5, 6, 8, 14, 15]
         for csv_index in remaining_columns:
             category = data_processed_so_far[
@@ -190,11 +222,22 @@ def read_csv_file(file_name: str, file_encoding='ISO-8859-1') -> List[Dict[str, 
             if row[csv_index] in category:
                 value = category[row[csv_index]]
                 category[row[csv_index]] = (value[0] + 1, value[1] + stress_score)
+
+    file.close()
     return data_processed_so_far
 
 
-def regulate_na(data: List[Dict[str, Tuple[int, float]]]) -> List[Dict[str, Tuple[int, float]]]:
-    """Add the score and population for NA to all other identities in the identity group"""
+def _regulate_na(data: List[Dict[str, Tuple[int, float]]]) -> List[Dict[str, Tuple[int, float]]]:
+    """Add the score and population for NA to all other identities in the identity group
+
+    Preconditions:
+      - all(list(id_group.keys())[-1] == 'NA' for id_group in data)
+
+    >>> sample_data = [{'id1': (10, 5), 'id2': (14, 29), 'NA': (3, 15)}]
+    >>> expected_data = [{'id1': (13, 20), 'id2': (17, 44)}]
+    >>> _regulate_na(sample_data) == expected_data
+    True
+    """
     regulated_data = []
 
     for i in range(len(data)):
@@ -206,14 +249,22 @@ def regulate_na(data: List[Dict[str, Tuple[int, float]]]) -> List[Dict[str, Tupl
                 regulated_data[i][identity] = (data[i][identity][0] + na_population,
                                                data[i][identity][1] + na_score)
         else:
-            # regulated_data[i] = data[i]
-            regulated_data[i] = {k: data[i][k] for k in list(data[i])[:-1]}
+            regulated_data[i] = {k: data[i][k] for k in list(data[i])[:-1]}  # ignore NA
 
     return regulated_data
 
 
-def calculate_data_average(data: List[Dict[str, Tuple[int, float]]]) -> List[Dict[str, float]]:
-    """Calculate the average anxiety score for every identity group in the data"""
+def _calculate_data_average(data: List[Dict[str, Tuple[int, float]]]) -> List[Dict[str, float]]:
+    """Calculate the average anxiety score for every identity group in the data.
+
+    Preconditions:
+      - all(all(id_group[id][0] > 0 for id in id_group) for id_group in data)
+
+    >>> sample_data = [{'id1_1': (10, 5), 'id1_2': (3, 15)}, {'id2_1': (5, 10), 'id2_2': (15, 3)}]
+    >>> expected_data = [{'id1_1': 0.5, 'id1_2': 5.0}, {'id2_1': 2.0, 'id2_2': 0.2}]
+    >>> _calculate_data_average(sample_data) == expected_data
+    True
+    """
     average_data = []
 
     for i in range(len(data)):
@@ -228,24 +279,26 @@ def calculate_data_average(data: List[Dict[str, Tuple[int, float]]]) -> List[Dic
 
 
 def process_data(input_file_name: str, output_file_name: str,
-                 input_encoding='ISO-8859-1', output_encoding='utf-8') -> None:
+                 input_encoding: str = 'ISO-8859-1', output_encoding: str = 'UTF-8') -> None:
     """Process the data, then store it in a json file for future reference
 
     Preconditions:
-      - The input file exists
+      - os.path.isfile(file_name)
       - input_file_name.endswith('.csv')
       - output_file_name.endswith('.json')
     """
-    data = calculate_data_average(regulate_na(read_csv_file(input_file_name, input_encoding)))
+    data = _calculate_data_average(_regulate_na(read_csv_file(input_file_name, input_encoding)))
     with open(output_file_name, 'w', encoding=output_encoding) as json_file:
         json.dump(data, json_file)
 
 
-def load_json_data(file_name: str, file_encoding='utf-8') -> List[Dict[str, float]]:
+def load_json_data(file_name: str, file_encoding: str = 'UTF-8') -> List[Dict[str, float]]:
     """Load the previously stored json file
 
     Preconditions:
-      - The file exists
+      - os.path.isfile(file_name)
+
+    >>> test_data = load_json_data(constants.TEST_DATA_JSON_FILE)
     """
     with open(file_name, 'r', encoding=file_encoding) as json_file:
         data = json.load(json_file)
@@ -253,15 +306,44 @@ def load_json_data(file_name: str, file_encoding='utf-8') -> List[Dict[str, floa
 
 
 def calculate_extrema(data: List[Dict[str, float]]) -> Tuple[float, float]:
-    """Calculate the minimum and maximum anxiety score for all combinations of identity groups."""
-    min_so_far, max_so_far = 0, 0
+    """Calculate the minimum and maximum anxiety score for all combinations of identity groups.
+
+    >>> import math
+    >>> sample_data = [{"18-24": 5.0792821066052225, "25-34": 0.5522088004403117,}, \
+                       {"Male": -5.757139888991139, "Female": -1.7634546268885034}]
+    >>> extrema = calculate_extrema(sample_data)
+    >>> math.isclose(extrema[0], -2.6024655442754137)
+    True
+    >>> math.isclose(extrema[1], 1.6579137398583597)
+    True
+    """
+    min_so_far, max_so_far, len_data = 0, 0, len(data)
 
     for identity_group in data:
         min_so_far = min_so_far + min(identity_group.values())
         max_so_far = max_so_far + max(identity_group.values())
 
-    return min_so_far / 11, max_so_far / 11
+    return min_so_far / len_data, max_so_far / len_data
 
 
 if __name__ == '__main__':
-    process_data(constants.REAL_DATA_CSV_FILE, constants.REAL_DATA_JSON_FILE)
+    # if read data json file does not exist, create it; otherwise run on sample data to save time
+    if not os.path.isfile(constants.REAL_DATA_JSON_FILE):
+        process_data(constants.REAL_DATA_CSV_FILE, constants.REAL_DATA_JSON_FILE)
+
+    import python_ta
+
+    python_ta.check_all(config={
+        'extra-imports': ['python_ta.contracts', 'csv', 'json', 'os.path', 'src'],
+        'allowed-io': ['read_csv_file', 'process_data', 'load_json_data'],
+        'max-line-length': 100,
+        'disable': ['R1705', 'C0200']
+    })
+
+    import python_ta.contracts
+
+    python_ta.contracts.check_all_contracts()
+
+    import doctest
+
+    doctest.testmod()

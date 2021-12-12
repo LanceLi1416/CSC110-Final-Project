@@ -1,4 +1,29 @@
-""" The file storing all the constants """
+# -*- coding: <UTF-8> -*-
+"""Your Anxiety During COVID-19: constants
+
+Module Description
+==================
+This is a constant pool of the project, defining constants that are used universally across the
+project, such as the individual identities of each identity group, the colours used for the
+graphical user interface and the paths of resources files. RUNNING THIS FILE TAKES NO EFFECT. IT
+SHOULD ONLY BE IMPORTED.
+
+Copyright and Usage Information
+===============================
+This project is licensed under the GNU General Public License v3.0.
+    Permissions of this strong copyleft license are conditioned on making available complete source
+    code of licensed works and modifications, which include larger works using a licensed work,
+    under the same license. Copyright and license notices must be preserved. Contributors provide an
+    express grant of patent rights.
+
+Authors (by alphabetical order):
+  - Faruk, Fardin   https://github.com/Fard-Faru
+  - Hsieh, Sharon   https://github.com/SharonHsieh22
+  - Li, Sinan       https://github.com/LanceLi1416/
+  - Zhan, Jeffery   https://github.com/jeffzhan
+
+PLEASE DO NOT MAKE ANY CHANGES TO THIS FILE.
+"""
 import os
 import platform
 
@@ -166,3 +191,22 @@ BODY_FONT_NAME = 'MADE TOMMY'
 BODY_FONT_SIZE = 16 if platform.system() == 'Darwin' else 11
 GAUGE_FONT_PATH = 'fonts/made_tommy/MADE TOMMY Regular_PERSONAL USE.otf'
 GAUGE_FONT_NAME = 'MADE TOMMY'
+
+if __name__ == '__main__':
+    import python_ta
+
+    python_ta.check_all(config={
+        'extra-imports': ['python_ta.contracts', 'os', 'platform', 'PyQt5.QtGui'],
+        'allowed-io': [],
+        'max-line-length': 100,
+        'disable': ['R1705', 'C0200', 'E0611']
+        # E0611 (no-name-in-module): python_ta fails to find PyQt5 modules even if they exist
+    })
+
+    import python_ta.contracts
+
+    python_ta.contracts.check_all_contracts()
+
+    import doctest
+
+    doctest.testmod()
