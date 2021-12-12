@@ -19,7 +19,7 @@ def main():
                 'general population, refer to the graph on the bottom left.')
     msg.show()
 
-    app.exec_()
+    sys.exit(app.exec_())
 
 
 if __name__ == '__main__':

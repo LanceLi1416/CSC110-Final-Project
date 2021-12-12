@@ -32,9 +32,9 @@ from PyQt5.QtGui import QColor
 # Global constants ---------------------------------------------------------------------------------
 TITLE = 'Your Anxiety During COVID-19'
 NUMBER_OF_IDENTITIES = 11
-IDENTITY_GROUP_NAMES = ['Age', 'Gender', 'Education', 'Employment Status', 'Country of Residence',
-                        'Expatriate', 'Marital status', 'Risk Group', 'Current Situation',
-                        'Isolation Adult', 'Isolation Children']
+IDENTITY_NAMES = ['Age', 'Gender', 'Education', 'Employment Status', 'Country of Residence',
+                  'Expatriate', 'Marital status', 'Risk Group', 'Current Situation',
+                  'Isolation Adult', 'Isolation Children']
 
 # Options for identity groups ----------------------------------------------------------------------
 DEM_AGE = [
@@ -199,8 +199,9 @@ if __name__ == '__main__':
         'extra-imports': ['python_ta.contracts', 'os', 'platform', 'PyQt5.QtGui'],
         'allowed-io': [],
         'max-line-length': 100,
-        'disable': ['R1705', 'C0200', 'E0611']
+        # 'disable': ['R1705', 'C0200']
         # E0611 (no-name-in-module): python_ta fails to find PyQt5 modules even if they exist
+        'disable': ['R1705', 'C0200', 'E0611']
     })
 
     import python_ta.contracts
