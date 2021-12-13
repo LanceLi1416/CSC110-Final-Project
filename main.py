@@ -2,15 +2,25 @@
 import sys
 
 from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtGui import QIcon
 
 import src.ui as ui
 
 
 def main():
     app = QApplication(sys.argv)
+
+    # Set application icon
+    app_icon = QIcon()
+    app_icon.addFile('./img/icons/face-black-24dp/1x/outline_face_black_24dp.png')
+    app_icon.addFile('./img/icons/face-black-24dp/2x/outline_face_black_24dp.png')
+    app.setWindowIcon(app_icon)
+
     window = ui.MainWindow()
+    window.setAcceptDrops()
     window.show()
 
+    # Prompt message showing how to usd this application
     msg = QMessageBox()
     msg.setIcon(QMessageBox.Information)
     msg.setWindowTitle('Instructions')

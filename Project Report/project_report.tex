@@ -85,7 +85,7 @@
 
     With this, we take the sum of all their answers, \texttt{stress\_score} (with higher being more stressed), and add them to each dictionary in \texttt{data\_processed\_so\_far}. More specifically, the sum is added to the surveyee’s respective identity groups within the dictionaries (second element in the tuple), as well as +1 to the populations (first element in the tuple).
 
-    The graphics user interface, GUI, was implemented using the \texttt{PyQt5} module. All of the work related to the look of the user interface and the user interaction logic was implemented in the \texttt{MainWindow} class in \texttt{ui.py}, a subclass of the \texttt{QMainWindow} class. It is the mainframe on which we put every other component -- widgets. The text displays, for example, \texttt{'Your Anxiety During COVID-19'}, or {'Country of Residence'}, were implemented using the \text{QLabel} class. The input fields consist of two types, with one being \texttt{QSpinBox} and the other being \texttt{QComboBox}. \texttt{QSpinBox} allows for numerical input, which we have set a reasonable range for each using the \texttt{QSpinBox.setRange} method provided. To get the current value, we used the \text{QSpinBox.value()} getter method. The \texttt{QComboBox}'s are drop-down menus, allowing the user to select from the drop-down list using a mouse or a keyboard. We can either get the selected text using the \texttt{QComboBox.getCurrentText} getter method, or get the index of the selected option using the \texttt{QComboBox.getCurrentIndex} method.
+    The graphics user interface, GUI, was implemented using the \texttt{PyQt5} module. All of the work related to the look of the user interface and the user interaction logic was implemented in the \texttt{MainWindow} class in \texttt{ui.py}, a subclass of the \texttt{QMainWindow} class. It is the mainframe on which we put every other component -- widgets. The text displays, for example, \texttt{`Your Anxiety During COVID-19'}, or \texttt{`Country of Residence'}, were implemented using the \text{QLabel} class. The input fields consist of two types, with one being \texttt{QSpinBox} and the other being \texttt{QComboBox}. \texttt{QSpinBox} allows for numerical input, which we have set a reasonable range for each using the \texttt{QSpinBox.setRange} method provided. To get the current value, we used the \text{QSpinBox.value()} getter method. The \texttt{QComboBox}'s are drop-down menus, allowing the user to select from the drop-down list using a mouse or a keyboard. We can either get the selected text using the \texttt{QComboBox.getCurrentText} getter method, or get the index of the selected option using the \texttt{QComboBox.getCurrentIndex} method.
 
     The \textbf{user avatar}, a cartoon image generated based on the user's input, consists of layers of images. Every layer is a \texttt{QPixmap} instance -- a map of the pixels in the image. They are composed together using a \texttt{QPainter} element. Every layer is added by calling the \texttt{QPainter.drawImage()} method (Nemkin, 2010). Finally, to display the output, we place the pixmap onto a \texttt{QLabel} object using the \texttt{QLabel.setPixmap()} method. The \textbf{gauge} (Kibet, 2021) is implemented \texttt{gauge.py} as a subclass of the \texttt{QWidget} class -- the widget class in PyQt. The shapes, including the needle and the circles, are defined as the \texttt{QPolygon} or the \texttt{QPolygonF} class, with the first one using integer precision and the second one using floating-point precision. Essentially, they are the collection of 2-dimensional points -- an $x$ and a $y$ coordinate. The points are `drawn' using an instance of the \texttt{QPen} class. The \textbf{progress bar} is an \texttt{QProgressBar} object, and the `progress' is set using the \texttt{QProgressBar.setValue()} method.
 
@@ -98,13 +98,13 @@
     Save the file \texttt{COVIDiSTRESS June 17.csv} in the \texttt{data} folder. \\
 
     Upon running \texttt{main.py}, the main user interface window and a pop-up window should appear. The pop-up window includes brief instructions on how to navigate the interface and can be closed once read. Start by entering one’s information using the input boxes and drop-down menus on the left. The character icon on the right will change based on different inputs. The graph on the bottom left of the interface displays the anxiety levels of different identities in a specific identity group. Use the drop-down menu above the graph to switch between different identity groups. On the right of the graph, the user’s likelihood of experiencing anxiety due to COVID-19 relative to the general population is displayed on a gauge. The user can also see their anxiety probability compared to specific identity groups using the drop-down menu on the far right of the window. This data is displayed using a progress bar. Finally, the user can find a textual summary of their data on the bottom right.
-	
-	\begin{center}
-		This is what the program should like on a Windows computer:
-	\end{center}
-	\begin{center}
-		\includegraphics[scale=0.35]{img/example_screenshot}
-	\end{center}
+
+    \begin{center}
+        This is what the program should like on a Windows computer:
+    \end{center}
+    \begin{center}
+        \includegraphics[scale=0.35]{img/example_screenshot}
+    \end{center}
 
 
     \section*{Changes from the proposal to now}
@@ -112,39 +112,39 @@
 
     Case studies in the final report were suggested as well and we have implemented those, so you will find them in the next section.
 
-	\section*{Discussion}
-	\textbf{Research Question: What is the relationship between one’s identity and the degree to which COVID-19 has impacted their mental health?} \\
-	In order to answer our research question, it was necessary for us to determine a scale with which we can measure one’s anxiety. Through the calculations and aggregation we did with the responses in the dataset, we were able to measure the degree in which COVID-19 may impact an individual in two ways: by measuring each survey question on a scale from 0 to 4 to tally up a general “anxiety score”, and by comparing this score to the rest of the population to find a relative percent chance of experiencing anxiety. Using these methods, we were able to see clear results indicating how having a single differing trait may cause two otherwise similar individuals to be impacted differently by COVID-19. For instance, we can see an anxiety increase of at least 8\% between someone who is employed and someone who is not employed.  Direct examples similar to this can also be seen in the case studies below. In this sense, we were able to answer our research question. \\
+    \section*{Discussion}
+    \textbf{Research Question: What is the relationship between one’s identity and the degree to which COVID-19 has impacted their mental health?} \\
+    In order to answer our research question, it was necessary for us to determine a scale with which we can measure one’s anxiety. Through the calculations and aggregation we did with the responses in the dataset, we were able to measure the degree in which COVID-19 may impact an individual in two ways: by measuring each survey question on a scale from 0 to 4 to tally up a general “anxiety score”, and by comparing this score to the rest of the population to find a relative percent chance of experiencing anxiety. Using these methods, we were able to see clear results indicating how having a single differing trait may cause two otherwise similar individuals to be impacted differently by COVID-19. For instance, we can see an anxiety increase of at least 8\% between someone who is employed and someone who is not employed. Direct examples similar to this can also be seen in the case studies below. In this sense, we were able to answer our research question. \\
 
-	\textbf{Limitations Encountered} \\
-	With the data processing, we found that, despite the .csv purportedly being ‘cleaned’ (it was placed in the ‘cleaned’ directory on the site), there were some issues with the dataset.
+    \textbf{Limitations Encountered} \\
+    With the data processing, we found that, despite the .csv purportedly being ‘cleaned’ (it was placed in the ‘cleaned’ directory on the site), there were some issues with the dataset.
 
-	First of all, there were some odd answers, especially in the countries column. Some answers had spelling mistakes, varied in capitalization, or were just complete nonsense. Other columns were inconsistent with their possible answers. (e.g. many columns had ‘Other/would rather not say’ as a possible response, but then one column had ‘Other \textbf{or} would rather not say’ which caused trouble with dictionary key-lookup later on. Finally, there were anomalies in the dataset where some surveyees responded to certain questions with absurd numbers, such as being in isolation with 110 adults, or 110 children (110 being the highest possible answer to these questions), which seemed… highly unlikely.
+    First of all, there were some odd answers, especially in the countries column. Some answers had spelling mistakes, varied in capitalization, or were just complete nonsense. Other columns were inconsistent with their possible answers. (e.g. many columns had ‘Other/would rather not say’ as a possible response, but then one column had ‘Other \textbf{or} would rather not say’ which caused trouble with dictionary key-lookup later on. Finally, there were anomalies in the dataset where some surveyees responded to certain questions with absurd numbers, such as being in isolation with 110 adults, or 110 children (110 being the highest possible answer to these questions), which seemed… highly unlikely.
 
-	As for the GUI side of things, we ran into some trouble with \texttt{PyTA}. In \texttt{gauge.py}, we had two functions that override functions provided by \texttt{PyQt}. Thus, we were unable to change the name of these two functions (\texttt{resizeEvent} and \texttt{paintEvent}) despite these names not conforming to \texttt{PythonTA’s} naming conventions. We also encountered a \texttt{no-name-in-module} error where \texttt{PythonTA} was unable to find the \texttt{QColor} class from \texttt{PyQt5.QtGui} in the import statement. However, this class exists and was able to be implemented in our code with no errors. \\
+    As for the GUI side of things, we ran into some trouble with \texttt{PyTA}. In \texttt{gauge.py}, we had two functions that override functions provided by \texttt{PyQt}. Thus, we were unable to change the name of these two functions (\texttt{resizeEvent} and \texttt{paintEvent}) despite these names not conforming to \texttt{PythonTA’s} naming conventions. We also encountered a \texttt{no-name-in-module} error where \texttt{PythonTA} was unable to find the \texttt{QColor} class from \texttt{PyQt5.QtGui} in the import statement. However, this class exists and was able to be implemented in our code with no errors. \\
 
-	\textbf{Further Exploration} \\
-	To explore this topic further, we can consider implementing regression into our data processing.  Using regression to determine which factors are most significant in affecting one’s mental health could increase the accuracy of our results.
+    \textbf{Further Exploration} \\
+    To explore this topic further, we can consider implementing regression into our data processing. Using regression to determine which factors are most significant in affecting one’s mental health could increase the accuracy of our results.
 
-	In terms of the visual elements of the user interface, there is room for improvement. However
-	We can take the project further by letting the user see the data of multiple identity groups combined. For example, the average anxiety scores different employment statuses in Canada only. Or, similarly, a Canadian man can compare their anxiety score to other Canadians that identify as male. \\
+    In terms of the visual elements of the user interface, there is room for improvement. However
+    We can take the project further by letting the user see the data of multiple identity groups combined. For example, the average anxiety scores different employment statuses in Canada only. Or, similarly, a Canadian man can compare their anxiety score to other Canadians that identify as male. \\
 
-	\textbf{Case Studies} \\
-	Just for reference, here is our supposed profiles as first-year university students in Canada, if we were also at low-risk and not in isolation:
+    \textbf{Case Studies} \\
+    Just for reference, here is our supposed profiles as first-year university students in Canada, if we were also at low-risk and not in isolation:
 
-	\begin{center}
-		\includegraphics[scale=0.30]{img/male_student_screenshot}
-		\includegraphics[scale=0.30]{img/female_student_screenshot}
-	\end{center}
+    \begin{center}
+        \includegraphics[scale=0.30]{img/male_student_screenshot}
+        \includegraphics[scale=0.30]{img/female_student_screenshot}
+    \end{center}
 
-	Let’s contrast an unemployed man in his early 20’s to one in his 50s, retired with a PhD, and married.
-	\begin{center}
-	\includegraphics[scale=0.30]{img/casestudy_screenshot_1}
-	\includegraphics[scale=0.30]{img/casestudy_screenshot_2}
-	\end{center}
+    Let’s contrast an unemployed man in his early 20’s to one in his 50s, retired with a PhD, and married.
+    \begin{center}
+        \includegraphics[scale=0.30]{img/casestudy_screenshot_1}
+        \includegraphics[scale=0.30]{img/casestudy_screenshot_2}
+    \end{center}
 
-	We’re looking at the extreme ends of the spectrum here and we can see a clear difference. The difference largely lies in the state of their education, their employment status, and marital status. As should be expected, a person who is retired, has a PhD, and is married, should generally be more comfortable with his situation than a person in his early 20’s, at which point should expect to be either employed or still in school, except he fulfills neither of those categories. And if we adjust any of the person’s details, the gauge and likelihood changes accordingly, and mostly within expectations. \\
-	Taking the same retired person and instead having them be unemployed raises their stress levels to be higher than a whopping 14\% of more people than before. Again, employment status seems to be a critical factor in judging likelihood of stress, which falls in line with our expectations since in reality, employment status generally indicates a person’s financial stability.
+    We’re looking at the extreme ends of the spectrum here and we can see a clear difference. The difference largely lies in the state of their education, their employment status, and marital status. As should be expected, a person who is retired, has a PhD, and is married, should generally be more comfortable with his situation than a person in his early 20’s, at which point should expect to be either employed or still in school, except he fulfills neither of those categories. And if we adjust any of the person’s details, the gauge and likelihood changes accordingly, and mostly within expectations. \\
+    Taking the same retired person and instead having them be unemployed raises their stress levels to be higher than a whopping 14\% of more people than before. Again, employment status seems to be a critical factor in judging likelihood of stress, which falls in line with our expectations since in reality, employment status generally indicates a person’s financial stability.
 
 
 
