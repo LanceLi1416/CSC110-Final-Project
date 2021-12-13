@@ -163,7 +163,7 @@ REAL_DATA_CSV_FILE = os.path.join(os.path.dirname(__file__), 'data/COVIDiSTRESS 
 TEST_DATA_JSON_FILE = os.path.join(os.path.dirname(__file__), 'data/sample_data.json')
 REAL_DATA_JSON_FILE = os.path.join(os.path.dirname(__file__), 'data/real_data.json')
 
-IMAGE_PATH = os.path.join(os.path.dirname(__file__), 'img/')
+IMAGE_PATH = os.path.join(os.path.dirname(__file__), 'resources/img/')
 
 # Colours ------------------------------------------------------------------------------------------
 PLOT_FOREGROUND = QColor(180, 147, 243, 255)
@@ -196,13 +196,13 @@ GAUGE_BACKGROUND_GRAD_COLOR = [
 ]
 
 # Fonts
-TITLE_FONT_PATH = 'fonts/Galgony.ttf'
+TITLE_FONT_PATH = 'resources/fonts/Galgony.ttf'
 TITLE_FONT_NAME = 'Galgony'
 TITLE_FONT_SIZE = 50 if platform.system() == 'Darwin' else 40
-BODY_FONT_PATH = 'fonts/made_tommy/MADE TOMMY Regular_PERSONAL USE.otf'
+BODY_FONT_PATH = 'resources/fonts/made_tommy/MADE TOMMY Regular_PERSONAL USE.otf'
 BODY_FONT_NAME = 'MADE TOMMY'
 BODY_FONT_SIZE = 16 if platform.system() == 'Darwin' else 11
-GAUGE_FONT_PATH = 'fonts/made_tommy/MADE TOMMY Regular_PERSONAL USE.otf'
+GAUGE_FONT_PATH = 'resources/fonts/made_tommy/MADE TOMMY Regular_PERSONAL USE.otf'
 GAUGE_FONT_NAME = 'MADE TOMMY'
 
 if __name__ == '__main__':
