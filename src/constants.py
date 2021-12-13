@@ -182,6 +182,21 @@ RED = QColor(205, 86, 75)
 YELLOW = QColor(205, 152, 59)
 BLUE = QColor(103, 190, 224)
 
+GAUGE_SCALE_POLYGON_GRAD_COLOR = [[.10, RED], [.25, YELLOW], [.50, BLUE]]
+GAUGE_CENTER_COVER_GRAD_COLOR = [[0, QColor(35, 40, 3, 255)],
+                                 [0.16, QColor(30, 36, 45, 255)],
+                                 [0.225, QColor(36, 42, 54, 255)],
+                                 [0.423963, QColor(19, 23, 29, 255)],
+                                 [0.580645, QColor(45, 53, 68, 255)],
+                                 [0.792627, QColor(59, 70, 88, 255)],
+                                 [0.935, QColor(30, 35, 45, 255)],
+                                 [1, QColor(35, 40, 3, 255)]]
+GAUGE_BACKGROUND_GRAD_COLOR = [
+    [0.25, BACKGROUND_COLOR],
+    [0.5, QColor(252, 205, 186, 198)],
+    [0.75, BACKGROUND_COLOR]
+]
+
 # Fonts
 TITLE_FONT_PATH = 'fonts/Galgony.ttf'
 TITLE_FONT_NAME = 'Galgony'

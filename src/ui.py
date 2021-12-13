@@ -293,7 +293,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # WARNING: Due to how Qt works with its signals and lots, the following block WILL NOT WORK
         # IN A LOOP, as every 'i' in the expression would be stuck with 8 after the initial setup,
-        # meaning that we woule be stuck with the 'Current Situation' input. As such, every setting
+        # meaning that we would be stuck with the 'Current Situation' input. As such, every setting
         # value connection MUST NOT be set in a loop. PLEASE DO NOT SIMPLIFY INTO THE LOOP.
         self._input_fields[1].currentIndexChanged.connect(lambda: self._user.identity.__setitem__(
             constants.IDENTITY_NAMES[1], self._input_fields[1].currentText()))
@@ -346,7 +346,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def _draw_user_avatar(self) -> None:
         """Draws the user's cartoon character based on their input identity"""
         flag_name = self._user.identity[constants.IDENTITY_NAMES[4]]
-        hair_name, clothes_name = '', ''
         # set hair image name
         hair_name = \
             self._user.identity[constants.IDENTITY_NAMES[0]][:2] + \
@@ -483,8 +482,8 @@ if __name__ == '__main__':
     import python_ta
 
     python_ta.check_all(config={
-        'extra-imports': ['os', 'platform', 'pyqtgraph', 'PyQt5', 'PyQt5.QtGui', 'src.data',
-                          'src.gauge', 'src.user', 'src'],
+        'extra-imports': ['python_ta.contracts', 'os', 'platform', 'pyqtgraph', 'PyQt5',
+                          'PyQt5.QtGui', 'src.data', 'src.gauge', 'src.user', 'src'],
         'allowed-io': [],
         'max-line-length': 100,
         # 'disable': ['R1705', 'C0200']

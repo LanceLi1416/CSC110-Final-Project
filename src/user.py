@@ -234,7 +234,6 @@ def get_user_percentage(user: User, id_group: str, data: List[Dict[str, float]])
 
     for i in range(len(data)):
         if i != id_index:
-            # print(id_group, constants.IDENTITY_GROUP_OPTIONS_LIST[i])
             lowest_score = lowest_score + min(data[i].values())
             highest_score = highest_score + max(data[i].values())
         else:
@@ -253,7 +252,7 @@ if __name__ == '__main__':
     import python_ta
 
     python_ta.check_all(config={
-        'extra-imports': ['src'],
+        'extra-imports': ['python_ta.contracts', 'src'],
         'allowed-io': [],
         'max-line-length': 100,
         'disable': ['R1705', 'C0200']
