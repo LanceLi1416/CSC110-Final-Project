@@ -32,7 +32,7 @@ from PyQt5.QtGui import QPolygon, QPolygonF, QPen, QFont, QPainter, QFontMetrics
     QConicalGradient, QRadialGradient, QFontDatabase, QResizeEvent, QPaintEvent
 from PyQt5.QtWidgets import QWidget
 
-from src import constants
+import constants
 
 
 def _create_polygon_pie(outer_radius: float, inner_radius: float,
@@ -107,7 +107,7 @@ class GaugeWidget(QWidget):
 
         # Load custom font
         QFontDatabase.addApplicationFont(
-            os.path.join(os.path.dirname(__file__), '../', constants.GAUGE_FONT_PATH)
+            os.path.join(os.path.dirname(__file__), constants.GAUGE_FONT_PATH)
         )
 
         # Resize gauge
@@ -351,8 +351,8 @@ if __name__ == '__main__':
     import python_ta
 
     python_ta.check_all(config={
-        'extra-imports': ['python_ta.contracts', 'math', 'os', 'PyQt5.QtCore', 'PyQt5.QtGui',
-                          'PyQt5.QtWidgets', 'src'],
+        'extra-imports': ['python_ta.contracts', 'math', 'os', 'platform', 'PyQt5.QtCore',
+                          'PyQt5.QtGui', 'PyQt5.QtWidgets', 'constants'],
         'allowed-io': [],
         'max-line-length': 100,
         # 'disable': ['R1705', 'C0200']

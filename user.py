@@ -22,7 +22,7 @@ Authors (by alphabetical order):
 """
 from typing import Dict, List, Union
 
-from src import constants
+import constants
 
 
 class User:
@@ -252,7 +252,7 @@ if __name__ == '__main__':
     import python_ta
 
     python_ta.check_all(config={
-        'extra-imports': ['python_ta.contracts', 'src'],
+        'extra-imports': ['python_ta.contracts', 'constants'],
         'allowed-io': [],
         'max-line-length': 100,
         'disable': ['R1705', 'C0200']

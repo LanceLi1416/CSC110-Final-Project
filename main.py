@@ -1,10 +1,10 @@
 """ The entry point of the program """
 import sys
 
-from PyQt5.QtWidgets import QApplication, QMessageBox
 from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
-import src.ui as ui
+import ui
 
 
 def main():

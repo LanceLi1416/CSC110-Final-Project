@@ -28,10 +28,10 @@ import pyqtgraph as pg
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtGui import QPixmap
 
-from src import constants
-from src.data import load_json_data, calculate_extrema, process_data
-from src.gauge import GaugeWidget
-from src.user import User, get_user_percentage
+import constants
+from data import load_json_data, calculate_extrema, process_data
+from gauge import GaugeWidget
+from user import User, get_user_percentage
 
 
 def _create_title_label() -> QtWidgets.QLabel:
@@ -40,7 +40,7 @@ def _create_title_label() -> QtWidgets.QLabel:
     lbl_title.setWordWrap(True)
     lbl_title.setAlignment(QtCore.Qt.AlignCenter)
     QtGui.QFontDatabase.addApplicationFont(
-        os.path.join(os.path.dirname(__file__), '../', constants.TITLE_FONT_PATH)
+        os.path.join(os.path.dirname(__file__), constants.TITLE_FONT_PATH)
     )
     lbl_title.setFont(QtGui.QFont(constants.TITLE_FONT_NAME, constants.TITLE_FONT_SIZE))
     return lbl_title
@@ -220,7 +220,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def _setup_fonts(self) -> None:
         """Set customized fonts to all the widgets"""
         QtGui.QFontDatabase.addApplicationFont(
-            os.path.join(os.path.dirname(__file__), '../', constants.BODY_FONT_PATH)
+            os.path.join(os.path.dirname(__file__), constants.BODY_FONT_PATH)
         )
         # Labels
         for i in range(constants.NUMBER_OF_IDENTITIES):
@@ -483,7 +483,7 @@ if __name__ == '__main__':
 
     python_ta.check_all(config={
         'extra-imports': ['python_ta.contracts', 'os', 'platform', 'pyqtgraph', 'PyQt5',
-                          'PyQt5.QtGui', 'src.data', 'src.gauge', 'src.user', 'src'],
+                          'PyQt5.QtGui', 'constants', 'data', 'gauge', 'user'],
         'allowed-io': [],
         'max-line-length': 100,
         # 'disable': ['R1705', 'C0200']

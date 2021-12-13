@@ -25,7 +25,7 @@ import csv
 import json
 from typing import Dict, List, Tuple
 
-from src import constants
+import constants
 
 
 def calculate_extrema(data: List[Dict[str, float]]) -> Tuple[float, float]:
@@ -368,7 +368,7 @@ if __name__ == '__main__':
     import python_ta
 
     python_ta.check_all(config={
-        'extra-imports': ['python_ta.contracts', 'csv', 'json', 'os.path', 'src'],
+        'extra-imports': ['python_ta.contracts', 'csv', 'json', 'os.path', 'constants'],
         'allowed-io': ['read_csv_file', 'process_data', 'load_json_data'],
         'max-line-length': 100,
         'disable': ['R1705', 'C0200']
