@@ -342,7 +342,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _draw_user_avatar(self) -> None:
         """Draws the user's cartoon character based on their input identity"""
-        flag_name = self._user.identity[constants.IDENTITY_NAMES[4]]
+        if self._user.identity[constants.IDENTITY_NAMES[4]] == 'Côte d’Ivoire':
+            flag_name = 'Cote dIvoire'
+        else:
+            flag_name = self._user.identity[constants.IDENTITY_NAMES[4]]
         # set hair image name
         hair_name = \
             self._user.identity[constants.IDENTITY_NAMES[0]][:2] + \
