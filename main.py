@@ -22,7 +22,7 @@ def main():
     app = QApplication(sys.argv)
     # Set application icon
     app_icon = QIcon()
-    app_icon.addFile('./img/icons/Bubble.png')
+    app_icon.addFile('../resources/img/icons/Bubble.png')
     app.setWindowIcon(app_icon)
 
     window = ui.MainWindow()
