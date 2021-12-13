@@ -46,13 +46,13 @@ def unzip_resources():
         print('Unzipping resources.zip')
         with ZipFile('resources.zip', 'r') as resources_zip:
             resources_zip.extractall()
-        print('Finish unzipping resources.zip')
+        print('Finished unzipping resources.zip')
 
     if not os.path.exists('data') and os.path.exists('data.zip'):
         print('Unzipping data.zip')
         with ZipFile('resources.zip', 'r') as data_zip:
             data_zip.extractall()
-        print('Finish unzipping data.zip')
+        print('Finished unzipping data.zip')
 
 
 def get_data():
@@ -64,7 +64,7 @@ def get_data():
         print('Downloading dataset...')
         file = requests.get('https://osf.io/m5s8d/download')
         open('COVIDiSTRESS June 17.csv', 'wb').write(file.content)
-        print('Finish downloading dataset!')
+        print('Finished downloading dataset!')
     os.chdir('../')
 
 
@@ -73,7 +73,7 @@ def process_data_if_not_exist():
     if not os.path.exists(constants.REAL_DATA_JSON_FILE):
         print('Processing data...')
         process_data(constants.REAL_DATA_CSV_FILE, constants.REAL_DATA_JSON_FILE)
-        print('Finish processing data!')
+        print('Finished processing data!')
 
 
 if __name__ == '__main__':
