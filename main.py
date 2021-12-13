@@ -17,11 +17,9 @@ def main():
     unzip_resources()
     get_data()
     # if processed data does not exist, create it
-    if not os.path.exists(constants.REAL_DATA_JSON_FILE):
-        process_data(constants.REAL_DATA_CSV_FILE, constants.REAL_DATA_JSON_FILE)
+    process_data_if_not_exist()
 
     app = QApplication(sys.argv)
-
     # Set application icon
     app_icon = QIcon()
     app_icon.addFile('./img/icons/Bubble.png')
@@ -45,16 +43,16 @@ def main():
 def unzip_resources():
     """Unzip the resources files."""
     if not os.path.exists('resources') and os.path.exists('resources.zip'):
+        print('Unzipping resources.zip')
         with ZipFile('resources.zip', 'r') as resources_zip:
             resources_zip.extractall()
-    else:
-        raise FileNotFoundError
+        print('Finish unzipping resources.zip')
 
     if not os.path.exists('data') and os.path.exists('data.zip'):
+        print('Unzipping data.zip')
         with ZipFile('resources.zip', 'r') as data_zip:
             data_zip.extractall()
-    else:
-        raise FileNotFoundError
+        print('Finish unzipping data.zip')
 
 
 def get_data():
@@ -63,8 +61,18 @@ def get_data():
         os.makedirs('data')
     os.chdir('data')
     if not os.path.exists('COVIDiSTRESS June 17.csv'):
+        print('Downloading dataset...')
         file = requests.get('https://osf.io/m5s8d/download')
         open('COVIDiSTRESS June 17.csv', 'wb').write(file.content)
+        print('Finish downloading dataset!')
+
+
+def process_data_if_not_exist():
+    """If real_data.json does not exist, create it."""
+    if not os.path.exists(constants.REAL_DATA_JSON_FILE):
+        print('Processing data...')
+        process_data(constants.REAL_DATA_CSV_FILE, constants.REAL_DATA_JSON_FILE)
+        print('Finish processing data!')
 
 
 if __name__ == '__main__':
