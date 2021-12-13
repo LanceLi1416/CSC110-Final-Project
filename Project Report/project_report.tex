@@ -70,7 +70,7 @@
         \item columns [137] to [143] (inclusive)
     \end{itemize}
 
-    The above are all survey questions that were measured on a Likert scale of 5, 6, or 11. We went through each survey question and decided whether or not it had any relevance towards indicating a person’s level of stress and anxiety. For this reason, we excluded questions such as to what extent the surveyee ‘appreciates art and aesthetics’. We also excluded any short-answer questions because those could not be quantified
+    The above are all survey questions that were measured on a Likert scale of 5, 6, or 11. We went through each survey question and decided whether or not it had any relevance towards indicating a person’s level of stress and anxiety. For this reason, we excluded questions such as to what extent the surveyee ‘appreciates art and aesthetics’. We also excluded any short-answer questions because those could not be quantified.
 
     \section*{Computational Overview}
 
@@ -119,9 +119,9 @@
     \textbf{Limitations Encountered} \\
     With the data processing, we found that, despite the .csv purportedly being ‘cleaned’ (it was placed in the ‘cleaned’ directory on the site), there were some issues with the dataset.
 
-    First of all, there were some odd answers, especially in the countries column. Some answers had spelling mistakes, varied in capitalization, or were just complete nonsense. Other columns were inconsistent with their possible answers. (e.g. many columns had ‘Other/would rather not say’ as a possible response, but then one column had ‘Other \textbf{or} would rather not say’ which caused trouble with dictionary key-lookup later on. Finally, there were anomalies in the dataset where some surveyees responded to certain questions with absurd numbers, such as being in isolation with 110 adults, or 110 children (110 being the highest possible answer to these questions), which seemed… highly unlikely.
+    First of all, there were some odd answers, especially in the countries column. Some answers had spelling mistakes, varied in capitalization, or were just complete nonsense. Other columns were inconsistent with their possible answers. For example, many columns had ‘Other/would rather not say’ as a possible response, but then one column had ‘Other \textbf{or} would rather not say’ which caused trouble with dictionary key-lookup later on. Finally, there were anomalies in the dataset where some surveyees responded to certain questions with absurd numbers, such as being in isolation with 110 adults, or 110 children (110 being the highest possible answer to these questions), which seemed… highly unlikely.
 
-    As for the GUI side of things, we ran into some trouble with \texttt{PyTA}. In \texttt{gauge.py}, we had two functions that override functions provided by \texttt{PyQt}. Thus, we were unable to change the name of these two functions (\texttt{resizeEvent} and \texttt{paintEvent}) despite these names not conforming to \texttt{PythonTA’s} naming conventions. We also encountered a \texttt{no-name-in-module} error where \texttt{PythonTA} was unable to find the \texttt{QColor} class from \texttt{PyQt5.QtGui} in the import statement. However, this class exists and was able to be implemented in our code with no errors. \\
+	Regarding the GUI, we ran into some trouble with \texttt{PyTA}. In \texttt{gauge.py}, we had two functions that override functions provided by \texttt{PyQt}. Thus, we were unable to change the name of these two functions (\texttt{resizeEvent} and \texttt{paintEvent}) despite these names not conforming to \texttt{PythonTA’s} naming conventions. We also encountered a \texttt{no-name-in-module} error where \texttt{PythonTA} was unable to find the \texttt{QColor} class from \texttt{PyQt5.QtGui} in the import statement. However, this class exists and was able to be implemented in our code with no errors. \\
 
     \textbf{Further Exploration} \\
     To explore this topic further, we can consider implementing regression into our data processing. Using regression to determine which factors are most significant in affecting one’s mental health could increase the accuracy of our results.
