@@ -28,7 +28,7 @@ def main():
     window = ui.MainWindow()
     window.show()
 
-    # Prompt message showing how to usd this application
+    # Prompt message showing how to use this application
     msg = QMessageBox()
     msg.setIcon(QMessageBox.Information)
     msg.setWindowTitle('Instructions')
