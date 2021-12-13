@@ -24,6 +24,7 @@ Authors (by alphabetical order):
 """
 import math
 import os
+import platform
 from typing import Dict, Union
 
 from PyQt5.QtCore import Qt, QPoint, QPointF
@@ -127,8 +128,11 @@ class GaugeWidget(QWidget):
              ])
 
         # Set font size
-        self._values['scale_fontsize'] = 14 * self._diameter / 250
-        self._values['value_fontsize'] = 40 * self._diameter / 250
+        scale_factor = 400
+        if platform.system() == 'Darwin':
+            scale_factor = 250
+        self._values['scale_fontsize'] = 14 * self._diameter / scale_factor
+        self._values['value_fontsize'] = 40 * self._diameter / scale_factor
 
     def update_value(self, value: float) -> None:
         """Update the value of the gauge, and repaint.
