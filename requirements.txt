@@ -6,3 +6,6 @@ PyQt5
 
 # Plotting the data
 PyQtGraph
+
+# Getting dataset from the internet
+requests

@@ -22,7 +22,7 @@ def main():
     app = QApplication(sys.argv)
     # Set application icon
     app_icon = QIcon()
-    app_icon.addFile('./img/icons/Bubble.png')
+    app_icon.addFile('./resources/img/icons/Bubble.png')
     app.setWindowIcon(app_icon)
 
     window = ui.MainWindow()
@@ -65,6 +65,7 @@ def get_data():
         file = requests.get('https://osf.io/m5s8d/download')
         open('COVIDiSTRESS June 17.csv', 'wb').write(file.content)
         print('Finish downloading dataset!')
+    os.chdir('../')
 
 
 def process_data_if_not_exist():
