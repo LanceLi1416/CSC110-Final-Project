@@ -17,7 +17,6 @@ def main():
     app.setWindowIcon(app_icon)
 
     window = ui.MainWindow()
-    window.setAcceptDrops()
     window.show()
 
     # Prompt message showing how to usd this application
