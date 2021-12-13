@@ -192,9 +192,7 @@ GAUGE_CENTER_COVER_GRAD_COLOR = [[0, QColor(35, 40, 3, 255)],
                                  [0.935, QColor(30, 35, 45, 255)],
                                  [1, QColor(35, 40, 3, 255)]]
 GAUGE_BACKGROUND_GRAD_COLOR = [
-    [0.25, BACKGROUND_COLOR],
-    [0.5, QColor(252, 205, 186, 198)],
-    [0.75, BACKGROUND_COLOR]
+    [0, WHITE]
 ]
 
 # Fonts
