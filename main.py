@@ -1,19 +1,25 @@
 """ The entry point of the program """
+import os.path
 import sys
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
+import constants
 import ui
+from data import process_data
 
 
 def main():
+    # if data does not exist, create it
+    if not os.path.isfile(constants.REAL_DATA_JSON_FILE):
+        process_data(constants.REAL_DATA_CSV_FILE, constants.REAL_DATA_JSON_FILE)
+
     app = QApplication(sys.argv)
 
     # Set application icon
     app_icon = QIcon()
-    app_icon.addFile('./img/icons/face-black-24dp/1x/outline_face_black_24dp.png')
-    app_icon.addFile('./img/icons/face-black-24dp/2x/outline_face_black_24dp.png')
+    app_icon.addFile('./img/icons/Bubble.png')
     app.setWindowIcon(app_icon)
 
     window = ui.MainWindow()

@@ -29,7 +29,7 @@ from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtGui import QPixmap
 
 import constants
-from data import load_json_data, calculate_extrema, process_data
+from data import load_json_data, calculate_extrema
 from gauge import GaugeWidget
 from user import User, get_user_percentage
 
@@ -121,9 +121,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # Data storage --------------------------------------------------------------------------- |
         self._user = User([18, 'Male', 'None', 'Not employed', 'Afghanistan', 'Yes', 'Single',
                            'Yes', 'Life carries on as usual', 0, 0])
-        # if data does not exist, create it
-        if not os.path.isfile(constants.REAL_DATA_JSON_FILE):
-            process_data(constants.REAL_DATA_CSV_FILE, constants.REAL_DATA_JSON_FILE)
         self.anxiety_data = load_json_data(constants.REAL_DATA_JSON_FILE)
         self.extrema = calculate_extrema(self.anxiety_data)
 
