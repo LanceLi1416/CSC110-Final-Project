@@ -69,7 +69,7 @@
         \item columns [137] to [143] (inclusive)
     \end{itemize}
 
-    The above are all survey questions that were measured on a Likert scale of 5, 6, or 11. We went through each survey question and decided whether or not it had any relevance towards indicating a person’s level of stress and anxiety. For this reason, we excluded questions such as to what extent the surveyee ‘appreciates art and aesthetics’. We also excluded any short-answer questions because those could not be quantifed.
+    The above are all survey questions that were measured on a Likert scale of 5, 6, or 11. We went through each survey question and decided whether or not it had any relevance towards indicating a person’s level of stress and anxiety. For this reason, we excluded questions such as to what extent the surveyee ‘appreciates art and aesthetics’. We also excluded any short-answer questions because those could not be quantified
 
     \section*{Computational Overview}
 
@@ -98,30 +98,54 @@
     Save the file \texttt{COVIDiSTRESS June 17.csv} in the \texttt{data} folder. \\
 
     Upon running \texttt{main.py}, the main user interface window and a pop-up window should appear. The pop-up window includes brief instructions on how to navigate the interface and can be closed once read. Start by entering one’s information using the input boxes and drop-down menus on the left. The character icon on the right will change based on different inputs. The graph on the bottom left of the interface displays the anxiety levels of different identities in a specific identity group. Use the drop-down menu above the graph to switch between different identity groups. On the right of the graph, the user’s likelihood of experiencing anxiety due to COVID-19 relative to the general population is displayed on a gauge. The user can also see their anxiety probability compared to specific identity groups using the drop-down menu on the far right of the window. This data is displayed using a progress bar. Finally, the user can find a textual summary of their data on the bottom right.
+	
+	\begin{center}
+		This is what the program should like on a Windows computer:
+	\end{center}
+	\begin{center}
+		\includegraphics[scale=0.35]{img/example_screenshot}
+	\end{center}
+
 
     \section*{Changes from the proposal to now}
     The feedback we received suggested that we implement regression in order to determine the most important factor in a person’s anxiety and stress levels. We experimented with the idea of this, taking a look at libraries such as SciKit and PyTorch. However, we decided that implementing regression would be beyond the scope of our project and most likely unfeasible with the time constraints.
 
     Case studies in the final report were suggested as well and we have implemented those, so you will find them in the next section.
 
-    \section*{Discussion}
-    \textbf{Research Question: What is the relationship between one’s identity and the degree to which COVID-19 has impacted their mental health?} \\
-    In order to answer our research question, it was necessary for us to determine a scale with which we can measure one’s anxiety. Through the calculations and aggregation we did with the responses in the dataset, we were able to measure the degree in which COVID-19 may impact an individual in two ways: by measuring each survey question on a scale from 0 to 4 to tally up a general “anxiety score”, and by comparing this score to the rest of the population to find a relative percent chance of experiencing anxiety. Using these methods, we were able to see clear results indicating how having a single differing trait may cause two otherwise similar individuals to be impacted differently by COVID-19. For instance, we can see an anxiety increase of at least 8\% between someone who is employed and someone who is not employed. Direct examples similar to this can also be seen in the case studies below. In this sense, we were able to answer our research question. \\
+	\section*{Discussion}
+	\textbf{Research Question: What is the relationship between one’s identity and the degree to which COVID-19 has impacted their mental health?} \\
+	In order to answer our research question, it was necessary for us to determine a scale with which we can measure one’s anxiety. Through the calculations and aggregation we did with the responses in the dataset, we were able to measure the degree in which COVID-19 may impact an individual in two ways: by measuring each survey question on a scale from 0 to 4 to tally up a general “anxiety score”, and by comparing this score to the rest of the population to find a relative percent chance of experiencing anxiety. Using these methods, we were able to see clear results indicating how having a single differing trait may cause two otherwise similar individuals to be impacted differently by COVID-19. For instance, we can see an anxiety increase of at least 8\% between someone who is employed and someone who is not employed.  Direct examples similar to this can also be seen in the case studies below. In this sense, we were able to answer our research question. \\
 
-    \textbf{Limitations Encountered} \\
-    With the data processing, we found that, despite the .csv purportedly being ‘cleaned’ (it was placed in the ‘cleaned’ directory on the site), there were some issues with the dataset.
+	\textbf{Limitations Encountered} \\
+	With the data processing, we found that, despite the .csv purportedly being ‘cleaned’ (it was placed in the ‘cleaned’ directory on the site), there were some issues with the dataset.
 
-    First of all, there were some odd answers, especially in the countries column. Some answers had spelling mistakes, varied in capitalization, or were just complete nonsense. Other columns were inconsistent with their possible answers. (e.g. many columns had ‘Other/would rather not say’ as a possible response, but then one column had ‘Other \textbf{or} would rather not say’ which caused trouble with dictionary key-lookup later on. Finally, there were anomalies in the dataset where some surveyees responded to certain questions with absurd numbers, such as being in isolation with 110 adults, or 110 children (110 being the highest possible answer to these questions), which seemed… highly unlikely.
+	First of all, there were some odd answers, especially in the countries column. Some answers had spelling mistakes, varied in capitalization, or were just complete nonsense. Other columns were inconsistent with their possible answers. (e.g. many columns had ‘Other/would rather not say’ as a possible response, but then one column had ‘Other \textbf{or} would rather not say’ which caused trouble with dictionary key-lookup later on. Finally, there were anomalies in the dataset where some surveyees responded to certain questions with absurd numbers, such as being in isolation with 110 adults, or 110 children (110 being the highest possible answer to these questions), which seemed… highly unlikely.
 
-    As for the GUI side of things, we ran into some trouble with \texttt{PyTA}. In \texttt{gauge.py}, we had two functions that override functions provided by \texttt{PyQt}. Thus, we were unable to change the name of these two functions (\texttt{resizeEvent} and \texttt{paintEvent}) despite these names not conforming to \texttt{PythonTA’s} naming conventions. We also encountered a \texttt{no-name-in-module} error where \texttt{PythonTA} was unable to find the \texttt{QColor} class from \texttt{PyQt5.QtGui} in the import statement. However, this class exists and was able to be implemented in our code with no errors. \\
+	As for the GUI side of things, we ran into some trouble with \texttt{PyTA}. In \texttt{gauge.py}, we had two functions that override functions provided by \texttt{PyQt}. Thus, we were unable to change the name of these two functions (\texttt{resizeEvent} and \texttt{paintEvent}) despite these names not conforming to \texttt{PythonTA’s} naming conventions. We also encountered a \texttt{no-name-in-module} error where \texttt{PythonTA} was unable to find the \texttt{QColor} class from \texttt{PyQt5.QtGui} in the import statement. However, this class exists and was able to be implemented in our code with no errors. \\
 
-    \textbf{Further Exploration} \\
-    To explore this topic further, we can consider implementing regression into our data processing. Using regression to determine which factors are most significant in affecting one’s mental health could increase the accuracy of our results.
+	\textbf{Further Exploration} \\
+	To explore this topic further, we can consider implementing regression into our data processing.  Using regression to determine which factors are most significant in affecting one’s mental health could increase the accuracy of our results.
 
-    In terms of the visual elements of the user interface, there is room for improvement. However
-    We can take the project further by letting the user see the data of multiple identity groups combined. For example, the average anxiety scores different employment statuses in Canada only. Or, similarly, a Canadian man can compare their anxiety score to other Canadians that identify as male.
+	In terms of the visual elements of the user interface, there is room for improvement. However
+	We can take the project further by letting the user see the data of multiple identity groups combined. For example, the average anxiety scores different employment statuses in Canada only. Or, similarly, a Canadian man can compare their anxiety score to other Canadians that identify as male. \\
 
-    \textbf{Case Studies}
+	\textbf{Case Studies} \\
+	Just for reference, here is our supposed profiles as first-year university students in Canada, if we were also at low-risk and not in isolation:
+
+	\begin{center}
+		\includegraphics[scale=0.30]{img/male_student_screenshot}
+		\includegraphics[scale=0.30]{img/female_student_screenshot}
+	\end{center}
+
+	Let’s contrast an unemployed man in his early 20’s to one in his 50s, retired with a PhD, and married.
+	\begin{center}
+	\includegraphics[scale=0.30]{img/casestudy_screenshot_1}
+	\includegraphics[scale=0.30]{img/casestudy_screenshot_2}
+	\end{center}
+
+	We’re looking at the extreme ends of the spectrum here and we can see a clear difference. The difference largely lies in the state of their education, their employment status, and marital status. As should be expected, a person who is retired, has a PhD, and is married, should generally be more comfortable with his situation than a person in his early 20’s, at which point should expect to be either employed or still in school, except he fulfills neither of those categories. And if we adjust any of the person’s details, the gauge and likelihood changes accordingly, and mostly within expectations. \\
+	Taking the same retired person and instead having them be unemployed raises their stress levels to be higher than a whopping 14\% of more people than before. Again, employment status seems to be a critical factor in judging likelihood of stress, which falls in line with our expectations since in reality, employment status generally indicates a person’s financial stability.
+
 
 
     \section*{References}
@@ -143,7 +167,7 @@
     https://github.com/KhamisiKibet/QT-PyQt-PySide-Custom-Widgets
 
     \hangindent=0.7cm \noindent
-    luddek. (2015, August 14). \textut{Show string values on x-axis in pyqtgraph} Stack Overflow.
+    luddek. (2015, August 14). \textit{Show string values on x-axis in pyqtgraph} Stack Overflow.
     https://stackoverflow.com/a/3\\2008832
 
     \hangindent=0.7cm \noindent
