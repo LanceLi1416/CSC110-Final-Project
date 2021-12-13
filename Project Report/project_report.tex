@@ -25,11 +25,10 @@
     In fact, mental health has become such a prominent concern due to the pandemic that analysts at The National Institute of Mental Health now describe online therapy as essential (Prout, 2021).
 
     There is no doubt that the onset of the pandemic affected everyone differently — some found it easy to adjust, some struggled to do so, and many experienced some combination of the two — all for varying reasons.
-    We would like to measure these differences quantitatively.
-    Thus, we decided to research and answer the question: \textbf{what is the relationship between one’s identity and the degree to which COVID-19 has impacted their mental health?}
+    We have measured these differences quantitatively in order to answer the question: \textbf{what is the relationship between one’s identity and the degree to which COVID-19 has impacted their mental health?}
 
-    Our research will examine various traits that the subjects of the survey have, such as their education level, marital status, gender, and age, then compare their surveyed response to the pandemic alongside their traits and identities to determine a relationship between certain identity groups and the socio-psychological effects COVID-19 has had on them.
-    From the results, we will ascertain which types of people are more susceptible to psychological issues due to the pandemic.
+    Our research examines various traits that the subjects of the survey have, such as their education level, marital status, gender, and age, then compares their surveyed response to the pandemic alongside their traits and identities to determine a relationship between certain identity groups and the socio-psychological effects COVID-19 has had on them.
+    From the results, we have ascertained which types of people are more susceptible to psychological issues due to the pandemic.
     We believe that this data can be applied to strengthen mental health resources and allow for more specialized and efficient care.
 
     \section*{Dataset Description}
@@ -38,7 +37,9 @@
     Format: .csv \\
     Source: \url{https://doi.org/10.1038/s41597-020-00784-9} \\
 
-    In the csv file, each row contains information about a single surveyee and their responses to the survey, each of which is in a separate column.
+	The COVIDiSTRESS Global Survey dataset on psychological and behavioural consequences of the COVID-19 outbreak (Yamada et al., 2020) is a survey which was organized by researchers in over 90 universities across the globe, investigating the mental health conditions and personal views surrounding COVID-19. It was conducted during the first major wave of the pandemic, and the responses of approximately 125,000 participants aged 18 and over, ranging across 42 countries, were recorded through this survey. The data is stored in a .csv file with each row containing information about a single person, including their gender, age, occupation status, marital status, and more. The file also includes each participant's responses to a broad range of questions posed on the survey about COVID-19. These questions range from questions about the individual’s support systems to questions about how they obtain information about COVID-19. \\
+
+    In the csv file, each row contains information about a single surveyee and their responses to the survey, each of which is in a separate column. \\
 
     Columns used (starting count from column 0 which is just the initial numbering column):
     \begin{itemize}
@@ -144,7 +145,10 @@
 
     We’re looking at the extreme ends of the spectrum here and we can see a clear difference. The difference largely lies in the state of their education, their employment status, and marital status. As should be expected, a person who is retired, has a PhD, and is married, should generally be more comfortable with his situation than a person in his early 20’s, at which point should expect to be either employed or still in school, except he fulfills neither of those categories. And if we adjust any of the person’s details, the gauge and likelihood changes accordingly, and mostly within expectations. \\
 
-    Taking the same retired person and instead having them be unemployed raises their stress levels to be higher than a whopping 14\% of more people than before. Again, employment status seems to be a critical factor in judging likelihood of stress, which falls in line with our expectations since in reality, employment status generally indicates a person’s financial stability.
+    Taking the same retired person and instead having them be unemployed raises their stress levels to be higher than a whopping 14\% of more people than before. Again, employment status seems to be a critical factor in judging likelihood of stress, which falls in line with our expectations since in reality, employment status generally indicates a person’s financial stability. \\
+    
+    \textbf{Conclusion} \\
+    In conclusion, we aggregated and filtered the data from the COVIDiSTRESS survey in order to discover the relationships between \texttt{stress\_score} and individuals’ identity groups. The final product of our findings is a GUI program that allows the user to input specific identities and receives a visual representation of their likelihood of anxiety, the average anxiety of the general population, and a comparison of the two. In doing so, we have found distinct relationships between one’s identity and the probability in which COVID-19 has impacted their mental health.
 
     \section*{References}
 
